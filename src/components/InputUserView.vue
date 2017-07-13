@@ -8,82 +8,10 @@
             </span>
         </header>
         <ul class="emoji-checkbox-list mdl-list">
-            <li class="mdl-list__item">
+            <li class="mdl-list__item" v-for="emoji in emojis">
                 <span class="mdl-list__item-primary-content">
-                    <emoji mood="-5"></emoji>
-                    Apocalyptic mood
-                </span>
-            </li>
-            <li class="mdl-list__item">
-                <span class="mdl-list__item-primary-content">
-                    <emoji mood="-4"></emoji>
-                    Horrible mood
-                </span>
-            </li>
-            <li class="mdl-list__item">
-                <span class="mdl-list__item-primary-content">
-                    <emoji mood="-3"></emoji>
-                    Very bad mood
-                </span>
-            </li>
-            <li class="mdl-list__item">
-                <span class="mdl-list__item-primary-content">
-                    <emoji mood="-2"></emoji>
-                    Bad mood
-                </span>
-            </li>
-            <li class="mdl-list__item">
-                <span class="mdl-list__item-primary-content">
-                    <emoji mood="-1"></emoji>
-                    Meeeh mood
-                </span>
-            </li>
-            <li class="mdl-list__item">
-                <span class="mdl-list__item-primary-content">
-                    <emoji mood="0"></emoji>
-                    Neutral mood
-                </span>
-            </li>
-            <li class="mdl-list__item">
-                <span class="mdl-list__item-primary-content">
-                    <emoji mood="1"></emoji>
-                    Okay mood
-                </span>
-            </li>
-            <li class="mdl-list__item">
-                <span class="mdl-list__item-primary-content">
-                    <emoji mood="2"></emoji>
-                    Good mood
-                </span>
-            </li>
-            <li class="mdl-list__item">
-                <span class="mdl-list__item-primary-content">
-                    <emoji mood="3"></emoji>
-                    Very good mood
-                </span>
-            </li>
-            <li class="mdl-list__item">
-                <span class="mdl-list__item-primary-content">
-                    <emoji mood="4"></emoji>
-                    Crazy good mood
-                </span>
-            </li>
-            <li class="mdl-list__item">
-                <span class="mdl-list__item-primary-content">
-                    <emoji mood="5"></emoji>
-                    Ecstatic mood
-                </span>
-            </li>
-            <li class="mdl-list__item">
-                <span class="mdl-list__item-primary-content">
-                    <emoji mood="holiday"></emoji>
-                    No mood - holiday
-                </span>
-            </li>
-            <li class="mdl-list__item">
-                <span class="mdl-list__item-primary-content">
-                    <emoji mood="sick"></emoji>
-                    No mood - sickness
+                    <emoji :mood="emoji.index"></emoji>
+                    {{emoji.label}}
                 </span>
             </li>
         </ul>
@@ -98,9 +26,21 @@
         props: ['id'],
         data() {
             return {
-                name: 'Trent Reznor',
-                motto: 'Ph\'nglui mglw\'nafh Cthulhu R\'lyeh wgah\'nagl fhtagn',
-                avatar: 'https://api.adorable.io/avatars/60/trent@adorable.png'
+                emojis: [
+                    { index: '-5', label: 'This is hell' },
+                    { index: '-4', label: 'Horrible mood' },
+                    { index: '-3', label: 'Very bad mood' },
+                    { index: '-2', label: 'Bad mood' },
+                    { index: '-1', label: 'Meeeh mood' },
+                    { index: '0', label: 'Neutral mood' },
+                    { index: '1', label: 'Okay mood' },
+                    { index: '2', label: 'Good mood' },
+                    { index: '3', label: 'Very good mood' },
+                    { index: '4', label: 'Crazy good mood' },
+                    { index: '5', label: 'this is heaven' },
+                    { index: 'holiday', label: 'No mood - holiday' },
+                    { index: 'sick', label: 'No mood - sickness' }
+                ]
             };
         },
         computed: {

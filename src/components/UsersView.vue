@@ -7,7 +7,7 @@
                 <span class="mdl-list__item-sub-title">{{user.motto}}</span>
             </span>
             <span class="mdl-list__item-secondary-content">
-                <button class="mdl-button mdl-js-button mdl-button--icon">
+                <button class="mdl-button mdl-js-button mdl-button--icon" @click.prevent="displayDetails(user.id)">
                     <emoji mood="0"></emoji>
                 </button>
             </span>
@@ -29,7 +29,7 @@
         },
         methods: {
             displayDetails(id) {
-                this.$router.push({ name: 'user', params: { id: id } });
+                this.$router.push({ name: 'mood-input', params: { id: id } });
             }
         },
         components: {
