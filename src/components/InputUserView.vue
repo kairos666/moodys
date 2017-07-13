@@ -9,10 +9,10 @@
         </header>
         <ul class="emoji-checkbox-list mdl-list">
             <li class="mdl-list__item" v-for="emoji in emojis">
-                <span class="mdl-list__item-primary-content">
+                <button type="button" :title="`select ${emoji.label}`" @click.prevent="moodSelection(emoji.index)" class="mdl-list__item-primary-content">
                     <emoji :mood="emoji.index"></emoji>
                     {{emoji.label}}
-                </span>
+                </button>
             </li>
         </ul>
     </form>
@@ -21,36 +21,38 @@
 <script>
     import data from '../fakeData.js';
     import Emoji from '@/components/Emoji';
+    import moodConfig from '@/config/moods';
+    import firebase from '@/services/firebase';
 
     export default {
         props: ['id'],
-        data() {
-            return {
-                emojis: [
-                    { index: '-5', label: 'This is hell' },
-                    { index: '-4', label: 'Horrible mood' },
-                    { index: '-3', label: 'Very bad mood' },
-                    { index: '-2', label: 'Bad mood' },
-                    { index: '-1', label: 'Meeeh mood' },
-                    { index: '0', label: 'Neutral mood' },
-                    { index: '1', label: 'Okay mood' },
-                    { index: '2', label: 'Good mood' },
-                    { index: '3', label: 'Very good mood' },
-                    { index: '4', label: 'Crazy good mood' },
-                    { index: '5', label: 'this is heaven' },
-                    { index: 'holiday', label: 'No mood - holiday' },
-                    { index: 'sick', label: 'No mood - sickness' }
-                ]
-            };
-        },
         computed: {
             user() {
                 let user = data.users.find(user => (user.id === parseInt(this.id)));
                 return user;
+            },
+            emojis() {
+                // remove the default element
+                let emojisData = moodConfig.moodIndexes.filter(el => (el !== null));
+
+                // format array
+                emojisData = emojisData.map(el => {
+                    return { index: el };
+                }).map((el, index) => {
+                    el.label = moodConfig.moodLabels[index];
+                    return el;
+                });
+                console.log(emojisData);
+                return emojisData;
             }
         },
         components: {
             'emoji': Emoji
+        },
+        methods: {
+            moodSelection(moodIndex) {
+                firebase.updateMood(moodIndex, this.id, this.$root.$firebaseRefs);
+            }
         }
     };
 </script>
@@ -65,6 +67,7 @@
         h1 { font-size:34px; }
         span { flex:0 0 100%; }
     }
+    button.mdl-list__item-primary-content { background:none; border:none; cursor:pointer; padding:0; }
     .emoji-checkbox-list { padding-bottom:0; margin-bottom:0;
         img { margin-right:16px; }
         li { padding-top:$gutter-base; padding-bottom:$gutter-base; }
