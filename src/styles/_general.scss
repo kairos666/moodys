@@ -1,0 +1,17 @@
+/* page transitions */
+.fade-enter-active, .fade-leave-active {
+  transition: all $page-tr-duration ease;
+}
+
+.fade-leave-to {
+  transform: translateY($page-tr-vert-offset);
+}
+
+.fade-enter-active { transform: translateY(-$page-tr-vert-offset); }
+.fade-enter-to {
+  transform: translateY(0);
+}
+
+.fade-enter, .fade-leave-active {
+  opacity: 0
+}

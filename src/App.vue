@@ -13,7 +13,9 @@
         </div>
         <main class="mdl-layout__content">
             <div class="page-content">
-                <router-view></router-view>
+                <transition name="fade" mode="out-in">
+                    <router-view></router-view>
+                </transition>
             </div>
         </main>
     </div>
@@ -33,7 +35,9 @@
     };
 </script>
 
-<style>
+<style lang="scss">
     @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
     @import url('../node_modules/material-design-lite/dist/material.deep_orange-blue.min.css');
+    @import './styles/_variables.scss';
+    @import './styles/_general.scss';
 </style>
