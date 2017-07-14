@@ -8,7 +8,7 @@
             </span>
         </header>
         <ul class="emoji-checkbox-list mdl-list">
-            <li class="mdl-list__item" v-for="emoji in emojis">
+            <li class="mdl-list__item" :class="{ active: emoji.selected }" v-for="emoji in emojis">
                 <button type="button" :title="`select ${emoji.label}`" @click.prevent="moodSelection(emoji.index)" class="mdl-list__item-primary-content">
                     <emoji :mood="emoji.index"></emoji>
                     {{emoji.label}}
@@ -22,6 +22,7 @@
     import data from '../fakeData.js';
     import Emoji from '@/components/Emoji';
     import moodConfig from '@/config/moods';
+    import { getUserCurrentMood } from '@/utils/firebase-data-cruncher';
 
     export default {
         props: ['id'],
@@ -31,12 +32,20 @@
                 return user;
             },
             emojis() {
+                // get current user mood
+                let currentMood = getUserCurrentMood(this.id, this.$root.moods);
+
                 // remove the default element
                 let emojisData = moodConfig.moodIndexes.filter(el => (el !== null));
 
                 // format array
                 emojisData = emojisData.map(el => {
-                    return { index: el };
+                    if (!currentMood) return { index: el, selected: false };
+
+                    return {
+                        index: el,
+                        selected: (el === currentMood.value)
+                    };
                 }).map((el, index) => {
                     el.label = moodConfig.moodLabels[index];
                     return el;
