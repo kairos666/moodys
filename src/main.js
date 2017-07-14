@@ -3,22 +3,31 @@
 import Vue from 'vue';
 import App from './App';
 import router from './router';
-import firebase from './services/firebase';
 import VueResource from 'vue-resource';
 import Vuefire from 'vuefire';
+import firebaseConfig from './config/firebase';
+import firebaseService from './services/firebase-service';
 
 Vue.config.productionTip = false;
 Vue.use(VueResource);
 Vue.use(Vuefire);
 
+// custom services
+Vue.use(firebaseService, firebaseConfig);
+
 /* eslint-disable no-new */
 new Vue({
     el: '#app',
     firebase: {
-        users: firebase.database.ref('users'),
-        moods: firebase.database.ref('moods')
+        users: firebaseService.database.ref('users'),
+        moods: firebaseService.database.ref('moods')
     },
     router,
     template: '<App/>',
-    components: { App }
+    components: { App },
+    created() {
+        /* post creation actions */
+        // firebase service init
+        firebaseService.init(this.$root.$firebaseRefs);
+    }
 });

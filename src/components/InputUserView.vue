@@ -22,7 +22,6 @@
     import data from '../fakeData.js';
     import Emoji from '@/components/Emoji';
     import moodConfig from '@/config/moods';
-    import firebase from '@/services/firebase';
 
     export default {
         props: ['id'],
@@ -42,7 +41,7 @@
                     el.label = moodConfig.moodLabels[index];
                     return el;
                 });
-                console.log(emojisData);
+
                 return emojisData;
             }
         },
@@ -51,7 +50,7 @@
         },
         methods: {
             moodSelection(moodIndex) {
-                firebase.updateMood(moodIndex, this.id, this.$root.$firebaseRefs);
+                this.$firebaseActions.updateMood(moodIndex, this.id);
             }
         }
     };
