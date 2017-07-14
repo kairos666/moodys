@@ -22,10 +22,15 @@ let getCurrentDateAtZeroHour = function() {
 let filterMoodsOfTheDay = function(allMoods, sortByLatest) {
     let todayStamp = getCurrentDateAtZeroHour();
     // clone array, reverse (latest to oldest), find first item older than today, cut today's part
-    let thresholdIndex = allMoods.slice(0).reverse().findIndex(el => (el.timestamp < todayStamp));
+    let cloneMoods = allMoods.slice(0);
+    let thresholdIndex = cloneMoods.reverse().findIndex(el => (el.timestamp < todayStamp));
 
-    if (!sortByLatest) return allMoods.slice(0, thresholdIndex);
-    return allMoods.slice(0, thresholdIndex).reverse();
+    // cut and recency
+    // console.log(allMoods.slice(13).reverse().map(el => el.timestamp));
+    // cut and chronological
+    // console.log(allMoods.slice(13).map(el => el.timestamp));
+    if (!sortByLatest) return allMoods.slice(thresholdIndex);
+    return allMoods.slice(thresholdIndex).reverse();
 };
 
 /**
