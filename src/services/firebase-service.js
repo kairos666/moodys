@@ -1,5 +1,5 @@
 /**
- * FIREBASE CUSTOM SERVICE
+ * FIREBASE CUSTOM SERVICE (peer dependencies firebase & vue-fire)
  * 1. install phase: setup firebase connexion with config
  * 2. Vue app bind vue-fire with databases
  * 3. init plugin at app creation to get & use $firebaseRefs
