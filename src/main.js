@@ -28,6 +28,6 @@ new Vue({
     created() {
         /* post creation actions */
         // firebase service init
-        firebaseService.init(this.$root.$firebaseRefs);
+        firebaseService.init(this);
     }
 });

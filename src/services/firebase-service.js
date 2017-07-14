@@ -1,6 +1,13 @@
+/**
+ * FIREBASE CUSTOM SERVICE
+ * 1. install phase: setup firebase connexion with config
+ * 2. Vue app bind vue-fire with databases
+ * 3. init plugin at app creation to get & use $firebaseRefs
+ */
 import firebase from 'firebase';
 import moodsConfig from '../config/moods';
 
+let vueRef = null;
 let updateMoodBuilder = function(refs, moodsConfig) {
     return function(moodIndex, userId) {
         if (moodsConfig.moodIndexes.includes(moodIndex)) {
@@ -8,7 +15,6 @@ let updateMoodBuilder = function(refs, moodsConfig) {
             let moodEntry = { userId: userId, value: moodIndex, timestamp: Date.now() };
 
             // send to firebase
-            console.log(refs);
             refs.moods.push(moodEntry);
         } else {
             throw new Error(`Try to update user ${userId}'s mood with invalid index: ${moodIndex}`);
@@ -20,18 +26,14 @@ const firebaseService = {
     install(Vue, options) {
         firebase.initializeApp(options);
         this.database = firebase.database();
-        this.vueRef = Vue;
+        vueRef = Vue;
     },
     init(refs) {
-        this.firebaseRefs = refs;
-
-        this.vueRef.prototype.$firebaseActions = {
-            updateMood: updateMoodBuilder(this.firebaseRefs, moodsConfig)
+        vueRef.prototype.$firebaseActions = {
+            updateMood: updateMoodBuilder(refs.$root.$firebaseRefs, moodsConfig)
         };
     },
-    database: null,
-    firebaseRefs: null,
-    vueRef: null
+    database: null
 };
 
 export default firebaseService;
