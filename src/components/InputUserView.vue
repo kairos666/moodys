@@ -9,7 +9,7 @@
         </header>
         <ul class="emoji-checkbox-list mdl-list">
             <li class="mdl-list__item" :class="{ active: emoji.selected }" v-for="emoji in emojis">
-                <button type="button" :title="`select ${emoji.label}`" @click.prevent="moodSelection(emoji.index)" class="mdl-list__item-primary-content">
+                <button type="button" :title="`select ${emoji.label}`" @click.prevent="moodSelection(emoji.index, emoji.selected)" class="mdl-list__item-primary-content">
                     <emoji :mood="emoji.index"></emoji>
                     {{emoji.label}}
                 </button>
@@ -58,8 +58,8 @@
             'emoji': Emoji
         },
         methods: {
-            moodSelection(moodIndex) {
-                this.$firebaseActions.updateMood(moodIndex, this.id);
+            moodSelection(moodIndex, alreadySelected) {
+                if (!alreadySelected) this.$firebaseActions.updateMood(moodIndex, this.id);
             }
         }
     };
