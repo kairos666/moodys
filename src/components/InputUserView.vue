@@ -78,7 +78,6 @@
     button.mdl-list__item-primary-content { background:none; border:none; cursor:pointer; padding:0; }
     .emoji-checkbox-list { padding-bottom:0; margin-bottom:0;
         img { margin-right:16px; }
-        li { padding-top:$gutter-base; padding-bottom:$gutter-base; }
         li:nth-child(1) { background-color:rgba(255, 0, 0, .1); }
         li:nth-child(2) { background-color:rgba(255, 0, 0, .085); }
         li:nth-child(3) { background-color:rgba(255, 0, 0, .07); }
@@ -92,5 +91,13 @@
         li:nth-child(11) { background-color:rgba(0, 255, 0, .1); }
         li:nth-child(12) { background-color:$zebra-list-bg; }
         li:nth-child(13) { background-color:$zebra-list-bg; }
+        li { padding-top:$gutter-base; padding-bottom:$gutter-base;
+            &:hover { background-color:lighten($primary, 10%);
+                button { color:#fff; font-weight:bold; }
+            }
+            &.active { background-color:$primary;
+                button { color:#fff; font-weight:bold; }
+            }            
+        }
     }
 </style>
