@@ -31,20 +31,14 @@ const firebaseService = {
 
         // firebase auth init
         let firebaseAuth = firebase.auth(firebaseApp);
-        firebaseAuth.onAuthStateChanged(user => {
-            if (user) {
-                console.info('status connected', user);
-            } else {
-                console.info('status disconnected');
-            }
-        });
 
         // assign global vue method
         this.firebaseActions = Vue.prototype.$firebaseActions = {
             authenticate: function(email, password) { return firebaseAuth.signInWithEmailAndPassword(email, password) },
             onAuthStateChange: function(cb) { firebaseAuth.onAuthStateChanged(cb) },
             signOut: function() { return firebaseAuth.signOut() },
-            getCurrentUser: function() { return firebaseAuth.currentUser }
+            getCurrentUser: function() { return firebaseAuth.currentUser },
+            signUp: function(email, password) { firebaseAuth.signUp(email, password) }
         };
     },
     init(refs) {

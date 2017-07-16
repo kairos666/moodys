@@ -10,11 +10,10 @@
     export default {
         methods: {
             signin() {
-                console.log(this.$root.$firebaseActions);
-                this.$root.$firebaseActions.authenticate('davidmaggi57@gmail.com', 'PackageManagerFatigue101');
+                this.$store.dispatch('login', { email: 'davidmaggi57@gmail.com', password: 'PackageManagerFatigue101' });
             },
             signout() {
-                this.$root.$firebaseActions.signOut();
+                this.$store.dispatch('logout');
             }
         }
     };
