@@ -5,10 +5,10 @@
  * 3. init plugin at app creation to get & use $firebaseRefs
  */
 import firebase from 'firebase';
+import firebaseConfig from '../config/firebase';
 import moodsConfig from '../config/moods';
+import Vue from 'vue';
 
-let vueRef = null;
-let firebaseAuth = null;
 let updateMoodBuilder = function(refs, moodsConfig) {
     return function(moodIndex, userId) {
         if (moodsConfig.moodIndexes.includes(moodIndex)) {
@@ -30,18 +30,17 @@ const firebaseService = {
         this.database = firebase.database();
 
         // firebase auth init
-        firebaseAuth = firebase.auth(firebaseApp);
+        let firebaseAuth = firebase.auth(firebaseApp);
         firebaseAuth.onAuthStateChanged(user => {
             if (user) {
-                console.info(user);
+                console.info('status connected', user);
             } else {
-                console.info('disconnected');
+                console.info('status disconnected');
             }
         });
 
         // assign global vue method
-        vueRef = Vue;
-        this.firebaseActions = vueRef.prototype.$firebaseActions = {
+        this.firebaseActions = Vue.prototype.$firebaseActions = {
             authenticate: function(email, password) { return firebaseAuth.signInWithEmailAndPassword(email, password) },
             onAuthStateChange: function(cb) { firebaseAuth.onAuthStateChanged(cb) },
             signOut: function() { return firebaseAuth.signOut() },
@@ -49,10 +48,12 @@ const firebaseService = {
         };
     },
     init(refs) {
-        this.firebaseActions.updateMood = vueRef.prototype.$firebaseActions.updateMood = updateMoodBuilder(refs.$root.$firebaseRefs, moodsConfig);
+        this.firebaseActions.updateMood = Vue.prototype.$firebaseActions.updateMood = updateMoodBuilder(refs.$root.$firebaseRefs, moodsConfig);
     },
     database: null,
     firebaseActions: null
 };
+
+Vue.use(firebaseService, firebaseConfig);
 
 export default firebaseService;

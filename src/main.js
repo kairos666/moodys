@@ -2,18 +2,15 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue';
 import App from './App';
-import firebaseConfig from './config/firebase';
 import firebaseService from './services/firebase-service';
 import router from './router';
 import VueResource from 'vue-resource';
 import Vuefire from 'vuefire';
+import store from './store';
 
 Vue.config.productionTip = false;
 Vue.use(VueResource);
 Vue.use(Vuefire);
-
-// custom services
-Vue.use(firebaseService, firebaseConfig);
 
 /* eslint-disable no-new */
 new Vue({
@@ -23,6 +20,7 @@ new Vue({
         moods: firebaseService.database.ref('moods')
     },
     router,
+    store: store,
     template: '<App/>',
     components: { App },
     created() {

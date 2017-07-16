@@ -28,7 +28,7 @@
         props: ['id'],
         computed: {
             user() {
-                let user = data.users.find(user => (user.id === parseInt(this.id)));
+                let user = data.users.find(user => (user.id === this.id));
                 return user;
             },
             emojis() {
