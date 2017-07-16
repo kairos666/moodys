@@ -2,11 +2,11 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue';
 import App from './App';
+import firebaseConfig from './config/firebase';
+import firebaseService from './services/firebase-service';
 import router from './router';
 import VueResource from 'vue-resource';
 import Vuefire from 'vuefire';
-import firebaseConfig from './config/firebase';
-import firebaseService from './services/firebase-service';
 
 Vue.config.productionTip = false;
 Vue.use(VueResource);

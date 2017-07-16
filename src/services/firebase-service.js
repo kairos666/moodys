@@ -8,6 +8,7 @@ import firebase from 'firebase';
 import moodsConfig from '../config/moods';
 
 let vueRef = null;
+let firebaseAuth = null;
 let updateMoodBuilder = function(refs, moodsConfig) {
     return function(moodIndex, userId) {
         if (moodsConfig.moodIndexes.includes(moodIndex)) {
@@ -24,16 +25,34 @@ let updateMoodBuilder = function(refs, moodsConfig) {
 
 const firebaseService = {
     install(Vue, options) {
-        firebase.initializeApp(options);
+        // firebase app init
+        let firebaseApp = firebase.initializeApp(options);
         this.database = firebase.database();
+
+        // firebase auth init
+        firebaseAuth = firebase.auth(firebaseApp);
+        firebaseAuth.onAuthStateChanged(user => {
+            if (user) {
+                console.info(user);
+            } else {
+                console.info('disconnected');
+            }
+        });
+
+        // assign global vue method
         vueRef = Vue;
-    },
-    init(refs) {
-        vueRef.prototype.$firebaseActions = {
-            updateMood: updateMoodBuilder(refs.$root.$firebaseRefs, moodsConfig)
+        this.firebaseActions = vueRef.prototype.$firebaseActions = {
+            authenticate: function(email, password) { return firebaseAuth.signInWithEmailAndPassword(email, password) },
+            onAuthStateChange: function(cb) { firebaseAuth.onAuthStateChanged(cb) },
+            signOut: function() { return firebaseAuth.signOut() },
+            getCurrentUser: function() { return firebaseAuth.currentUser }
         };
     },
-    database: null
+    init(refs) {
+        this.firebaseActions.updateMood = vueRef.prototype.$firebaseActions.updateMood = updateMoodBuilder(refs.$root.$firebaseRefs, moodsConfig);
+    },
+    database: null,
+    firebaseActions: null
 };
 
 export default firebaseService;

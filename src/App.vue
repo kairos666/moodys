@@ -8,7 +8,8 @@
         <div ref="drawer" class="mdl-layout__drawer">
             <span class="mdl-layout-title">Moodys</span>
             <nav class="mdl-navigation">
-                <router-link class="mdl-navigation__link" to="/" @click.native="hideMenu">All users</router-link>
+                <router-link class="mdl-navigation__link" to="/" @click.native="hideMenu">Home</router-link>
+                <router-link class="mdl-navigation__link" to="/users" @click.native="hideMenu">All users</router-link>
             </nav>
         </div>
         <main class="mdl-layout__content">
