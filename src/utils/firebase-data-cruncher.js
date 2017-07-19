@@ -40,6 +40,8 @@ let filterMoodsOfTheDay = function(allMoods, sortByLatest) {
  * @return {Object | undefined} relevant mood if available
  */
 let getUserCurrentMood = function(userId, allMoods) {
+    // console.log(allMoods.child(userId).orderByChild('timestamp').limitToLast(1));
+    console.log(allMoods);
     let todayMoods = filterMoodsOfTheDay(allMoods, true);
     let latestMood = todayMoods.find(el => (el.userId === userId));
 

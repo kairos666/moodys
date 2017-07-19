@@ -21,18 +21,16 @@ const store = new Vuex.Store({
     },
     actions: {
         login(context, payload) {
-            console.info('action login');
             if (payload.email && payload.password) firebaseActions.authenticate(payload.email, payload.password);
         },
         logout(context) {
-            console.info('action logout');
             firebaseActions.signOut();
         },
         updateUser(context, payload) {
             if (payload !== null) {
-                console.log('user connected: ', payload);
+                console.info('user connected: ', payload);
             } else {
-                console.log('user disconnected');
+                console.info('user disconnected');
             }
             context.commit('updateUser', payload);
         },

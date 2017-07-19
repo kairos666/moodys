@@ -12,11 +12,11 @@ import Vue from 'vue';
 let updateMoodBuilder = function(refs, moodsConfig) {
     return function(moodIndex, userId) {
         if (moodsConfig.moodIndexes.includes(moodIndex)) {
-            // create entry
-            let moodEntry = { userId: userId, value: moodIndex, timestamp: Date.now() };
+            // mood entry
+            let moodEntry = { value: moodIndex, timestamp: Date.now() };
 
             // send to firebase
-            refs.moods.push(moodEntry);
+            refs.moods.child(userId).push(moodEntry);
         } else {
             throw new Error(`Try to update user ${userId}'s mood with invalid index: ${moodIndex}`);
         }
