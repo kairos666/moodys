@@ -1,7 +1,15 @@
 import Vuex from 'vuex';
 import Vue from 'vue';
+import firebaseConfig from '@/config/firebase';
+import firebase from 'firebase';
 
 Vue.use(Vuex);
+
+// firebase setup
+let firebaseApp = firebase.initializeApp(firebaseConfig);
+let db = firebaseApp.database();
+console.log(db);
+let auth = firebase.auth(firebaseApp);
 
 const store = new Vuex.Store({
     state: {
@@ -19,10 +27,10 @@ const store = new Vuex.Store({
     },
     actions: {
         login(context, payload) {
-            if (payload.email && payload.password) firebaseActions.authenticate(payload.email, payload.password);
+            if (payload.email && payload.password) auth.signInWithEmailAndPassword(payload.email, payload.password);
         },
         logout(context) {
-            firebaseActions.signOut();
+            auth.signOut();
         },
         updateUser(context, payload) {
             if (payload !== null) {
@@ -34,13 +42,13 @@ const store = new Vuex.Store({
         },
         signup(context, payload) {
             console.info('action signup');
-            if (payload.email && payload.password) firebaseActions.signUp(payload.email, payload.password);
+            if (payload.email && payload.password) auth.signUp(payload.email, payload.password);
         }
     }
 });
 
 // set auth status change handler
-firebaseActions.onAuthStateChange(resp => {
+auth.onAuthStateChanged(resp => {
     store.dispatch('updateUser', resp);
 });
 
