@@ -1,7 +1,5 @@
 import Vuex from 'vuex';
 import Vue from 'vue';
-import firebaseService from './services/firebase-service';
-const firebaseActions = firebaseService.firebaseActions;
 
 Vue.use(Vuex);
 

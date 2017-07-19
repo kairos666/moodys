@@ -22,7 +22,6 @@
     import data from '../fakeData.js';
     import Emoji from '@/components/Emoji';
     import moodConfig from '@/config/moods';
-    import { getUserCurrentMood } from '@/utils/firebase-data-cruncher';
 
     export default {
         props: ['id'],
@@ -33,7 +32,8 @@
             },
             emojis() {
                 // get current user mood
-                let currentMood = getUserCurrentMood(this.id, this.$root.moods);
+                // let currentMood = getUserCurrentMood(this.id, this.$root.moods);
+                let currentMood = 'sick';
 
                 // remove the default element
                 let emojisData = moodConfig.moodIndexes.filter(el => (el !== null));
