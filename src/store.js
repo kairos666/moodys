@@ -41,6 +41,10 @@ const store = new Vuex.Store({
         logout(context) {
             auth.signOut();
         },
+        signup(context, payload) {
+            console.info('action signup');
+            if (payload.email && payload.password) auth.signUp(payload.email, payload.password);
+        },
         updateAuthUser(context, payload) {
             // prepare callbacks
             let usersUpdateCallback = function(snapshot) {
@@ -67,9 +71,9 @@ const store = new Vuex.Store({
             }
             context.commit('updateAuthUser', payload);
         },
-        signup(context, payload) {
-            console.info('action signup');
-            if (payload.email && payload.password) auth.signUp(payload.email, payload.password);
+        updateCurrentUserMood({ state }, payload) {
+            // action with no commit --> firebase update
+            firebaseHelpers.addMoodEntry(payload, state.currentFirebaseUser.uid);
         }
     }
 });

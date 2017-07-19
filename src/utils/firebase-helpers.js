@@ -1,3 +1,4 @@
+import moodsConfig from '@/config/moods';
 let firebaseDB;
 
 /**
@@ -52,10 +53,23 @@ let onAllMoodsChange = function(cb, isToBeShutDown) {
     }
 };
 
+let addMoodEntry = function(moodIndex, userId) {
+    if (moodsConfig.moodIndexes.includes(moodIndex)) {
+        // mood entry
+        let moodEntry = { value: moodIndex, timestamp: Date.now() };
+
+        // send to firebase
+        firebaseDB.ref('moods').child(userId).push(moodEntry);
+    } else {
+        throw new Error(`Try to update user ${userId}'s mood with invalid index: ${moodIndex}`);
+    }
+};
+
 export default {
     initialize: initialize,
     getAllMoods: getAllMoods,
     getAllUsers: getAllUsers,
     onAllMoodsChange: onAllMoodsChange,
-    onAllUsersChange: onAllUsersChange
+    onAllUsersChange: onAllUsersChange,
+    addMoodEntry: addMoodEntry
 };

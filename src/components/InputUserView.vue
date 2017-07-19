@@ -59,7 +59,7 @@
         },
         methods: {
             moodSelection(moodIndex, alreadySelected) {
-                if (!alreadySelected) this.$firebaseActions.updateMood(moodIndex, this.id);
+                if (!alreadySelected) this.$store.dispatch('updateCurrentUserMood', moodIndex);
             }
         }
     };
