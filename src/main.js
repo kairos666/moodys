@@ -3,12 +3,10 @@
 import Vue from 'vue';
 import App from './App';
 import router from './router';
-import VueResource from 'vue-resource';
 import Vuefire from 'vuefire';
 import store from './store';
 
 Vue.config.productionTip = false;
-Vue.use(VueResource);
 Vue.use(Vuefire);
 
 /* eslint-disable no-new */
