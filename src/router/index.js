@@ -6,6 +6,9 @@ import UsersView from '@/components/UsersView';
 import InputUserView from '@/components/InputUserView';
 import HomeView from '@/components/HomeView';
 import SignInView from '@/components/SignInView';
+import ResetPassword from '@/components/ResetPassword';
+import SetNewPassword from '@/components/SetNewPassword';
+import SignUp from '@/components/SignUp';
 
 Vue.use(Router);
 
@@ -33,6 +36,21 @@ const VueRouter = new Router({
             path: '/authenticate',
             name: 'authenticate',
             component: SignInView
+        },
+        {
+            path: '/sign-up',
+            name: 'sign up',
+            component: SignUp
+        },
+        {
+            path: '/reset-password',
+            name: 'reset password',
+            component: ResetPassword
+        },
+        {
+            path: '/confirm-new-password',
+            name: 'new password',
+            component: SetNewPassword
         },
         {
             path: '/users',
