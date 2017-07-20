@@ -1,3 +1,9 @@
+/* page content */
+body {
+  .page-content { padding:$gutter-base; }
+  h1 { margin-top:0; }
+}
+
 /* page transitions */
 .fade-enter-active, .fade-leave-active {
   transition: all $page-tr-duration ease;
