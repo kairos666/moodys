@@ -17,7 +17,7 @@
 
 <script>
     import data from '../fakeData.js';
-    import Emoji from '@/components/Emoji';
+    import Emoji from '@/components/nano/Emoji';
 
     export default {
         data() {

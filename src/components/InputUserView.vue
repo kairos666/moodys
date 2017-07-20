@@ -20,7 +20,7 @@
 
 <script>
     import data from '../fakeData.js';
-    import Emoji from '@/components/Emoji';
+    import Emoji from '@/components/nano/Emoji';
     import moodConfig from '@/config/moods';
 
     export default {
