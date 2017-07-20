@@ -9,6 +9,8 @@ import SignInView from '@/components/SignInView';
 import ResetPassword from '@/components/ResetPassword';
 import SetNewPassword from '@/components/SetNewPassword';
 import SignUp from '@/components/SignUp';
+import Profile from '@/components/Profile';
+import PageNotFound from '@/components/PageNotFound';
 
 Vue.use(Router);
 
@@ -19,6 +21,7 @@ let routeRuleFinder = function(routeName) {
     switch (routeName) {
     case 'users': rule = accessRules.authenticatedUser; break;
     case 'mood-input': rule = accessRules.authenticatedSpecificUserOrAdmin; break;
+    case 'profile': rule = accessRules.authenticatedSpecificUserOrAdmin; break;
     }
 
     return rule;
@@ -53,6 +56,12 @@ const VueRouter = new Router({
             component: SetNewPassword
         },
         {
+            path: '/profile/:id',
+            name: 'profile',
+            component: Profile,
+            props: true
+        },
+        {
             path: '/users',
             name: 'users',
             component: UsersView
@@ -62,6 +71,11 @@ const VueRouter = new Router({
             name: 'mood-input',
             component: InputUserView,
             props: true
+        },
+        {
+            path: '*',
+            name: '404',
+            component: PageNotFound
         }
     ]
 });
@@ -91,6 +105,7 @@ VueRouter.beforeEach((to, from, next) => {
 
     // need authentication and none was provided, go to sign in/up
     if (routeRuleFinder(to.name) && !store.getters.isAuthenticated) {
+        console.warn('TODO need to handle cases where user have bearer token but not yet authenticated --> trigger when navigating to guarded link to soon');
         next('/authenticate');
     }
 });
