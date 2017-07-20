@@ -1,6 +1,7 @@
 <template>
     <div class="page-view page-not-found">
         <h1>Page not found</h1>
+        <p>Try navigating somewhere else<br><small>Tips: there is a navigation menu, try clicking the hamburger icon!</small></p>
     </div>
 </template>
 
