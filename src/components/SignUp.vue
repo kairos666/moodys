@@ -4,37 +4,37 @@
         <fieldset>
             <legend>credentials</legend>
             <!-- email -->
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input class="mdl-textfield__input" type="text" v-validate="'required|email'" name="email">
+            <div class="mdl-textfield mdl-textfield--floating-label" :class="{ 'is-focused': focused.email }">
+                <input class="mdl-textfield__input" @focus="onInputFocus" @blur="onInputBlur" type="text" v-validate="'required|email'" name="email">
                 <label class="mdl-textfield__label" for="email">email</label>
             </div>
             <!-- password -->
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input class="mdl-textfield__input" type="password" v-validate="'required|password'" name="password">
+            <div class="mdl-textfield mdl-textfield--floating-label" :class="{ 'is-focused': focused.password, 'is-invalid': isPasswordWeak }">
+                <input class="mdl-textfield__input" @focus="onInputFocus" @blur="onInputBlur" type="password" v-validate="'required|password'" name="password">
                 <label class="mdl-textfield__label" for="password">password</label>
-                <span class="mdl-textfield__error" :class="{ 'show': isPasswordWeak }">minimum six characters, at least one letter and one number</span>
+                <span class="mdl-textfield__error">minimum six characters, at least one letter and one number</span>
             </div>
             <!-- password confirm -->
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input class="mdl-textfield__input" type="password" v-validate="{ rules: { required: true, confirmed: 'password' } }" name="password-confirm">
+            <div class="mdl-textfield mdl-textfield--floating-label" :class="{ 'is-focused': focused['password-confirm'] }">
+                <input class="mdl-textfield__input" @focus="onInputFocus" @blur="onInputBlur" type="password" v-validate="{ rules: { required: true, confirmed: 'password' } }" name="password-confirm">
                 <label class="mdl-textfield__label" for="password-confirm">password confirmation</label>
             </div>
         </fieldset>
         <fieldset>
             <legend>profile</legend>
             <!-- email -->
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input class="mdl-textfield__input" type="text" v-validate="'required'" name="firstname">
+            <div class="mdl-textfield mdl-textfield--floating-label" :class="{ 'is-focused': focused.firstname }">
+                <input class="mdl-textfield__input" @focus="onInputFocus" @blur="onInputBlur" type="text" v-validate="'required'" name="firstname">
                 <label class="mdl-textfield__label" for="firstname">first name</label>
             </div>
             <!-- password -->
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input class="mdl-textfield__input" type="text" v-validate="'required'" name="lastname">
+            <div class="mdl-textfield mdl-textfield--floating-label" :class="{ 'is-focused': focused.lastname }">
+                <input class="mdl-textfield__input" @focus="onInputFocus" @blur="onInputBlur" type="text" v-validate="'required'" name="lastname">
                 <label class="mdl-textfield__label" for="lastname">last name</label>
             </div>
             <!-- password confirm -->
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input class="mdl-textfield__input" type="text" v-validate="'required'" name="famous-quote">
+            <div class="mdl-textfield mdl-textfield--floating-label" :class="{ 'is-focused': focused['famous-quote'] }">
+                <input class="mdl-textfield__input" @focus="onInputFocus" @blur="onInputBlur" type="text" v-validate="'required'" name="famous-quote">
                 <label class="mdl-textfield__label" for="famous-quote">famous quote</label>
             </div>
         </fieldset>
@@ -44,6 +44,18 @@
 
 <script>
     export default {
+        data() {
+            return {
+                focused: {
+                    email: false,
+                    password: false,
+                    'password-confirm': false,
+                    firstname: false,
+                    lastname: false,
+                    'famous-quote': false
+                }
+            };
+        },
         computed: {
             isPasswordWeak() {
                 return (this.fields.password && this.fields.password.dirty && this.fields.password.invalid);
@@ -59,10 +71,18 @@
                 if (this.fields['famous-quote'].invalid || this.fields['famous-quote'].invalid === null) return false;
                 return true;
             }
+        },
+        methods: {
+            onInputFocus(evt) {
+                this.focused[evt.target.attributes.name.nodeValue] = true;
+            },
+            onInputBlur(evt) {
+                this.focused[evt.target.attributes.name.nodeValue] = false;
+            }
         }
     };
 </script>
 
 <style scoped lang="scss">
-    .mdl-textfield__error.show { visibility:visible; }
+    
 </style>
