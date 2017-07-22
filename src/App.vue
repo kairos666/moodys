@@ -40,5 +40,7 @@
     @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
     @import url('../node_modules/material-design-lite/dist/material.deep_orange-blue.min.css');
     @import './styles/_variables.scss';
+    @import './styles/_include-media.scss';
     @import './styles/_general.scss';
+    @import './styles/_forms.scss';
 </style>

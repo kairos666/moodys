@@ -1,6 +1,6 @@
 /* page content */
-body {
-  .page-content { padding:$gutter-base; }
+html body { font-family: "Roboto","Helvetica","Arial",sans-serif;
+  .page-content { padding:2*$gutter-base; }
   h1 { margin-top:0; }
   p { margin-bottom:$gutter-base; }
 }
