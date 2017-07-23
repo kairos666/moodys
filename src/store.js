@@ -16,11 +16,17 @@ const store = new Vuex.Store({
     state: {
         currentFirebaseUser: null,
         users: {},
-        moods: {}
+        moods: {},
+        asyncTransactions: {
+            signup: undefined
+        }
     },
     getters: {
         isAuthenticated(state) {
             return (state.currentFirebaseUser !== null);
+        },
+        isAsyncSignUp(state) {
+            return state.asyncTransactions.signup;
         }
     },
     mutations: {
@@ -32,6 +38,9 @@ const store = new Vuex.Store({
         },
         updateMoods(state, payload) {
             state.moods = payload;
+        },
+        updateAsyncTransaction(state, payload) {
+            state.asyncTransactions[payload.transaction] = payload;
         }
     },
     actions: {
@@ -42,8 +51,25 @@ const store = new Vuex.Store({
             auth.signOut();
         },
         signup(context, payload) {
-            console.info('action signup');
-            if (payload.email && payload.password) auth.signUp(payload.email, payload.password);
+            // create user & follow with user entry
+            context.commit('updateAsyncTransaction', { transaction: 'signup', state: 'await - user creation', isEnded: false, isSuccess: false });
+            auth.createUserWithEmailAndPassword(payload.email, payload.password).then(function(user) {
+                context.commit('updateAsyncTransaction', { transaction: 'signup', state: 'await - user profile creation' });
+
+                let userMetaData = {
+                    firstname: payload.firstname,
+                    lastname: payload.lastname,
+                    motto: payload['famous-quote']
+                };
+                return firebaseHelpers.addUserEntry(user.uid, userMetaData);
+            }).then(function(resp) {
+                context.commit('updateAsyncTransaction', { transaction: 'signup', state: 'user account created', isEnded: true, isSuccess: true });
+
+                return resp;
+            }).catch(function(err) {
+                console.warn(err.message);
+                context.commit('updateAsyncTransaction', { transaction: 'signup', state: 'user account creation failure - ' + err.message, isEnded: true, isSuccess: false });
+            });
         },
         updateAuthUser(context, payload) {
             // prepare callbacks

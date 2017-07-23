@@ -44,14 +44,15 @@
                 </div>
             </fieldset>
             <div class="form-actions-toolbar">
-                <button type="submit" :disabled="!isFormValid" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary">Sign up</button>
-                <progress-bar v-if="isWaitingReply" :msg="'creating account ... please wait'"></progress-bar>
+                <button type="submit" :disabled="(!isFormValid || isWaitingReply)" @click.prevent="onSubmit()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary">Sign up</button>
+                <progress-bar v-if="isWaitingReply" :msg="asyncState.state"></progress-bar>
             </div>
         </form>
     </div>
 </template>
 
 <script>
+    import { mapGetters } from 'vuex';
     import ProgressBar from '@/components/nano/progress-bar';
 
     export default {
@@ -99,6 +100,25 @@
                 }
 
                 return valuesClone;
+            },
+            ...mapGetters({
+                asyncState: 'isAsyncSignUp'
+            })
+        },
+        watch: {
+            asyncState: function(val) {
+                if (val && val.isEnded && val.isSuccess) {
+                    // triggered when account creation is a success
+                    setTimeout(() => {
+                        this.isWaitingReply = false;
+                        this.$router.push('/');
+                    }, 1000);
+                } else if (val && val.isEnded && !val.isSuccess) {
+                    // triggered when account creation is failed
+                    setTimeout(() => {
+                        this.isWaitingReply = false;
+                    }, 3000);
+                }
             }
         },
         methods: {
@@ -107,6 +127,11 @@
             },
             onInputBlur(evt) {
                 this.focused[evt.target.attributes.name.nodeValue] = false;
+            },
+            onSubmit() {
+                this.isWaitingReply = true;
+                let valuesClone = Object.assign({}, this.values);
+                this.$store.dispatch('signup', valuesClone);
             }
         },
         components: {

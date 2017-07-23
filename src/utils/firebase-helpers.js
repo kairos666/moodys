@@ -65,11 +65,16 @@ let addMoodEntry = function(moodIndex, userId) {
     }
 };
 
+let addUserEntry = function(userID, userMetaData) {
+    return firebaseDB.ref('users').child(userID).push(userMetaData);
+};
+
 export default {
     initialize: initialize,
     getAllMoods: getAllMoods,
     getAllUsers: getAllUsers,
     onAllMoodsChange: onAllMoodsChange,
     onAllUsersChange: onAllUsersChange,
-    addMoodEntry: addMoodEntry
+    addMoodEntry: addMoodEntry,
+    addUserEntry: addUserEntry
 };
