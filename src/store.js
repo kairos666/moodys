@@ -1,5 +1,6 @@
 import Vuex from 'vuex';
 import Vue from 'vue';
+import router from './router/index';
 import firebaseConfig from '@/config/firebase';
 import firebaseHelpers from '@/utils/firebase-helpers';
 import firebase from 'firebase';
@@ -94,6 +95,9 @@ const store = new Vuex.Store({
                 // close updates listeners
                 firebaseHelpers.onAllUsersChange(usersUpdateCallback, true);
                 firebaseHelpers.onAllMoodsChange(moodsUpdateCallback, true);
+
+                // navigate back to home
+                router.push('/');
             }
             context.commit('updateAuthUser', payload);
         },

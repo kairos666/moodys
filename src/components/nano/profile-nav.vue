@@ -9,11 +9,11 @@
                 <li v-if="!isAuthenticated" class="mdl-menu__item"><router-link to="/authenticate">Sign in</router-link></li>
                 <li v-if="!isAuthenticated" class="mdl-menu__item"><router-link to="/sign-up">Sign up</router-link></li>
                 <li v-if="isAuthenticated" class="mdl-menu__item">
-                    <a href="#" title="Edit my profile">Edit profile</a>
+                    <a href="#" @click.prevent="onEditProfile" title="Edit my profile">Edit profile</a>
                 </li>
                 <li v-if="isAuthenticated" class="mdl-menu__item--full-bleed-divider"></li>
                 <li v-if="isAuthenticated" class="mdl-menu__item">
-                    <a href="#" title="Sign out my profile">Disconnect</a>
+                    <a href="#" @click.prevent="onDisconnect" title="Sign out my profile">Disconnect</a>
                 </li>
             </ul>
         </div>
@@ -37,6 +37,18 @@
         methods: {
             toggleVisibility() {
                 this.isVisible = !this.isVisible;
+            },
+            onEditProfile() {
+                if (this.isAuthenticated) {
+                    // navigate to user profile
+                    this.$router.push({ name: 'profile', params: { id: this.$store.state.currentFirebaseUser.uid } });
+                }
+            },
+            onDisconnect() {
+                // dispatch disconnect action to store
+                if (this.isAuthenticated) {
+                    this.$store.dispatch('logout');
+                }
             }
         }
     };
