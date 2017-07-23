@@ -2,7 +2,7 @@ import { Validator } from 'vee-validate';
 
 const passwordStrength = {
     getMessage(field) {
-        return 'The ' + field + ' value do not match with minimal requirements.';
+        return 'minimum six characters, at least one letter and one number';
     },
     validate(value) {
         // pattern for password: minimum six characters, at least one letter and one number

@@ -1,5 +1,5 @@
 form { margin-left:auto; margin-right:auto; max-width:1200px;
-    legend { font-size:28px; }
+    legend { font-size:28px; margin-bottom:$gutter-base; }
     fieldset { margin:($gutter-base*6) 0; }
     .fieldset-flexer { display:flex; flex-wrap:wrap; justify-content:space-between; }
     .mdl-textfield { flex:0 1 auto; }
@@ -12,7 +12,7 @@ form { margin-left:auto; margin-right:auto; max-width:1200px;
         .mdl-progress { width:auto; }
     }
     @include media('<tablet') { 
-        .mdl-textfield { width:calc(100% - #{2*$gutter-base}); }
+        .mdl-textfield { width:100%; }
         .mdl-textfield + .mdl-textfield { margin-top:2*$gutter-base; }
     }
     @include media('>=tablet', '<desktop') {

@@ -6,20 +6,22 @@
                 <legend>credentials</legend>
                 <div class="fieldset-flexer">
                     <!-- email -->
-                    <div class="mdl-textfield mdl-textfield--floating-label" :class="{ 'is-focused': (focused.email || hasValues.email) }">
+                    <div class="mdl-textfield mdl-textfield--floating-label" :class="{ 'is-focused': (focused.email || hasValues.email), 'is-invalid': errors.has('email') }">
                         <input class="mdl-textfield__input" v-model="values.email" @focus="onInputFocus" @blur="onInputBlur" type="text" v-validate="'required|email'" name="email">
                         <label class="mdl-textfield__label" for="email">email</label>
+                        <span class="mdl-textfield__error">{{ errors.first('email') }}</span>
                     </div>
                     <!-- password -->
-                    <div class="mdl-textfield mdl-textfield--floating-label" :class="{ 'is-focused': (focused.password || hasValues.password), 'is-invalid': isPasswordWeak }">
+                    <div class="mdl-textfield mdl-textfield--floating-label" :class="{ 'is-focused': (focused.password || hasValues.password), 'is-invalid': errors.has('password') }">
                         <input class="mdl-textfield__input" v-model="values.password" @focus="onInputFocus" @blur="onInputBlur" type="password" v-validate="'required|password'" name="password">
                         <label class="mdl-textfield__label" for="password">password</label>
-                        <span class="mdl-textfield__error">minimum six characters, at least one letter and one number</span>
+                        <span class="mdl-textfield__error">{{ errors.first('password') }}</span>
                     </div>
                     <!-- password confirm -->
-                    <div class="mdl-textfield mdl-textfield--floating-label" :class="{ 'is-focused': (focused['password-confirm'] || hasValues['password-confirm']) }">
+                    <div class="mdl-textfield mdl-textfield--floating-label" :class="{ 'is-focused': (focused['password-confirm'] || hasValues['password-confirm']), 'is-invalid': errors.has('password-confirm') }">
                         <input class="mdl-textfield__input" v-model="values['password-confirm']" @focus="onInputFocus" @blur="onInputBlur" type="password" v-validate="{ rules: { required: true, confirmed: 'password' } }" name="password-confirm">
                         <label class="mdl-textfield__label" for="password-confirm">password confirmation</label>
+                        <span class="mdl-textfield__error">{{ errors.first('password-confirm') }}</span>
                     </div>
                 </div>
             </fieldset>
@@ -27,19 +29,22 @@
                 <legend>profile</legend>
                 <div class="fieldset-flexer">
                     <!-- first name -->
-                    <div class="mdl-textfield mdl-textfield--floating-label" :class="{ 'is-focused': (focused.firstname || hasValues.firstname) }">
+                    <div class="mdl-textfield mdl-textfield--floating-label" :class="{ 'is-focused': (focused.firstname || hasValues.firstname), 'is-invalid': errors.has('firstname') }">
                         <input class="mdl-textfield__input" v-model="values.firstname" @focus="onInputFocus" @blur="onInputBlur" type="text" v-validate="'required'" name="firstname">
                         <label class="mdl-textfield__label" for="firstname">first name</label>
+                        <span class="mdl-textfield__error">{{ errors.first('firstname') }}</span>
                     </div>
                     <!-- last name -->
-                    <div class="mdl-textfield mdl-textfield--floating-label" :class="{ 'is-focused': (focused.lastname || hasValues.lastname) }">
+                    <div class="mdl-textfield mdl-textfield--floating-label" :class="{ 'is-focused': (focused.lastname || hasValues.lastname), 'is-invalid': errors.has('lastname') }">
                         <input class="mdl-textfield__input" v-model="values.lastname" @focus="onInputFocus" @blur="onInputBlur" type="text" v-validate="'required'" name="lastname">
                         <label class="mdl-textfield__label" for="lastname">last name</label>
+                        <span class="mdl-textfield__error">{{ errors.first('lastname') }}</span>
                     </div>
                     <!-- motto -->
-                    <div class="mdl-textfield mdl-textfield--floating-label" :class="{ 'is-focused': (focused['famous-quote'] || hasValues['famous-quote']) }">
+                    <div class="mdl-textfield mdl-textfield--floating-label" :class="{ 'is-focused': (focused['famous-quote'] || hasValues['famous-quote']), 'is-invalid': errors.has('famous-quote') }">
                         <input class="mdl-textfield__input" v-model="values['famous-quote']" @focus="onInputFocus" @blur="onInputBlur" type="text" v-validate="'required'" name="famous-quote">
                         <label class="mdl-textfield__label" for="famous-quote">famous quote</label>
+                        <span class="mdl-textfield__error">{{ errors.first('famous-quote') }}</span>
                     </div>
                 </div>
             </fieldset>
@@ -78,9 +83,6 @@
             };
         },
         computed: {
-            isPasswordWeak() {
-                return (this.fields.password && this.fields.password.dirty && this.fields.password.invalid);
-            },
             isFormValid() {
                 // all fields required
                 if (!this.fields || !this.fields.email || !this.fields.password || !this.fields['famous-quote'] || !this.fields.lastname || !this.fields.firstname) return false;
