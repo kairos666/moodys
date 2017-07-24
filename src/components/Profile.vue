@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>My profile</h1>
+        <h1><i class="material-icons">account_box</i>My profile</h1>
     </div>
 </template>
 

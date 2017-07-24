@@ -22,3 +22,9 @@ html body { font-family: "Roboto","Helvetica","Arial",sans-serif;
 .fade-enter, .fade-leave-active {
   opacity: 0
 }
+
+/* headers */
+h1 .material-icons { margin-right:$gutter-base*2; font-size:inherit; position:relative; top:9px; }
+
+/* links */
+a .material-icons { margin-right:$gutter-base; }

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>Sign in</h1>
+        <h1><i class="material-icons">fingerprint</i>Sign in</h1>
         <button type="button" @click.prevent="signin()">sign in as David</button>
         <button type="button" @click.prevent="signout()">sign out</button>
         <button type="button" @click.prevent="signup()">sign up</button>

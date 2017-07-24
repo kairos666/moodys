@@ -71,7 +71,7 @@
     .mdl-menu { padding-top:0; padding-bottom:0; }
     .mdl-menu__item { padding-left:0; padding-right:0;
         a { display:block; padding-left:$gutter-base*2; padding-right:$gutter-base*2; text-decoration:none; color:$primary; }
-        .material-icons { position:relative; top:7px; margin-right:$gutter-base; }
+        .material-icons { position:relative; top:7px; }
     }
     .is-visible { 
         .mdl-menu { opacity:1; z-index:999; clip:rect(0 $dd-width $dd-height 0); }

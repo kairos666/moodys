@@ -1,18 +1,21 @@
 <template>
-    <ul class="mdl-list">
-        <li class="mdl-list__item mdl-list__item--two-line" v-for="user in users">
-            <span class="mdl-list__item-primary-content">
-                <img class="material-icons mdl-list__item-avatar" :src="user.avatar" :alt="('avatar de ' + user.name)" >
-                <span>{{user.name}}</span>
-                <span class="mdl-list__item-sub-title">{{user.motto}}</span>
-            </span>
-            <span class="mdl-list__item-secondary-content">
-                <button class="mdl-button mdl-js-button mdl-button--icon" @click.prevent="displayDetails(user.id)">
-                    <emoji mood="0"></emoji>
-                </button>
-            </span>
-        </li>
-    </ul>
+    <div>
+        <h1><i class="material-icons">group</i>Users</h1>
+        <ul class="mdl-list">
+            <li class="mdl-list__item mdl-list__item--two-line" v-for="user in users">
+                <span class="mdl-list__item-primary-content">
+                    <img class="material-icons mdl-list__item-avatar" :src="user.avatar" :alt="('avatar de ' + user.name)" >
+                    <span>{{user.name}}</span>
+                    <span class="mdl-list__item-sub-title">{{user.motto}}</span>
+                </span>
+                <span class="mdl-list__item-secondary-content">
+                    <button class="mdl-button mdl-js-button mdl-button--icon" @click.prevent="displayDetails(user.id)">
+                        <emoji mood="0"></emoji>
+                    </button>
+                </span>
+            </li>
+        </ul>
+    </div>
 </template>
 
 <script>

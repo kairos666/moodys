@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>Sign me up!</h1>
+        <h1><i class="material-icons">person_add</i>Sign me up!</h1>
         <form>
             <fieldset>
                 <legend>credentials</legend>
