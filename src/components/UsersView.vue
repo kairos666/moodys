@@ -24,7 +24,7 @@
 
     export default {
         computed: {
-            users() { return firebaseHelpers.formatUsersToArray(this.$store.state.users) }
+            users() { return firebaseHelpers.formatUsersToArray(this.$store.state.users, this.$store.state.currentFirebaseUser.uid) }
         },
         methods: {
             displayDetails(id) {

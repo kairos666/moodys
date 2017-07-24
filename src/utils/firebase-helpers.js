@@ -80,15 +80,17 @@ let addUserEntry = function(userID, userMetaData) {
 };
 
 /**
- * transform users database response in users array
+ * transform users database response in users array (optional parameter currentUserID)
  * @param {Object} usersObj
+ * @param {String} currentUserId
  */
-let formatUsersToArray = function(usersObj) {
+let formatUsersToArray = function(usersObj, currentUserID) {
     let resultArray = [];
 
     for (let userObj in usersObj) {
         // construct user obj
         let resultUser = { id: userObj };
+        if (currentUserID) resultUser.isCurrentUser = (userObj === currentUserID);
         let key = Object.keys(usersObj[userObj])[0]; // take first uid key in object
         resultUser.firstname = usersObj[userObj][key].firstname;
         resultUser.lastname = usersObj[userObj][key].lastname;
