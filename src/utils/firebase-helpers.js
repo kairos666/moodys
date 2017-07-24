@@ -53,6 +53,11 @@ let onAllMoodsChange = function(cb, isToBeShutDown) {
     }
 };
 
+/**
+ * add mood entry
+ * @param {String} moodIndex
+ * @param {String} userId
+ */
 let addMoodEntry = function(moodIndex, userId) {
     if (moodsConfig.moodIndexes.includes(moodIndex)) {
         // mood entry
@@ -65,8 +70,36 @@ let addMoodEntry = function(moodIndex, userId) {
     }
 };
 
+/**
+ * add user metadata corresponding to user account (in addition to email and password)
+ * @param {String} userID
+ * @param {Object} userMetaData
+ */
 let addUserEntry = function(userID, userMetaData) {
     return firebaseDB.ref('users').child(userID).push(userMetaData);
+};
+
+/**
+ * transform users database response in users array
+ * @param {Object} usersObj
+ */
+let formatUsersToArray = function(usersObj) {
+    let resultArray = [];
+
+    for (let userObj in usersObj) {
+        // construct user obj
+        let resultUser = { id: userObj };
+        let key = Object.keys(usersObj[userObj])[0]; // take first uid key in object
+        resultUser.firstname = usersObj[userObj][key].firstname;
+        resultUser.lastname = usersObj[userObj][key].lastname;
+        resultUser.motto = usersObj[userObj][key].motto;
+        resultUser.avatar = `https://api.adorable.io/avatars/60/${resultUser.id}@adorable.png`;
+
+        // fill array
+        resultArray.push(resultUser);
+    }
+
+    return resultArray;
 };
 
 export default {
@@ -76,5 +109,6 @@ export default {
     onAllMoodsChange: onAllMoodsChange,
     onAllUsersChange: onAllUsersChange,
     addMoodEntry: addMoodEntry,
-    addUserEntry: addUserEntry
+    addUserEntry: addUserEntry,
+    formatUsersToArray: formatUsersToArray
 };

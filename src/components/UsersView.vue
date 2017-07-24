@@ -4,8 +4,8 @@
         <ul class="mdl-list">
             <li class="mdl-list__item mdl-list__item--two-line" v-for="user in users">
                 <span class="mdl-list__item-primary-content">
-                    <img class="material-icons mdl-list__item-avatar" :src="user.avatar" :alt="('avatar de ' + user.name)" >
-                    <span>{{user.name}}</span>
+                    <img class="material-icons mdl-list__item-avatar" :src="user.avatar" :alt="('avatar de ' + user.firstname + ' ' + user.lastname)" >
+                    <span>{{user.firstname}} {{user.lastname}}</span>
                     <span class="mdl-list__item-sub-title">{{user.motto}}</span>
                 </span>
                 <span class="mdl-list__item-secondary-content">
@@ -19,16 +19,12 @@
 </template>
 
 <script>
-    import data from '../fakeData.js';
     import Emoji from '@/components/nano/Emoji';
+    import firebaseHelpers from '@/utils/firebase-helpers';
 
     export default {
-        data() {
-            return {
-                users: data.users,
-                teams: data.teams,
-                moods: data.moods
-            };
+        computed: {
+            users() { return firebaseHelpers.formatUsersToArray(this.$store.state.users) }
         },
         methods: {
             displayDetails(id) {
