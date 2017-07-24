@@ -50,6 +50,13 @@
                     this.$store.dispatch('logout');
                 }
             }
+        },
+        created() {
+            // listen to route change and close if navigation occur
+            this.$router.beforeEach((to, from, next) => {
+                this.isVisible = false;
+                next();
+            });
         }
     };
 </script>
