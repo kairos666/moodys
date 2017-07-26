@@ -19,7 +19,8 @@ const store = new Vuex.Store({
         users: {},
         moods: {},
         asyncTransactions: {
-            signup: undefined
+            signup: undefined,
+            signin: undefined
         }
     },
     getters: {
@@ -28,6 +29,9 @@ const store = new Vuex.Store({
         },
         isAsyncSignUp(state) {
             return state.asyncTransactions.signup;
+        },
+        isAsyncSignIn(state) {
+            return state.asyncTransactions.signin;
         },
         usersArray(state) {
             return firebaseHelpers.formatUsersToArray(state.users, state.currentFirebaseUser.uid);
@@ -49,7 +53,16 @@ const store = new Vuex.Store({
     },
     actions: {
         login(context, payload) {
-            if (payload.email && payload.password) auth.signInWithEmailAndPassword(payload.email, payload.password);
+            // log in users with credentials
+            context.commit('updateAsyncTransaction', { transaction: 'signin', state: 'await - user sign in', isEnded: false, isSuccess: false });
+            auth.signInWithEmailAndPassword(payload.email, payload.password).then(function(user) {
+                context.commit('updateAsyncTransaction', { transaction: 'signin', state: 'user signed in', isEnded: true, isSuccess: true });
+
+                return user;
+            }).catch(function(err) {
+                console.warn(err.message);
+                context.commit('updateAsyncTransaction', { transaction: 'signin', state: 'user sign in failure - ' + err.message, isEnded: true, isSuccess: false });
+            });
         },
         logout(context) {
             auth.signOut();
