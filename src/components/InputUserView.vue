@@ -92,10 +92,10 @@
         li:nth-child(12) { background-color:$zebra-list-bg; }
         li:nth-child(13) { background-color:$zebra-list-bg; }
         li { padding-top:$gutter-base; padding-bottom:$gutter-base;
-            &:hover { background-color:lighten($primary, 10%);
+            &:hover { background-color:$selected-focus-color;
                 button { color:#fff; font-weight:bold; }
             }
-            &.active { background-color:$primary;
+            &.active { background-color:$selected-color;
                 button { color:#fff; font-weight:bold; }
             }            
         }

@@ -28,6 +28,9 @@ const store = new Vuex.Store({
         },
         isAsyncSignUp(state) {
             return state.asyncTransactions.signup;
+        },
+        usersArray(state) {
+            return firebaseHelpers.formatUsersToArray(state.users, state.currentFirebaseUser.uid);
         }
     },
     mutations: {

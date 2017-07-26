@@ -87,19 +87,19 @@ let addUserEntry = function(userID, userMetaData) {
 let formatUsersToArray = function(usersObj, currentUserID) {
     let resultArray = [];
 
-    for (let userObj in usersObj) {
-        // construct user obj
-        let resultUser = { id: userObj };
-        if (currentUserID) resultUser.isCurrentUser = (userObj === currentUserID);
-        let key = Object.keys(usersObj[userObj])[0]; // take first uid key in object
-        resultUser.firstname = usersObj[userObj][key].firstname;
-        resultUser.lastname = usersObj[userObj][key].lastname;
-        resultUser.motto = usersObj[userObj][key].motto;
+    let uidKeys = Object.keys(usersObj);
+    uidKeys.forEach(uid => {
+        let resultUser = { id: uid };
+        if (currentUserID) resultUser.isCurrentUser = (uid === currentUserID);
+        let key = Object.keys(usersObj[uid])[0]; // take first uid key in object
+        resultUser.firstname = usersObj[uid][key].firstname;
+        resultUser.lastname = usersObj[uid][key].lastname;
+        resultUser.motto = usersObj[uid][key].motto;
         resultUser.avatar = `https://api.adorable.io/avatars/60/${resultUser.id}@adorable.png`;
 
         // fill array
         resultArray.push(resultUser);
-    }
+    });
 
     return resultArray;
 };
