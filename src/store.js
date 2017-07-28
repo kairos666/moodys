@@ -20,7 +20,9 @@ const store = new Vuex.Store({
         moods: {},
         asyncTransactions: {
             signup: undefined,
-            signin: undefined
+            signin: undefined,
+            reset: undefined,
+            profile: undefined
         }
     },
     getters: {
@@ -32,6 +34,12 @@ const store = new Vuex.Store({
         },
         isAsyncSignIn(state) {
             return state.asyncTransactions.signin;
+        },
+        isAsyncResetPassword(state) {
+            return state.asyncTransactions.reset;
+        },
+        isAsyncProfileUpdate(state) {
+            return state.asyncTransactions.profile;
         },
         usersArray(state) {
             return firebaseHelpers.formatUsersToArray(state.users, state.currentFirebaseUser.uid);
@@ -66,6 +74,18 @@ const store = new Vuex.Store({
         },
         logout(context) {
             auth.signOut();
+        },
+        resetPassword(context, payload) {
+            // launch reset process (email with activation code)
+            context.commit('updateAsyncTransaction', { transaction: 'reset', state: 'await - reset password action result', isEnded: false, isSuccess: false });
+            auth.sendPasswordResetEmail(payload.email).then(function(resp) {
+                context.commit('updateAsyncTransaction', { transaction: 'reset', state: `reset password email sent in your inbox: ${payload.email}`, isEnded: true, isSuccess: true });
+
+                return resp;
+            }).catch(function(err) {
+                console.warn(err.message);
+                context.commit('updateAsyncTransaction', { transaction: 'reset', state: 'reset password reset failure - ' + err.message, isEnded: true, isSuccess: false });
+            });
         },
         signup(context, payload) {
             // create user & follow with user entry
