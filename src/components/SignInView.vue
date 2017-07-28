@@ -17,7 +17,7 @@
                 </div>
             </div>
             <div class="form-actions-toolbar">
-                <button type="submit" :disabled="(!isFormValid || isWaitingReply)" @click.prevent="onSubmit()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary">Sign up</button>
+                <button type="submit" :disabled="(!isFormValid || isWaitingReply)" @click.prevent="onSubmit()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary">Sign in</button>
                 <button type="button" @click.prevent="forgotPassword()" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--primary">forgot password</button>
                 <progress-bar v-if="isWaitingReply" :msg="asyncState.state"></progress-bar>
             </div>
@@ -93,7 +93,7 @@
                 this.$store.dispatch('login', valuesClone);
             },
             forgotPassword() {
-                console.log('TODO forgot password use case (reset action + reset screen with new password confirmation');
+                this.$router.push('/reset-password');
             }
         },
         components: {

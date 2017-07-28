@@ -2,9 +2,9 @@
     <form>
         <header class="mdl-list__item">
             <span class="mdl-list__item-primary-content">
-                <img class="material-icons mdl-list__item-avatar" :src="this.user.avatar" :alt="('avatar de ' + this.user.name)" >
-                <h1>Change {{this.user.name}}'s mood</h1>
-                <span class="mdl-list__item-sub-title">{{this.user.motto}}</span>
+                <img class="material-icons mdl-list__item-avatar" :src="user.avatar" :alt="('avatar de ' + user.firstname)" >
+                <h1>Change {{user.name}}'s mood</h1>
+                <span class="mdl-list__item-sub-title">{{user.motto}}</span>
             </span>
         </header>
         <ul class="emoji-checkbox-list mdl-list">

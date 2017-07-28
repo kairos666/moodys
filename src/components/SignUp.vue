@@ -85,7 +85,7 @@
         computed: {
             isFormValid() {
                 // all fields required
-                if (!this.fields || !this.fields.email || !this.fields.password || !this.fields['famous-quote'] || !this.fields.lastname || !this.fields.firstname) return false;
+                if (!this.fields || !this.fields.email || !this.fields.password || !this.fields['password-confirm'] || !this.fields['famous-quote'] || !this.fields.lastname || !this.fields.firstname) return false;
                 if (this.fields.email.invalid || this.fields.email.invalid === null) return false;
                 if (this.fields.password.invalid || this.fields.password.invalid === null) return false;
                 if (this.fields['password-confirm'].invalid || this.fields['password-confirm'].invalid === null) return false;

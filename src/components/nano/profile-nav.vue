@@ -41,7 +41,7 @@
             onEditProfile() {
                 if (this.isAuthenticated) {
                     // navigate to user profile
-                    this.$router.push({ name: 'profile', params: { id: this.$store.state.currentFirebaseUser.uid } });
+                    this.$router.push({ name: 'profile' });
                 }
             },
             onDisconnect() {
