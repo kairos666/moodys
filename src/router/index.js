@@ -7,7 +7,6 @@ import InputUserView from '@/components/InputUserView';
 import HomeView from '@/components/HomeView';
 import SignInView from '@/components/SignInView';
 import ResetPassword from '@/components/ResetPassword';
-import SetNewPassword from '@/components/SetNewPassword';
 import SignUp from '@/components/SignUp';
 import Profile from '@/components/Profile';
 import PageNotFound from '@/components/PageNotFound';
@@ -20,8 +19,8 @@ let routeRuleFinder = function(routeName) {
 
     switch (routeName) {
     case 'users': rule = accessRules.authenticatedUser; break;
-    case 'mood-input': rule = accessRules.authenticatedSpecificUserOrAdmin; break;
-    case 'profile': rule = accessRules.authenticatedSpecificUserOrAdmin; break;
+    case 'mood-input': rule = accessRules.authenticatedUser; break;
+    case 'profile': rule = accessRules.authenticatedUser; break;
     }
 
     return rule;
@@ -47,19 +46,13 @@ const VueRouter = new Router({
         },
         {
             path: '/reset-password',
-            name: 'reset password',
+            name: 'reset password start',
             component: ResetPassword
         },
         {
-            path: '/confirm-new-password',
-            name: 'new password',
-            component: SetNewPassword
-        },
-        {
-            path: '/profile/:id',
+            path: '/profile',
             name: 'profile',
-            component: Profile,
-            props: true
+            component: Profile
         },
         {
             path: '/users',
