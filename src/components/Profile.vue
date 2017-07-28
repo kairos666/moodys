@@ -120,13 +120,18 @@
                 this.isWaitingReply = true;
                 // let valuesClone = Object.assign({}, this.values);
                 // this.$store.dispatch('signup', valuesClone);
-                console.log('TODO update profile');
+                console.log('TODO update profile + action & feedback');
+                // update users entry
             },
             onChangePassword() {
-                console.log('TODO change password');
+                console.log('TODO change password + action & feedback');
+                console.log(this.$store.state.currentFirebaseUser.updatePassword);
+                // https://firebase.google.com/docs/reference/js/firebase.User#updatePassword
             },
             onChangeEmail() {
-                console.log('TODO change email');
+                console.log('TODO change email + action & feedback');
+                console.log(this.$store.state.currentFirebaseUser.updateEmail);
+                // https://firebase.google.com/docs/reference/js/firebase.User#updateEmail
             }
         },
         components: {
@@ -139,10 +144,10 @@
             this.values.motto = this.currenUserData.motto;
 
             // set different from initial values validators rule objects
-            // let buildRuleObject = initialValue => { return { rules: { not_in: [initialValue] } } };
-            // this.validations.firstname = buildRuleObject(this.currenUserData.firstname);
-            // this.validations.lastname = buildRuleObject(this.currenUserData.lastname);
-            // this.validations.motto = buildRuleObject(this.currenUserData.motto);
+            let buildRuleObject = (fieldName, initialValue) => { return { rules: { not_in: [initialValue] }, arg: 'values.' + fieldName } };
+            this.validations.firstname = buildRuleObject('firstname', this.currenUserData.firstname);
+            this.validations.lastname = buildRuleObject('lastname', this.currenUserData.lastname);
+            this.validations.motto = buildRuleObject('motto', this.currenUserData.motto);
         }
     };
 </script>
@@ -151,5 +156,5 @@
     @import '../styles/_variables.scss';
     @import '../styles/nano/_user-list-item.scss';
     .mdl-list__item-avatar { vertical-align:baseline; }
-    legend small { font-size:.5em; }
+    legend small { font-size:.5em; line-height:80%; }
 </style>
