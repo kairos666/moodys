@@ -3,6 +3,7 @@ import Vue from 'vue';
 import router from './router/index';
 import firebaseConfig from '@/config/firebase';
 import firebaseHelpers from '@/utils/firebase-helpers';
+import asyncFeedback from '@/store-modules/async-state-module';
 import firebase from 'firebase';
 
 Vue.use(Vuex);
@@ -14,34 +15,22 @@ firebaseHelpers.initialize(db);
 let auth = firebase.auth(firebaseApp);
 
 const store = new Vuex.Store({
+    modules: {
+        asyncTransactions: asyncFeedback.asyncStateModule
+    },
     state: {
         currentFirebaseUser: null,
         users: {},
-        moods: {},
-        asyncTransactions: {
-            signup: undefined,
-            signin: undefined,
-            reset: undefined,
-            profile: undefined
-        }
+        moods: {}
     },
     getters: {
         isAuthenticated(state) {
             return (state.currentFirebaseUser !== null);
         },
-        isAsyncSignUp(state) {
-            return state.asyncTransactions.signup;
-        },
-        isAsyncSignIn(state) {
-            return state.asyncTransactions.signin;
-        },
-        isAsyncResetPassword(state) {
-            return state.asyncTransactions.reset;
-        },
-        isAsyncProfileUpdate(state) {
-            return state.asyncTransactions.profile;
-        },
         usersArray(state) {
+            // no authenticated user case
+            if (!state.currentFirebaseUser) return [];
+            // authenticated case
             return firebaseHelpers.formatUsersToArray(state.users, state.currentFirebaseUser.uid);
         }
     },
@@ -54,22 +43,19 @@ const store = new Vuex.Store({
         },
         updateMoods(state, payload) {
             state.moods = payload;
-        },
-        updateAsyncTransaction(state, payload) {
-            state.asyncTransactions[payload.transaction] = payload;
         }
     },
     actions: {
         login(context, payload) {
             // log in users with credentials
-            context.commit('updateAsyncTransaction', { transaction: 'signin', state: 'await - user sign in', isEnded: false, isSuccess: false });
+            context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('signin', 'await - user signing in'));
             auth.signInWithEmailAndPassword(payload.email, payload.password).then(function(user) {
-                context.commit('updateAsyncTransaction', { transaction: 'signin', state: 'user signed in', isEnded: true, isSuccess: true });
+                context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('signin', 'user signed in', true, true));
 
                 return user;
             }).catch(function(err) {
                 console.warn(err.message);
-                context.commit('updateAsyncTransaction', { transaction: 'signin', state: 'user sign in failure - ' + err.message, isEnded: true, isSuccess: false });
+                context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('signin', 'user sign in failure - ' + err.message, true));
             });
         },
         logout(context) {
@@ -77,21 +63,21 @@ const store = new Vuex.Store({
         },
         resetPassword(context, payload) {
             // launch reset process (email with activation code)
-            context.commit('updateAsyncTransaction', { transaction: 'reset', state: 'await - reset password action result', isEnded: false, isSuccess: false });
+            context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('reset', 'await - reset password action result'));
             auth.sendPasswordResetEmail(payload.email).then(function(resp) {
-                context.commit('updateAsyncTransaction', { transaction: 'reset', state: `reset password email sent in your inbox: ${payload.email}`, isEnded: true, isSuccess: true });
+                context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('reset', `reset password email sent in your inbox: ${payload.email}`, true, true));
 
                 return resp;
             }).catch(function(err) {
                 console.warn(err.message);
-                context.commit('updateAsyncTransaction', { transaction: 'reset', state: 'reset password reset failure - ' + err.message, isEnded: true, isSuccess: false });
+                context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('reset', 'reset password reset failure - ' + err.message, true, false));
             });
         },
         signup(context, payload) {
             // create user & follow with user entry
-            context.commit('updateAsyncTransaction', { transaction: 'signup', state: 'await - user creation', isEnded: false, isSuccess: false });
+            context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('signup', 'await - user creation'));
             auth.createUserWithEmailAndPassword(payload.email, payload.password).then(function(user) {
-                context.commit('updateAsyncTransaction', { transaction: 'signup', state: 'await - user profile creation' });
+                context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('signup', 'await - user profile creation'));
 
                 let userMetaData = {
                     firstname: payload.firstname,
@@ -100,12 +86,12 @@ const store = new Vuex.Store({
                 };
                 return firebaseHelpers.addUserEntry(user.uid, userMetaData);
             }).then(function(resp) {
-                context.commit('updateAsyncTransaction', { transaction: 'signup', state: 'user account created', isEnded: true, isSuccess: true });
+                context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('signup', 'user account created', true, true));
 
                 return resp;
             }).catch(function(err) {
                 console.warn(err.message);
-                context.commit('updateAsyncTransaction', { transaction: 'signup', state: 'user account creation failure - ' + err.message, isEnded: true, isSuccess: false });
+                context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('signup', 'user account creation failure - ' + err.message, true, false));
             });
         },
         updateAuthUser(context, payload) {
