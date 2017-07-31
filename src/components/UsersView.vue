@@ -29,7 +29,7 @@
         methods: {
             displayDetails(id) {
                 // only for current user
-                if (id === this.$store.state.currentFirebaseUser.uid) this.$router.push({ name: 'mood-input', params: { id: id } });
+                if (id === this.$store.state.auth.currentFirebaseUser.uid) this.$router.push({ name: 'mood-input', params: { id: id } });
             }
         },
         components: {

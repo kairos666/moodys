@@ -88,7 +88,7 @@ VueRouter.beforeEach((to, from, next) => {
 
     // specific authenticated user
     if (routeRuleFinder(to.name) === accessRules.authenticatedSpecificUserOrAdmin && store.getters.isAuthenticated) {
-        if (to.params.id === store.state.currentFirebaseUser.uid) {
+        if (to.params.id === store.state.auth.currentFirebaseUser.uid) {
             next();
             return;
         } else {

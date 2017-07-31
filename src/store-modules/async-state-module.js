@@ -3,7 +3,9 @@ let asyncStateModule = {
         signup: undefined,
         signin: undefined,
         reset: undefined,
-        profile: undefined
+        accountprofile: undefined,
+        accountpassowrd: undefined,
+        accountemail: undefined
     },
     getters: {
         isAsyncSignUp(state) {
@@ -16,7 +18,13 @@ let asyncStateModule = {
             return state.reset;
         },
         isAsyncProfileUpdate(state) {
-            return state.profile;
+            return state.accountprofile;
+        },
+        isAsyncAccountEmailUpdate(state) {
+            return state.accountemail;
+        },
+        isAsyncAccountPasswordUpdate(state) {
+            return state.accountpassowrd;
         }
     },
     mutations: {

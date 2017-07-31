@@ -7,7 +7,7 @@
                 <div class="fieldset-flexer">
                     <!-- email -->
                     <div class="mdl-textfield mdl-textfield--floating-label is-focused">
-                        <input class="mdl-textfield__input" disabled :value="$store.state.currentFirebaseUser.email" type="text" name="email">
+                        <input class="mdl-textfield__input" disabled :value="$store.state.auth.currentFirebaseUser.email" type="text" name="email">
                         <label class="mdl-textfield__label" for="email">email</label>
                     </div>
                 </div>
@@ -50,9 +50,9 @@
         data() {
             return {
                 validations: {
-                    firstname: { rules: { not_in: ['Joseph Vissarionovitch'] }, arg: 'values.firstname' },
-                    lastname: { rules: { not_in: ['Djougachvili'] }, arg: 'values.lastname' },
-                    motto: { rules: { not_in: ['Pas d\'hommes pas de problèmes'] }, arg: 'values.motto' }
+                    firstname: undefined,
+                    lastname: undefined,
+                    motto: undefined
                 },
                 values: {
                     firstname: '',
@@ -117,7 +117,7 @@
                 this.focused[evt.target.attributes.name.nodeValue] = false;
             },
             onSubmit() {
-                this.isWaitingReply = true;
+                // this.isWaitingReply = true;
                 // let valuesClone = Object.assign({}, this.values);
                 // this.$store.dispatch('signup', valuesClone);
                 console.log('TODO update profile + action & feedback');
@@ -125,13 +125,12 @@
             },
             onChangePassword() {
                 console.log('TODO change password + action & feedback');
-                console.log(this.$store.state.currentFirebaseUser.updatePassword);
+                console.log(this.$store.state.auth.currentFirebaseUser.updatePassword);
                 // https://firebase.google.com/docs/reference/js/firebase.User#updatePassword
             },
             onChangeEmail() {
-                console.log('TODO change email + action & feedback');
-                console.log(this.$store.state.currentFirebaseUser.updateEmail);
-                // https://firebase.google.com/docs/reference/js/firebase.User#updateEmail
+                // this.isWaitingReply = true;
+                this.$store.dispatch('accountEmailUpdate');
             }
         },
         components: {
