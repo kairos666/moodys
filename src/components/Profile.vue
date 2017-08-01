@@ -3,17 +3,7 @@
         <h1><img class="material-icons mdl-list__item-avatar" :src="currenUserData.avatar">My profile</h1>
         <form>
             <fieldset>
-                <legend>credentials</legend>
-                <div class="fieldset-flexer">
-                    <!-- email -->
-                    <div class="mdl-textfield mdl-textfield--floating-label is-focused">
-                        <input class="mdl-textfield__input" disabled :value="$store.state.auth.currentFirebaseUser.email" type="text" name="email">
-                        <label class="mdl-textfield__label" for="email">email</label>
-                    </div>
-                </div>
-            </fieldset>
-            <fieldset>
-                <legend>profile<small v-if="isFormValid"> - update profile to save changes</small></legend>
+                <legend>profile<small v-if="isProfileFormValid"> - update profile to save changes</small></legend>
                 <div class="fieldset-flexer">
                     <!-- first name -->
                     <div class="mdl-textfield mdl-textfield--floating-label" :class="{ 'is-focused': (focused.firstname || hasValues.firstname) }">
@@ -33,9 +23,47 @@
                 </div>
             </fieldset>
             <div class="form-actions-toolbar">
-                <button type="submit" :disabled="(!isFormValid || isWaitingReply)" @click.prevent="onSubmit()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary">update profile</button>
-                <button type="button" @click.prevent="onChangePassword()" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--primary">change password</button>
-                <button type="button" @click.prevent="onChangeEmail()" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--primary">change email</button>
+                <button type="submit" :disabled="(!isProfileFormValid || isWaitingReply)" @click.prevent="onSubmitProfileUpdate()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary">update profile</button>
+                <progress-bar v-if="isWaitingReply" :msg="asyncState.state"></progress-bar>
+            </div>
+        </form>
+        <form>
+            <fieldset>
+                <legend>profile email ID<small v-if="isEmailFormValid"> - confirmation email will be sent</small></legend>
+                <div class="fieldset-flexer">
+                    <!-- email -->
+                    <div class="mdl-textfield mdl-textfield--floating-label" :class="{ 'is-focused': (focused.email || hasValues.email), 'is-invalid': errors.has('email') }">
+                        <input class="mdl-textfield__input" v-model="values.email" @focus="onInputFocus" @blur="onInputBlur" type="text" v-validate="validations.email" name="email">
+                        <label class="mdl-textfield__label" for="email">email</label>
+                        <span class="mdl-textfield__error">{{ errors.first('email') }}</span>
+                    </div>
+                </div>
+            </fieldset>
+            <div class="form-actions-toolbar">
+                <button type="submit" :disabled="(!isEmailFormValid || isWaitingReply)" @click.prevent="onSubmitEmailUpdate()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary">update email</button>
+                <progress-bar v-if="isWaitingReply" :msg="asyncState.state"></progress-bar>
+            </div>
+        </form>
+        <form>
+            <fieldset>
+                <legend>profile password<small v-if="isPasswordFormValid"> - confirmation email will be sent</small></legend>
+                <div class="fieldset-flexer">
+                    <!-- password -->
+                    <div class="mdl-textfield mdl-textfield--floating-label" :class="{ 'is-focused': (focused.password || hasValues.password), 'is-invalid': errors.has('password') }">
+                        <input class="mdl-textfield__input" v-model="values.password" @focus="onInputFocus" @blur="onInputBlur" type="password" v-validate="validations.password" name="password">
+                        <label class="mdl-textfield__label" for="password">password</label>
+                        <span class="mdl-textfield__error">{{ errors.first('password') }}</span>
+                    </div>
+                    <!-- password confirm -->
+                    <div class="mdl-textfield mdl-textfield--floating-label" :class="{ 'is-focused': (focused.passwordConfirm || hasValues.passwordConfirm), 'is-invalid': errors.has('passwordConfirm') }">
+                        <input class="mdl-textfield__input" v-model="values.passwordConfirm" @focus="onInputFocus" @blur="onInputBlur" type="password" v-validate="validations.passwordConfirm" name="passwordConfirm">
+                        <label class="mdl-textfield__label" for="password-confirm">password confirmation</label>
+                        <span class="mdl-textfield__error">{{ errors.first('password-confirm') }}</span>
+                    </div>
+                </div>
+            </fieldset>
+            <div class="form-actions-toolbar">
+                <button type="submit" :disabled="(!isPasswordFormValid || isWaitingReply)" @click.prevent="onSubmitPasswordUpdate()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary">update password</button>
                 <progress-bar v-if="isWaitingReply" :msg="asyncState.state"></progress-bar>
             </div>
         </form>
@@ -50,16 +78,23 @@
         data() {
             return {
                 validations: {
+                    email: undefined,
                     firstname: undefined,
                     lastname: undefined,
                     motto: undefined
                 },
                 values: {
+                    email: '',
+                    password: '',
+                    passwordConfirm: '',
                     firstname: '',
                     lastname: '',
                     motto: ''
                 },
                 focused: {
+                    email: false,
+                    password: false,
+                    passwordConfirm: false,
                     firstname: false,
                     lastname: false,
                     motto: false
@@ -68,13 +103,26 @@
             };
         },
         computed: {
-            isFormValid() {
+            isProfileFormValid() {
                 // at least one field is different
-                if (!this.fields.motto || !this.fields.lastname || !this.fields.firstname) return false;
+                if (!this.fields || !this.fields.motto || !this.fields.lastname || !this.fields.firstname) return false;
                 if (this.fields.firstname.valid) return true;
                 if (this.fields.lastname.valid) return true;
                 if (this.fields.motto.valid) return true;
                 return false;
+            },
+            isEmailFormValid() {
+                // valid email and different from current registered one
+                if (!this.fields || !this.fields.email) return false;
+                if (this.fields.email.invalid || this.fields.email.invalid === null) return false;
+                return true;
+            },
+            isPasswordFormValid() {
+                // password and confirmation must match
+                if (!this.fields || !this.fields.password || !this.fields.passwordConfirm) return false;
+                if (this.fields.password.invalid || this.fields.password.invalid === null) return false;
+                if (this.fields.passwordConfirm.invalid || this.fields.passwordConfirm.invalid === null) return false;
+                return true;
             },
             hasValues() {
                 let valuesClone = Object.assign({}, this.values);
@@ -116,19 +164,19 @@
             onInputBlur(evt) {
                 this.focused[evt.target.attributes.name.nodeValue] = false;
             },
-            onSubmit() {
+            onSubmitProfileUpdate() {
                 // this.isWaitingReply = true;
                 // let valuesClone = Object.assign({}, this.values);
                 // this.$store.dispatch('signup', valuesClone);
                 console.log('TODO update profile + action & feedback');
                 // update users entry
             },
-            onChangePassword() {
+            onSubmitPasswordUpdate() {
                 console.log('TODO change password + action & feedback');
                 console.log(this.$store.state.auth.currentFirebaseUser.updatePassword);
                 // https://firebase.google.com/docs/reference/js/firebase.User#updatePassword
             },
-            onChangeEmail() {
+            onSubmitEmailUpdate() {
                 // this.isWaitingReply = true;
                 this.$store.dispatch('accountEmailUpdate');
             }
@@ -138,6 +186,7 @@
         },
         created() {
             // set initial values
+            this.values.email = this.$store.state.auth.currentFirebaseUser.email;
             this.values.firstname = this.currenUserData.firstname;
             this.values.lastname = this.currenUserData.lastname;
             this.values.motto = this.currenUserData.motto;
@@ -147,6 +196,29 @@
             this.validations.firstname = buildRuleObject('firstname', this.currenUserData.firstname);
             this.validations.lastname = buildRuleObject('lastname', this.currenUserData.lastname);
             this.validations.motto = buildRuleObject('motto', this.currenUserData.motto);
+
+            this.validations.email = {
+                rules: {
+                    required: true,
+                    email: true,
+                    not_in: [this.$store.state.auth.currentFirebaseUser.email]
+                },
+                arg: 'values.email'
+            };
+            this.validations.password = {
+                rules: {
+                    required: true,
+                    password: true
+                },
+                arg: 'values.password'
+            };
+            this.validations.passwordConfirm = {
+                rules: {
+                    required: true,
+                    confirmed: 'password'
+                },
+                arg: 'values.passwordConfirm'
+            };
         }
     };
 </script>
