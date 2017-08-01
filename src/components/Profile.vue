@@ -23,8 +23,8 @@
                 </div>
             </fieldset>
             <div class="form-actions-toolbar">
-                <button type="submit" :disabled="(!isProfileFormValid || isWaitingReply)" @click.prevent="onSubmitProfileUpdate()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary">update profile</button>
-                <progress-bar v-if="isWaitingReply" :msg="asyncState.state"></progress-bar>
+                <button type="submit" :disabled="(!isProfileFormValid || isWaitingReply.profile)" @click.prevent="onSubmitProfileUpdate()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary">update profile</button>
+                <progress-bar v-if="isWaitingReply.profile" :msg="asyncProfileState.state"></progress-bar>
             </div>
         </form>
         <form>
@@ -40,8 +40,8 @@
                 </div>
             </fieldset>
             <div class="form-actions-toolbar">
-                <button type="submit" :disabled="(!isEmailFormValid || isWaitingReply)" @click.prevent="onSubmitEmailUpdate()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary">update email</button>
-                <progress-bar v-if="isWaitingReply" :msg="asyncState.state"></progress-bar>
+                <button type="submit" :disabled="(!isEmailFormValid || isWaitingReply.email)" @click.prevent="onSubmitEmailUpdate()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary">update email</button>
+                <progress-bar v-if="isWaitingReply.email" :msg="asyncEmailState.state"></progress-bar>
             </div>
         </form>
         <form>
@@ -63,8 +63,8 @@
                 </div>
             </fieldset>
             <div class="form-actions-toolbar">
-                <button type="submit" :disabled="(!isPasswordFormValid || isWaitingReply)" @click.prevent="onSubmitPasswordUpdate()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary">update password</button>
-                <progress-bar v-if="isWaitingReply" :msg="asyncState.state"></progress-bar>
+                <button type="submit" :disabled="(!isPasswordFormValid || isWaitingReply.password)" @click.prevent="onSubmitPasswordUpdate()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary">update password</button>
+                <progress-bar v-if="isWaitingReply.password" :msg="asyncPasswordState.state"></progress-bar>
             </div>
         </form>
     </div>
@@ -79,6 +79,8 @@
             return {
                 validations: {
                     email: undefined,
+                    password: undefined,
+                    passwordConfirm: undefined,
                     firstname: undefined,
                     lastname: undefined,
                     motto: undefined
@@ -99,7 +101,11 @@
                     lastname: false,
                     motto: false
                 },
-                isWaitingReply: false
+                isWaitingReply: {
+                    profile: false,
+                    email: false,
+                    password: false
+                }
             };
         },
         computed: {
@@ -137,27 +143,32 @@
                 return this.usersArray.find(user => user.isCurrentUser);
             },
             ...mapGetters({
-                asyncState: 'isAsyncProfileUpdate',
+                asyncProfileState: 'isAsyncProfileUpdate',
+                asyncEmailState: 'isAsyncAccountEmailUpdate',
+                asyncPasswordState: 'isAsyncAccountPasswordUpdate',
                 usersArray: 'usersArray'
             })
         },
         watch: {
-            asyncState: function(val) {
-                if (val && val.isEnded && val.isSuccess) {
-                    // triggered when account creation is a success
-                    setTimeout(() => {
-                        this.isWaitingReply = false;
-                        this.$router.push('/');
-                    }, 1000);
-                } else if (val && val.isEnded && !val.isSuccess) {
-                    // triggered when account creation is failed
-                    setTimeout(() => {
-                        this.isWaitingReply = false;
-                    }, 3000);
-                }
-            }
+            asyncProfileState: function(val) { this.asyncStateHandler('profile', val) },
+            asyncEmailState: function(val) { this.asyncStateHandler('email', val) },
+            asyncPasswordState: function(val) { this.asyncStateHandler('password', val) }
         },
         methods: {
+            asyncStateHandler(type, val) {
+                if (val && val.isEnded && val.isSuccess) {
+                    // triggered when success
+                    setTimeout(() => {
+                        this.isWaitingReply[type] = false;
+                        if (type === 'email' || type === 'password') this.$store.dispatch('logout');
+                    }, 1000);
+                } else if (val && val.isEnded && !val.isSuccess) {
+                    // triggered when failed
+                    setTimeout(() => {
+                        this.isWaitingReply[type] = false;
+                    }, 3000);
+                }
+            },
             onInputFocus(evt) {
                 this.focused[evt.target.attributes.name.nodeValue] = true;
             },
@@ -165,20 +176,19 @@
                 this.focused[evt.target.attributes.name.nodeValue] = false;
             },
             onSubmitProfileUpdate() {
-                // this.isWaitingReply = true;
+                // this.isWaitingReply.profile = true;
                 // let valuesClone = Object.assign({}, this.values);
                 // this.$store.dispatch('signup', valuesClone);
                 console.log('TODO update profile + action & feedback');
                 // update users entry
             },
             onSubmitPasswordUpdate() {
-                console.log('TODO change password + action & feedback');
-                console.log(this.$store.state.auth.currentFirebaseUser.updatePassword);
-                // https://firebase.google.com/docs/reference/js/firebase.User#updatePassword
+                this.isWaitingReply.password = true;
+                this.$store.dispatch('accountPasswordUpdate', { password: this.values.password });
             },
             onSubmitEmailUpdate() {
-                // this.isWaitingReply = true;
-                this.$store.dispatch('accountEmailUpdate');
+                this.isWaitingReply.email = true;
+                this.$store.dispatch('accountEmailUpdate', { email: this.values.email });
             }
         },
         components: {

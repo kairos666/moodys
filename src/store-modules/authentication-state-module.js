@@ -67,15 +67,28 @@ let authStore = auth => {
                     context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('signup', 'user account creation failure - ' + err.message, true, false));
                 });
             },
-            accountEmailUpdate(context) {
+            accountEmailUpdate(context, payload) {
+                let formerInbox = context.state.currentFirebaseUser.email;
                 context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('accountemail', 'await - user account email update'));
-                console.log('updateEmail func', context.state.currentFirebaseUser.updateEmail);
-                console.log('current logged in user email', context.state.currentFirebaseUser.email);
-                // https://firebase.google.com/docs/reference/js/firebase.User#updateEmail
+                context.state.currentFirebaseUser.updateEmail(payload.email).then(function(resp) {
+                    context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('accountemail', `confirmation email sent in your former inbox: ${formerInbox}`, true, true));
+
+                    return resp;
+                }).catch(function(err) {
+                    console.warn(err.message);
+                    context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('accountemail', 'account email change failure - ' + err.message, true, false));
+                });
             },
             accountPasswordUpdate(context, payload) {
                 context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('accountpassowrd', 'await - user account password update'));
-                console.log('password update', payload);
+                context.state.currentFirebaseUser.updatePassword(payload.password).then(function(resp) {
+                    context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('accountpassowrd', `confirmation email sent in your inbox: ${context.state.currentFirebaseUser.email}`, true, true));
+
+                    return resp;
+                }).catch(function(err) {
+                    console.warn(err.message);
+                    context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('accountpassowrd', 'account password change failure - ' + err.message, true, false));
+                });
             },
             updateAuthUser(context, payload) {
                 // prepare callbacks
