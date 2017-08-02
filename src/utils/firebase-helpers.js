@@ -75,8 +75,8 @@ let addMoodEntry = function(moodIndex, userId) {
  * @param {String} userID
  * @param {Object} userMetaData
  */
-let addUserEntry = function(userID, userMetaData) {
-    return firebaseDB.ref('users').child(userID).push(userMetaData);
+let setUserEntry = function(userID, userMetaData) {
+    return firebaseDB.ref(`users/${userID}`).set(userMetaData);
 };
 
 /**
@@ -91,10 +91,9 @@ let formatUsersToArray = function(usersObj, currentUserID) {
     uidKeys.forEach(uid => {
         let resultUser = { id: uid };
         if (currentUserID) resultUser.isCurrentUser = (uid === currentUserID);
-        let key = Object.keys(usersObj[uid])[0]; // take first uid key in object
-        resultUser.firstname = usersObj[uid][key].firstname;
-        resultUser.lastname = usersObj[uid][key].lastname;
-        resultUser.motto = usersObj[uid][key].motto;
+        resultUser.firstname = usersObj[uid].firstname;
+        resultUser.lastname = usersObj[uid].lastname;
+        resultUser.motto = usersObj[uid].motto;
         resultUser.avatar = `https://api.adorable.io/avatars/60/${resultUser.id}@adorable.png`;
 
         // fill array
@@ -111,6 +110,6 @@ export default {
     onAllMoodsChange: onAllMoodsChange,
     onAllUsersChange: onAllUsersChange,
     addMoodEntry: addMoodEntry,
-    addUserEntry: addUserEntry,
+    setUserEntry: setUserEntry,
     formatUsersToArray: formatUsersToArray
 };

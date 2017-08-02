@@ -176,11 +176,13 @@
                 this.focused[evt.target.attributes.name.nodeValue] = false;
             },
             onSubmitProfileUpdate() {
-                // this.isWaitingReply.profile = true;
-                // let valuesClone = Object.assign({}, this.values);
-                // this.$store.dispatch('signup', valuesClone);
-                console.log('TODO update profile + action & feedback');
-                // update users entry
+                this.isWaitingReply.profile = true;
+                let valuesClone = {
+                    firstname: this.values.firstname,
+                    lastname: this.values.lastname,
+                    motto: this.values.motto
+                };
+                this.$store.dispatch('accountProfileUpdate', valuesClone);
             },
             onSubmitPasswordUpdate() {
                 this.isWaitingReply.password = true;

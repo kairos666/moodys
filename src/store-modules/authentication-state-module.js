@@ -52,12 +52,8 @@ let authStore = auth => {
                 auth.createUserWithEmailAndPassword(payload.email, payload.password).then(function(user) {
                     context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('signup', 'await - user profile creation'));
 
-                    let userMetaData = {
-                        firstname: payload.firstname,
-                        lastname: payload.lastname,
-                        motto: payload['famous-quote']
-                    };
-                    return firebaseHelpers.addUserEntry(user.uid, userMetaData);
+                    let userMetaData = new UserProfile(payload.firstname, payload.lastname, payload['famous-quote']);
+                    return firebaseHelpers.setUserEntry(user.uid, userMetaData);
                 }).then(function(resp) {
                     context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('signup', 'user account created', true, true));
 
@@ -65,6 +61,17 @@ let authStore = auth => {
                 }).catch(function(err) {
                     console.warn(err.message);
                     context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('signup', 'user account creation failure - ' + err.message, true, false));
+                });
+            },
+            accountProfileUpdate(context, payload) {
+                context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('accountprofile', 'await - user profile update'));
+                firebaseHelpers.setUserEntry(context.state.currentFirebaseUser.uid, payload).then(function(resp) {
+                    context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('accountprofile', 'user profile updated', true, true));
+
+                    return resp;
+                }).catch(function(err) {
+                    console.warn(err.message);
+                    context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('accountprofile', 'user profile update failure - ' + err.message, true, false));
                 });
             },
             accountEmailUpdate(context, payload) {
@@ -123,4 +130,20 @@ let authStore = auth => {
     };
 };
 
-export default authStore;
+class UserProfile {
+    constructor(firstname, lastname, motto) {
+        if (firstname && lastname && motto) {
+            this.firstname = firstname;
+            this.lastname = lastname;
+            this.motto = motto;
+        } else {
+            // throw if invalid transaction
+            throw new Error('user profile object is invalid');
+        }
+    }
+};
+
+export default {
+    authStore: authStore,
+    UserProfile: UserProfile
+};
