@@ -2,9 +2,9 @@
     <form>
         <header class="mdl-list__item">
             <span class="mdl-list__item-primary-content">
-                <img class="material-icons mdl-list__item-avatar" :src="this.user.avatar" :alt="('avatar de ' + this.user.name)" >
-                <h1>Change {{this.user.name}}'s mood</h1>
-                <span class="mdl-list__item-sub-title">{{this.user.motto}}</span>
+                <img class="material-icons mdl-list__item-avatar" :src="user.avatar" :alt="('avatar de ' + user.firstname)" >
+                <h1>Change {{user.name}}'s mood</h1>
+                <span class="mdl-list__item-sub-title">{{user.motto}}</span>
             </span>
         </header>
         <ul class="emoji-checkbox-list mdl-list">
@@ -20,9 +20,8 @@
 
 <script>
     import data from '../fakeData.js';
-    import Emoji from '@/components/Emoji';
+    import Emoji from '@/components/nano/Emoji';
     import moodConfig from '@/config/moods';
-    import { getUserCurrentMood } from '@/utils/firebase-data-cruncher';
 
     export default {
         props: ['id'],
@@ -33,7 +32,8 @@
             },
             emojis() {
                 // get current user mood
-                let currentMood = getUserCurrentMood(this.id, this.$root.moods);
+                // let currentMood = getUserCurrentMood(this.id, this.$root.moods);
+                let currentMood = 'sick';
 
                 // remove the default element
                 let emojisData = moodConfig.moodIndexes.filter(el => (el !== null));
@@ -59,7 +59,7 @@
         },
         methods: {
             moodSelection(moodIndex, alreadySelected) {
-                if (!alreadySelected) this.$firebaseActions.updateMood(moodIndex, this.id);
+                if (!alreadySelected) this.$store.dispatch('updateCurrentUserMood', moodIndex);
             }
         }
     };
@@ -92,10 +92,10 @@
         li:nth-child(12) { background-color:$zebra-list-bg; }
         li:nth-child(13) { background-color:$zebra-list-bg; }
         li { padding-top:$gutter-base; padding-bottom:$gutter-base;
-            &:hover { background-color:lighten($primary, 10%);
+            &:hover { background-color:$selected-focus-color;
                 button { color:#fff; font-weight:bold; }
             }
-            &.active { background-color:$primary;
+            &.active { background-color:$selected-color;
                 button { color:#fff; font-weight:bold; }
             }            
         }

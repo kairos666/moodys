@@ -1,5 +1,5 @@
 <template>
-    <h1>home</h1>
+    <h1><i class="material-icons">home</i>home</h1>
 </template>
 
 <script>

@@ -2,30 +2,21 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue';
 import App from './App';
-import firebaseService from './services/firebase-service';
 import router from './router';
-import VueResource from 'vue-resource';
 import Vuefire from 'vuefire';
 import store from './store';
+import VeeValidate from 'vee-validate';
+import VeeValidateConfig from './config/form-validation';
 
 Vue.config.productionTip = false;
-Vue.use(VueResource);
 Vue.use(Vuefire);
+Vue.use(VeeValidate, VeeValidateConfig);
 
 /* eslint-disable no-new */
 new Vue({
     el: '#app',
-    firebase: {
-        users: firebaseService.database.ref('users'),
-        moods: firebaseService.database.ref('moods')
-    },
     router,
     store: store,
     template: '<App/>',
-    components: { App },
-    created() {
-        /* post creation actions */
-        // firebase service init
-        firebaseService.init(this);
-    }
+    components: { App }
 });
