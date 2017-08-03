@@ -60,10 +60,9 @@ const VueRouter = new Router({
             component: UsersView
         },
         {
-            path: '/mood-input/:id',
+            path: '/mood-input',
             name: 'mood-input',
-            component: InputUserView,
-            props: true
+            component: InputUserView
         },
         {
             path: '*',

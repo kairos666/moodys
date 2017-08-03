@@ -28,7 +28,7 @@ const store = new Vuex.Store({
             // no authenticated user case
             if (!state.auth.currentFirebaseUser) return [];
             // authenticated case
-            return firebaseHelpers.formatUsersToArray(state.users, state.auth.currentFirebaseUser.uid);
+            return firebaseHelpers.formatUsersToArray(state.users, state.auth.currentFirebaseUser.uid, state.moods);
         }
     },
     mutations: {

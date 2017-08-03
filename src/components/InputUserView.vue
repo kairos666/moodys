@@ -19,17 +19,15 @@
 </template>
 
 <script>
-    import data from '../fakeData.js';
     import Emoji from '@/components/nano/Emoji';
     import moodConfig from '@/config/moods';
+    import { mapState } from 'vuex';
 
     export default {
-        props: ['id'],
         computed: {
-            user() {
-                let user = data.users.find(user => (user.id === this.id));
-                return user;
-            },
+            ...mapState({
+                user: state => state.auth.currentFirebaseUser
+            }),
             emojis() {
                 // get current user mood
                 // let currentMood = getUserCurrentMood(this.id, this.$root.moods);
@@ -44,7 +42,7 @@
 
                     return {
                         index: el,
-                        selected: (el === currentMood.value)
+                        selected: (el === currentMood)
                     };
                 }).map((el, index) => {
                     el.label = moodConfig.moodLabels[index];
@@ -96,7 +94,7 @@
                 button { color:#fff; font-weight:bold; }
             }
             &.active { background-color:$selected-color;
-                button { color:#fff; font-weight:bold; }
+                button { color:inherit; font-weight:bold; text-shadow:0px 0px 2px $primary; }
             }            
         }
     }

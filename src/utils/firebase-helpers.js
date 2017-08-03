@@ -37,7 +37,7 @@ let onAllUsersChange = function(cb, isToBeShutDown) {
  * @return {Promise}
  */
 let getAllMoods = function() {
-    return firebaseDB.ref('moods').orderByChild('timestamp').once('value');
+    return firebaseDB.ref('moods').orderByKey().once('value');
 };
 
 /**
@@ -47,9 +47,9 @@ let getAllMoods = function() {
  */
 let onAllMoodsChange = function(cb, isToBeShutDown) {
     if (!isToBeShutDown) {
-        firebaseDB.ref('moods').orderByChild('timestamp').on('value', cb);
+        firebaseDB.ref('moods').orderByKey().on('value', cb);
     } else {
-        firebaseDB.ref('moods').orderByChild('timestamp').off('value', cb);
+        firebaseDB.ref('moods').orderByKey().off('value', cb);
     }
 };
 
@@ -61,10 +61,11 @@ let onAllMoodsChange = function(cb, isToBeShutDown) {
 let addMoodEntry = function(moodIndex, userId) {
     if (moodsConfig.moodIndexes.includes(moodIndex)) {
         // mood entry
-        let moodEntry = { value: moodIndex, timestamp: Date.now() };
+        let timestamp = Date.now();
+        let moodEntry = { value: moodIndex, timestamp: timestamp, uid: userId };
 
         // send to firebase
-        firebaseDB.ref('moods').child(userId).push(moodEntry);
+        firebaseDB.ref(`moods/${timestamp}`).set(moodEntry);
     } else {
         throw new Error(`Try to update user ${userId}'s mood with invalid index: ${moodIndex}`);
     }
@@ -83,18 +84,38 @@ let setUserEntry = function(userID, userMetaData) {
  * transform users database response in users array (optional parameter currentUserID)
  * @param {Object} usersObj
  * @param {String} currentUserId
+ * @param {Object} object with moods entry
+ * @return {Array} user full detailed entries
  */
-let formatUsersToArray = function(usersObj, currentUserID) {
+let formatUsersToArray = function(usersObj, currentUserID, moods) {
     let resultArray = [];
+
+    // filter moods to only get entries from today
+    let now = new Date();
+    let timestampThresholdForToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    let sortedKeys = Object.keys(moods).reverse();
+    let relevantKeysIndexThreshold = sortedKeys.findIndex(timestamp => (timestamp < timestampThresholdForToday));
+    let relevantKeys = (relevantKeysIndexThreshold !== -1) ? sortedKeys.splice(0, relevantKeysIndexThreshold) : sortedKeys;
 
     let uidKeys = Object.keys(usersObj);
     uidKeys.forEach(uid => {
-        let resultUser = { id: uid };
-        if (currentUserID) resultUser.isCurrentUser = (uid === currentUserID);
-        resultUser.firstname = usersObj[uid].firstname;
-        resultUser.lastname = usersObj[uid].lastname;
-        resultUser.motto = usersObj[uid].motto;
-        resultUser.avatar = `https://api.adorable.io/avatars/60/${resultUser.id}@adorable.png`;
+        // get current user mood if it exists
+        let currentMood = null;
+        if (relevantKeys.length !== 0) {
+            let foundMood = relevantKeys.map(timestamp => moods[timestamp]).find(item => (item.uid === uid));
+            if (foundMood) currentMood = foundMood.value;
+        }
+
+        // build user object
+        let resultUser = {
+            id: uid,
+            currentMood: currentMood,
+            isCurrentUser: (currentUserID && uid === currentUserID),
+            firstname: usersObj[uid].firstname,
+            lastname: usersObj[uid].lastname,
+            motto: usersObj[uid].motto,
+            avatar: `https://api.adorable.io/avatars/60/${uid}@adorable.png`
+        };
 
         // fill array
         resultArray.push(resultUser);
