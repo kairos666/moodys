@@ -2,9 +2,9 @@
     <form>
         <header class="mdl-list__item">
             <span class="mdl-list__item-primary-content">
-                <img class="material-icons mdl-list__item-avatar" :src="user.avatar" :alt="('avatar de ' + user.firstname)" >
-                <h1>Change {{user.name}}'s mood</h1>
-                <span class="mdl-list__item-sub-title">{{user.motto}}</span>
+                <img class="material-icons mdl-list__item-avatar" :src="currentUserData.avatar" :alt="('avatar de ' + currentUserData.firstname)" >
+                <h1>Change {{currentUserData.firstname}}'s mood</h1>
+                <span class="mdl-list__item-sub-title">{{currentUserData.motto}}</span>
             </span>
         </header>
         <ul class="emoji-checkbox-list mdl-list">
@@ -21,17 +21,21 @@
 <script>
     import Emoji from '@/components/nano/Emoji';
     import moodConfig from '@/config/moods';
-    import { mapState } from 'vuex';
+    import { mapState, mapGetters } from 'vuex';
 
     export default {
         computed: {
             ...mapState({
-                user: state => state.auth.currentFirebaseUser
+                currentUserID: state => state.auth.currentFirebaseUser.uid
             }),
+            ...mapGetters({
+                users: 'usersArray'
+            }),
+            currentUserData() { return this.users.find(user => (user.id === this.currentUserID)) },
             emojis() {
                 // get current user mood
                 // let currentMood = getUserCurrentMood(this.id, this.$root.moods);
-                let currentMood = 'sick';
+                let currentMood = this.currentUserData.currentMood;
 
                 // remove the default element
                 let emojisData = moodConfig.moodIndexes.filter(el => (el !== null));
