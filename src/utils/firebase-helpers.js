@@ -41,6 +41,35 @@ let getAllMoods = function() {
 };
 
 /**
+ * get current mood from uid user
+ * @param {Object} moodsObj
+ * @param {String} uid
+ * @return {String|null} current mood of this user
+ */
+let getCurrentMood = function(moodsObj, uid) {
+    // get timestamp limit for today
+    let now = new Date();
+    let timestampThresholdForToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+
+    // get registered timestamps sorted from newer to older
+    let sortedKeys = Object.keys(moodsObj).reverse();
+
+    // get registered timestamps sorted and limited to today entries
+    let relevantKeysIndexThreshold = sortedKeys.findIndex(timestamp => (timestamp < timestampThresholdForToday));
+    let relevantKeys = (relevantKeysIndexThreshold !== -1) ? sortedKeys.splice(0, relevantKeysIndexThreshold) : sortedKeys;
+
+    // extract user current mood (if exists)
+    if (relevantKeys.length !== 0) {
+        let foundMood = relevantKeys.map(timestamp => moodsObj[timestamp]).find(item => (item.uid === uid));
+        // return value corresponding to uid user
+        if (foundMood) return foundMood.value;
+    }
+
+    // otherwise return the no data value
+    return null;
+};
+
+/**
  * get notified on all moods updates
  * @param {function(FirebaseSnapshot)} cb
  * @param {Boolean} isToBeShutDown
@@ -90,26 +119,12 @@ let setUserEntry = function(userID, userMetaData) {
 let formatUsersToArray = function(usersObj, currentUserID, moods) {
     let resultArray = [];
 
-    // filter moods to only get entries from today
-    let now = new Date();
-    let timestampThresholdForToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-    let sortedKeys = Object.keys(moods).reverse();
-    let relevantKeysIndexThreshold = sortedKeys.findIndex(timestamp => (timestamp < timestampThresholdForToday));
-    let relevantKeys = (relevantKeysIndexThreshold !== -1) ? sortedKeys.splice(0, relevantKeysIndexThreshold) : sortedKeys;
-
     let uidKeys = Object.keys(usersObj);
     uidKeys.forEach(uid => {
-        // get current user mood if it exists
-        let currentMood = null;
-        if (relevantKeys.length !== 0) {
-            let foundMood = relevantKeys.map(timestamp => moods[timestamp]).find(item => (item.uid === uid));
-            if (foundMood) currentMood = foundMood.value;
-        }
-
         // build user object
         let resultUser = {
             id: uid,
-            currentMood: currentMood,
+            currentMood: getCurrentMood(moods, uid),
             isCurrentUser: (currentUserID && uid === currentUserID),
             firstname: usersObj[uid].firstname,
             lastname: usersObj[uid].lastname,
@@ -127,6 +142,7 @@ let formatUsersToArray = function(usersObj, currentUserID, moods) {
 export default {
     initialize: initialize,
     getAllMoods: getAllMoods,
+    getCurrentMood: getCurrentMood,
     getAllUsers: getAllUsers,
     onAllMoodsChange: onAllMoodsChange,
     onAllUsersChange: onAllUsersChange,
