@@ -2,14 +2,16 @@
     <form>
         <header class="mdl-list__item">
             <span class="mdl-list__item-primary-content">
-                <img class="material-icons mdl-list__item-avatar" :src="user.avatar" :alt="('avatar de ' + user.firstname)" >
-                <h1>Change {{user.name}}'s mood</h1>
-                <span class="mdl-list__item-sub-title">{{user.motto}}</span>
+                <img class="material-icons mdl-list__item-avatar" :src="currentUserData.avatar" :alt="('avatar de ' + currentUserData.firstname)" >
+                <div>
+                    <h1>Change {{currentUserData.firstname}}'s mood</h1>
+                    <span class="mdl-list__item-sub-title">{{currentUserData.motto}}</span>
+                </div>
             </span>
         </header>
         <ul class="emoji-checkbox-list mdl-list">
-            <li class="mdl-list__item" :class="{ active: emoji.selected }" v-for="emoji in emojis">
-                <button type="button" :title="`select ${emoji.label}`" @click.prevent="moodSelection(emoji.index, emoji.selected)" class="mdl-list__item-primary-content">
+            <li class="mdl-list__item" v-for="emoji in emojis">
+                <button type="button" :title="`select ${emoji.label}`" @click.prevent="moodSelection(emoji.index, emoji.selected)" :class="{ active: emoji.selected }" class="mdl-list__item-primary-content fat-complex-buttons">
                     <emoji :mood="emoji.index"></emoji>
                     {{emoji.label}}
                 </button>
@@ -19,21 +21,23 @@
 </template>
 
 <script>
-    import data from '../fakeData.js';
     import Emoji from '@/components/nano/Emoji';
     import moodConfig from '@/config/moods';
+    import { mapState, mapGetters } from 'vuex';
 
     export default {
-        props: ['id'],
         computed: {
-            user() {
-                let user = data.users.find(user => (user.id === this.id));
-                return user;
-            },
+            ...mapState({
+                currentUserID: state => state.auth.currentFirebaseUser.uid
+            }),
+            ...mapGetters({
+                users: 'usersArray'
+            }),
+            currentUserData() { return this.users.find(user => (user.id === this.currentUserID)) },
             emojis() {
                 // get current user mood
                 // let currentMood = getUserCurrentMood(this.id, this.$root.moods);
-                let currentMood = 'sick';
+                let currentMood = this.currentUserData.currentMood;
 
                 // remove the default element
                 let emojisData = moodConfig.moodIndexes.filter(el => (el !== null));
@@ -44,7 +48,7 @@
 
                     return {
                         index: el,
-                        selected: (el === currentMood.value)
+                        selected: (el === currentMood)
                     };
                 }).map((el, index) => {
                     el.label = moodConfig.moodLabels[index];
@@ -59,23 +63,24 @@
         },
         methods: {
             moodSelection(moodIndex, alreadySelected) {
-                if (!alreadySelected) this.$store.dispatch('updateCurrentUserMood', moodIndex);
+                if (!alreadySelected) {
+                    this.$store.dispatch('updateCurrentUserMood', moodIndex);
+                    this.$router.push({ name: 'users' });
+                }
             }
         }
     };
 </script>
 
 <style scoped lang="scss">
-    @import '../styles/_utils.scss';
-    @import '../styles/_include-media.scss';
     @import '../styles/_variables.scss';
     @import '../styles/nano/_user-list-item.scss';
 
     header .mdl-list__item-primary-content { flex-wrap:wrap;
-        h1 { font-size:34px; }
+        h1 { font-size:34px; margin-bottom:0;}
         span { flex:0 0 100%; }
     }
-    button.mdl-list__item-primary-content { background:none; border:none; cursor:pointer; padding:0; }
+    button.mdl-list__item-primary-content { border:none; cursor:pointer; padding:0; }
     .emoji-checkbox-list { padding-bottom:0; margin-bottom:0;
         img { margin-right:16px; }
         li:nth-child(1) { background-color:rgba(255, 0, 0, .1); }
@@ -91,13 +96,8 @@
         li:nth-child(11) { background-color:rgba(0, 255, 0, .1); }
         li:nth-child(12) { background-color:$zebra-list-bg; }
         li:nth-child(13) { background-color:$zebra-list-bg; }
-        li { padding-top:$gutter-base; padding-bottom:$gutter-base;
-            &:hover { background-color:$selected-focus-color;
-                button { color:#fff; font-weight:bold; }
-            }
-            &.active { background-color:$selected-color;
-                button { color:#fff; font-weight:bold; }
-            }            
+        li { padding:0;
+            button { padding:$gutter-base; }
         }
     }
 </style>

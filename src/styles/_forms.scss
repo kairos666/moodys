@@ -24,3 +24,9 @@ form { margin-left:auto; margin-right:auto; max-width:1200px;
         .mdl-textfield { width:calc(#{(100/3)+0%} - #{2*$gutter-base}); }
      }
 }
+
+/* fat complex buttons (avatar + several lines of text + mood + ...) */
+.fat-complex-buttons { background:none; outline:none; font-size:px2rem(18);
+    &:hover, &:focus, &:active { background-color:$selected-color; }
+    &.active { background-color:$selected-focus-color; }
+}

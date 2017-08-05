@@ -9,7 +9,7 @@
                     <span class="mdl-list__item-sub-title">{{user.motto}}</span>
                 </span>
                 <span class="mdl-list__item-secondary-content">
-                    <emoji mood="0"></emoji>
+                    <emoji :mood="user.currentMood"></emoji>
                 </span>
             </li>
         </ul>
@@ -29,7 +29,7 @@
         methods: {
             displayDetails(id) {
                 // only for current user
-                if (id === this.$store.state.auth.currentFirebaseUser.uid) this.$router.push({ name: 'mood-input', params: { id: id } });
+                if (id === this.$store.state.auth.currentFirebaseUser.uid) this.$router.push({ name: 'mood-input' });
             }
         },
         components: {

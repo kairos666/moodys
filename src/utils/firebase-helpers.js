@@ -37,7 +37,36 @@ let onAllUsersChange = function(cb, isToBeShutDown) {
  * @return {Promise}
  */
 let getAllMoods = function() {
-    return firebaseDB.ref('moods').orderByChild('timestamp').once('value');
+    return firebaseDB.ref('moods').orderByKey().once('value');
+};
+
+/**
+ * get current mood from uid user
+ * @param {Object} moodsObj
+ * @param {String} uid
+ * @return {String|null} current mood of this user
+ */
+let getCurrentMood = function(moodsObj, uid) {
+    // get timestamp limit for today
+    let now = new Date();
+    let timestampThresholdForToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+
+    // get registered timestamps sorted from newer to older
+    let sortedKeys = Object.keys(moodsObj).reverse();
+
+    // get registered timestamps sorted and limited to today entries
+    let relevantKeysIndexThreshold = sortedKeys.findIndex(timestamp => (timestamp < timestampThresholdForToday));
+    let relevantKeys = (relevantKeysIndexThreshold !== -1) ? sortedKeys.splice(0, relevantKeysIndexThreshold) : sortedKeys;
+
+    // extract user current mood (if exists)
+    if (relevantKeys.length !== 0) {
+        let foundMood = relevantKeys.map(timestamp => moodsObj[timestamp]).find(item => (item.uid === uid));
+        // return value corresponding to uid user
+        if (foundMood) return foundMood.value;
+    }
+
+    // otherwise return the no data value
+    return null;
 };
 
 /**
@@ -47,9 +76,9 @@ let getAllMoods = function() {
  */
 let onAllMoodsChange = function(cb, isToBeShutDown) {
     if (!isToBeShutDown) {
-        firebaseDB.ref('moods').orderByChild('timestamp').on('value', cb);
+        firebaseDB.ref('moods').orderByKey().on('value', cb);
     } else {
-        firebaseDB.ref('moods').orderByChild('timestamp').off('value', cb);
+        firebaseDB.ref('moods').orderByKey().off('value', cb);
     }
 };
 
@@ -61,10 +90,11 @@ let onAllMoodsChange = function(cb, isToBeShutDown) {
 let addMoodEntry = function(moodIndex, userId) {
     if (moodsConfig.moodIndexes.includes(moodIndex)) {
         // mood entry
-        let moodEntry = { value: moodIndex, timestamp: Date.now() };
+        let timestamp = Date.now();
+        let moodEntry = { value: moodIndex, timestamp: timestamp, uid: userId };
 
         // send to firebase
-        firebaseDB.ref('moods').child(userId).push(moodEntry);
+        firebaseDB.ref(`moods/${timestamp}`).set(moodEntry);
     } else {
         throw new Error(`Try to update user ${userId}'s mood with invalid index: ${moodIndex}`);
     }
@@ -83,18 +113,24 @@ let setUserEntry = function(userID, userMetaData) {
  * transform users database response in users array (optional parameter currentUserID)
  * @param {Object} usersObj
  * @param {String} currentUserId
+ * @param {Object} object with moods entry
+ * @return {Array} user full detailed entries
  */
-let formatUsersToArray = function(usersObj, currentUserID) {
+let formatUsersToArray = function(usersObj, currentUserID, moods) {
     let resultArray = [];
 
     let uidKeys = Object.keys(usersObj);
     uidKeys.forEach(uid => {
-        let resultUser = { id: uid };
-        if (currentUserID) resultUser.isCurrentUser = (uid === currentUserID);
-        resultUser.firstname = usersObj[uid].firstname;
-        resultUser.lastname = usersObj[uid].lastname;
-        resultUser.motto = usersObj[uid].motto;
-        resultUser.avatar = `https://api.adorable.io/avatars/60/${resultUser.id}@adorable.png`;
+        // build user object
+        let resultUser = {
+            id: uid,
+            currentMood: getCurrentMood(moods, uid),
+            isCurrentUser: (currentUserID && uid === currentUserID),
+            firstname: usersObj[uid].firstname,
+            lastname: usersObj[uid].lastname,
+            motto: usersObj[uid].motto,
+            avatar: `https://api.adorable.io/avatars/60/${uid}@adorable.png`
+        };
 
         // fill array
         resultArray.push(resultUser);
@@ -106,6 +142,7 @@ let formatUsersToArray = function(usersObj, currentUserID) {
 export default {
     initialize: initialize,
     getAllMoods: getAllMoods,
+    getCurrentMood: getCurrentMood,
     getAllUsers: getAllUsers,
     onAllMoodsChange: onAllMoodsChange,
     onAllUsersChange: onAllUsersChange,
