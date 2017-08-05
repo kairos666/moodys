@@ -6,7 +6,13 @@
                 <h2>My moody profile</h2>
             </header>
             <ul class="mdl-card-holder">
-                <li><home-card></home-card></li>
+                <li>
+                    <home-card>
+                        <span slot="header">David Maggi</span>
+                        <span slot="description">Je me suis fait élargir le périmètre un truc de ouf!</span>
+                        <span slot="actions">David Maggi</span>
+                    </home-card>
+                </li>
                 <li><home-card></home-card></li>
                 <li><home-card></home-card></li>
                 <li><home-card></home-card></li>

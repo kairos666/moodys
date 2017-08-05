@@ -1,20 +1,18 @@
 <template>
     <div class="mdl-card mdl-shadow--2dp profile-cards">
         <div class="mdl-card__title mdl-card--expand">
-            <h3 class="mdl-card__title-text">Auckland Sky Tower<br>Auckland, New Zealand</h3>
-        </div>
-        <div class="mdl-card__media">
-            <slot>
+            <div class="spinner-holder" v-if="(!hasHeader && !hasDescription && !hasActions)">
                 <spinner></spinner>
-            </slot>
+            </div>
+            <h3 class="mdl-card__title-text" v-if="hasHeader">
+                <slot name="header"></slot>
+            </h3>
         </div>
-        <div class="mdl-card__supporting-text">
-        The Sky Tower is an observation and telecommunications tower located in Auckland,
-        New Zealand. It is 328 metres (1,076 ft) tall, making it the tallest man-made structure
-        in the Southern Hemisphere.
+        <div class="mdl-card__supporting-text" v-if="hasDescription">
+            <slot name="description"></slot>
         </div>
-        <div class="mdl-card__actions mdl-card--border">
-            <a class="mdl-button mdl-button--colored" href="http://en.wikipedia.org/wiki/Sky_Tower_%28Auckland%29">Wikipedia entry</a>
+        <div class="mdl-card__actions mdl-card--border" v-if="hasActions">
+            <slot name="actions"></slot>
         </div>
     </div>
 </template>
@@ -23,8 +21,21 @@
     import Spinner from '@/components/nano/spinner';
 
     export default {
+        data() {
+            return {
+                hasHeader: false,
+                hasDescription: false,
+                hasActions: false
+            };
+        },
         components: {
             'spinner': Spinner
+        },
+        created() {
+            // init card sections display according to filled slots
+            this.hasHeader = (this.$slots.header !== undefined);
+            this.hasDescription = (this.$slots.description !== undefined);
+            this.hasActions = (this.$slots.actions !== undefined);
         }
     };
 </script>
@@ -33,4 +44,5 @@
     @import '../../styles/_variables.scss';
     @import '../../styles/_utils.scss';
     @import '../../styles/nano/_cards.scss';
+    .spinner-holder { text-align:center; margin-left:auto; margin-right:auto; }
 </style>
