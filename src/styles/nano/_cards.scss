@@ -1,0 +1,12 @@
+/**
+*   CARDS STYLES
+**/
+
+/* layout */
+.mdl-card-holder {
+    .mdl-card { width:100%; }
+}
+
+.profile-cards { background-color:$grey;
+    .mdl-card__media { background-color:transparent; }
+}
