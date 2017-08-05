@@ -7,6 +7,8 @@
     .mdl-card { width:100%; }
 }
 
-.profile-cards { background-color:$grey;
+.profile-cards { background-color:lighten($grey, 2%); justify-content:space-between; min-height:$home-cards-min-height;
+    .mdl-card__supporting-text { width:auto; }
+    .mdl-card__actions { text-align:right; }
     .mdl-card__media { background-color:transparent; }
 }

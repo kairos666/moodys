@@ -1,14 +1,14 @@
 <template>
     <div class="mdl-card mdl-shadow--2dp profile-cards">
-        <div class="mdl-card__title mdl-card--expand">
-            <div class="spinner-holder" v-if="(!hasHeader && !hasDescription && !hasActions)">
-                <spinner></spinner>
-            </div>
+        <div class="spinner-holder" v-if="(!hasHeader && !hasDescription && !hasActions)">
+            <spinner></spinner>
+        </div>
+        <div class="mdl-card__title" v-if="hasHeader">
             <h3 class="mdl-card__title-text" v-if="hasHeader">
                 <slot name="header"></slot>
             </h3>
         </div>
-        <div class="mdl-card__supporting-text" v-if="hasDescription">
+        <div class="mdl-card__supporting-text mdl-card--expand" v-if="hasDescription">
             <slot name="description"></slot>
         </div>
         <div class="mdl-card__actions mdl-card--border" v-if="hasActions">
@@ -44,5 +44,5 @@
     @import '../../styles/_variables.scss';
     @import '../../styles/_utils.scss';
     @import '../../styles/nano/_cards.scss';
-    .spinner-holder { text-align:center; margin-left:auto; margin-right:auto; }
+    .spinner-holder { position:absolute; top:50%; left:50%; margin-left:-14px; margin-top:-18px; }
 </style>
