@@ -1,7 +1,7 @@
 <template>
     <div>
         <h1><i class="material-icons">home</i>Moodys</h1>
-        <section>
+        <section class="profile-section">
             <header>
                 <h2>My moody</h2>
             </header>
@@ -89,6 +89,14 @@
         }
         @include media(">large-desktop") {
             > li { flex:1 1 25%; }
+        }
+        .profile-section & {
+            @include media(">tablet", "<=large-desktop") {
+                > li { flex-grow:0; flex-basis:50%; }
+            }
+            @include media(">large-desktop") {
+                > li { flex-grow:0; flex-basis:(100/3)+0%; }
+            }
         }
     }
     .mood-figure { margin:0 0 0 1rem; float:right; display:flex; justify-content:flex-end; flex-direction:row-reverse; align-items:center;
