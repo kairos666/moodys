@@ -51,4 +51,7 @@
     @import '../../styles/_utils.scss';
     @import '../../styles/nano/_cards.scss';
     .spinner-holder { position:absolute; top:50%; left:50%; margin-left:-14px; margin-top:-18px; }
+    .mdl-card__title-text > *,
+    .mdl-card__supporting-text > *,
+    .mdl-card__actions > * { display:block; @include clearfix; }
 </style>

@@ -1,9 +1,9 @@
 <template>
     <div>
-        <h1><i class="material-icons">home</i>Moodys</h1>
+        <h1 class="sr-only">Moodys</h1>
         <section class="profile-section">
             <header>
-                <h2>My moody</h2>
+                <h2><i class="material-icons">account_box</i>My moody</h2>
             </header>
             <ul class="mdl-card-holder">
                 <li v-if="currentUserData"> <!-- if connected profile + edit profile button -->
@@ -39,12 +39,32 @@
                 </li>
             </ul>
         </section>
-        <section v-if="currentUserData">
+        <section class="dashboard-section" v-if="currentUserData">
             <header>
-                <h2>Moodys dashboard</h2>
+                <h2><i class="material-icons">insert_chart</i>Moodys dashboard</h2>
             </header>
             <ul class="mdl-card-holder">
-                <li><home-card></home-card></li>
+                <li>
+                    <home-card>
+                        <span slot="header">today's median mood</span>
+                        <span slot="description">
+                            <median-mood></median-mood>
+                        </span>
+                    </home-card>
+                </li>
+                <li>
+                    <home-card>
+                        <span slot="header">completion rate</span>
+                        <span slot="description">
+                            <completion-rate></completion-rate>
+                        </span>
+                    </home-card>
+                </li>
+                <li>
+                    <home-card>
+                        <span slot="header">weekly average</span>
+                    </home-card>
+                </li>
             </ul>
         </section>
     </div>
@@ -55,6 +75,8 @@
     import emojiHelpers from '@/utils/emoji-helpers';
     import HomeCard from '@/components/nano/home-card';
     import Emoji from '@/components/nano/Emoji';
+    import MedianMood from '@/components/dashboard/median-mood';
+    import CompletionRate from '@/components/dashboard/completion-rate';
 
     export default {
         computed: {
@@ -70,7 +92,9 @@
         },
         components: {
             'home-card': HomeCard,
-            'emoji': Emoji
+            'emoji': Emoji,
+            'median-mood': MedianMood,
+            'completion-rate': CompletionRate
         }
     };
 </script>
@@ -79,6 +103,7 @@
     @import '../styles/_variables.scss';
     @import '../styles/_utils.scss';
     @import '../styles/_include-media.scss';
+    .profile-section h2 { margin-top:0; }
     .mdl-card-holder { list-style:none; padding-left:0; margin:-$gutter-base; display:flex; flex-wrap:wrap; justify-content:space-between;
         > li { flex:1 1 auto; padding:$gutter-base; box-sizing:border-box; }
         @include media(">tablet", "<=desktop") {
@@ -98,9 +123,6 @@
                 > li { flex-grow:0; flex-basis:(100/3)+0%; }
             }
         }
-    }
-    .mood-figure { margin:0 0 0 1rem; float:right; display:flex; justify-content:flex-end; flex-direction:row-reverse; align-items:center;
-        figcaption { margin-right:$gutter-base; }
     }
     .profile-figure { margin:0; overflow:hidden;
         img { float:left; border-radius:25%; margin-right:16px; }
