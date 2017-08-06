@@ -4,7 +4,7 @@
             <spinner></spinner>
         </div>
         <div class="mdl-card__title" v-if="hasHeader">
-            <h3 class="mdl-card__title-text" v-if="hasHeader">
+            <h3 class="mdl-card__title-text">
                 <slot name="header"></slot>
             </h3>
         </div>
@@ -33,6 +33,12 @@
         },
         created() {
             // init card sections display according to filled slots
+            this.hasHeader = (this.$slots.header !== undefined);
+            this.hasDescription = (this.$slots.description !== undefined);
+            this.hasActions = (this.$slots.actions !== undefined);
+        },
+        updated() {
+            // same on update to handle quirks when vue reuse elements
             this.hasHeader = (this.$slots.header !== undefined);
             this.hasDescription = (this.$slots.description !== undefined);
             this.hasActions = (this.$slots.actions !== undefined);

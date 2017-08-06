@@ -22,7 +22,7 @@
 
 <script>
     import Emoji from '@/components/nano/Emoji';
-    import moodConfig from '@/config/moods';
+    import emojiHelpers from '@/utils/emoji-helpers';
     import { mapState, mapGetters } from 'vuex';
 
     export default {
@@ -36,23 +36,19 @@
             currentUserData() { return this.users.find(user => (user.id === this.currentUserID)) },
             emojis() {
                 // get current user mood
-                // let currentMood = getUserCurrentMood(this.id, this.$root.moods);
                 let currentMood = this.currentUserData.currentMood;
 
                 // remove the default element
-                let emojisData = moodConfig.moodIndexes.filter(el => (el !== null));
-
-                // format array
-                emojisData = emojisData.map(el => {
-                    if (!currentMood) return { index: el, selected: false };
-
-                    return {
-                        index: el,
-                        selected: (el === currentMood)
-                    };
-                }).map((el, index) => {
-                    el.label = moodConfig.moodLabels[index];
-                    return el;
+                let emojisData = emojiHelpers.emojiDataArray.filter(el => (el.index !== null)).map(el => {
+                    if (!currentMood) {
+                        // no current mood
+                        el.selected = false;
+                        return el;
+                    } else {
+                        // not matching with current mood
+                        el.selected = (el.index === currentMood);
+                        return el;
+                    }
                 });
 
                 return emojisData;
@@ -65,7 +61,8 @@
             moodSelection(moodIndex, alreadySelected) {
                 if (!alreadySelected) {
                     this.$store.dispatch('updateCurrentUserMood', moodIndex);
-                    this.$router.push({ name: 'users' });
+                    // go back (sometimes home, or other times users view)
+                    this.$router.go(-1);
                 }
             }
         }
