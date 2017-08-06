@@ -4,6 +4,9 @@ $primary: #ff5722;
 $grey: #e7eaec;
 $selected-color:lighten($primary, 35%);
 $selected-focus-color:lighten($primary, 5%);
+$low-color: darken(red, 8%);
+$medium-color: darken(yellow, 8%);
+$high-color: darken(green, 5%);
 
 /* DIMENSIONS */
 $gutter-base: 9px;

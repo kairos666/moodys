@@ -46,9 +46,9 @@
             <ul class="mdl-card-holder">
                 <li>
                     <home-card>
-                        <span slot="header">today's median mood</span>
+                        <span slot="header">today's average mood</span>
                         <span slot="description">
-                            <median-mood></median-mood>
+                            <average-mood></average-mood>
                         </span>
                     </home-card>
                 </li>
@@ -75,7 +75,7 @@
     import emojiHelpers from '@/utils/emoji-helpers';
     import HomeCard from '@/components/nano/home-card';
     import Emoji from '@/components/nano/Emoji';
-    import MedianMood from '@/components/dashboard/median-mood';
+    import AverageMood from '@/components/dashboard/average-mood';
     import CompletionRate from '@/components/dashboard/completion-rate';
 
     export default {
@@ -93,7 +93,7 @@
         components: {
             'home-card': HomeCard,
             'emoji': Emoji,
-            'median-mood': MedianMood,
+            'average-mood': AverageMood,
             'completion-rate': CompletionRate
         }
     };
