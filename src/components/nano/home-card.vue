@@ -1,5 +1,5 @@
 <template>
-    <div class="mdl-card mdl-shadow--2dp profile-cards">
+    <div class="mdl-card mdl-shadow--2dp home-cards">
         <div class="spinner-holder" v-if="(!hasHeader && !hasDescription && !hasActions)">
             <spinner></spinner>
         </div>

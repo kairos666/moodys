@@ -7,7 +7,7 @@
             </header>
             <ul class="mdl-card-holder">
                 <li v-if="currentUserData"> <!-- if connected profile + edit profile button -->
-                    <home-card>
+                    <home-card class="home-card__profile">
                         <span slot="description">
                             <figure class="mood-figure">
                                 <emoji :mood="currentUserData.currentMood"></emoji>
@@ -28,7 +28,7 @@
                     </home-card>
                 </li>
                 <li v-if="!currentUserData"> <!-- if not connected profile + sign in / sign up -->
-                    <home-card>
+                    <home-card class="home-card__authenticate">
                         <span slot="header">no authenticated user</span>
                         <span slot="description">Please sign in/up if you want to access data on moodys</span>
                         <span slot="actions">
@@ -45,24 +45,20 @@
             </header>
             <ul class="mdl-card-holder">
                 <li>
-                    <home-card>
-                        <span slot="header">today's average mood</span>
+                    <home-card class="home-card__day-indicator">
+                        <span slot="header">Today's indicators</span>
                         <span slot="description">
+                            <completion-rate></completion-rate>
                             <average-mood></average-mood>
                         </span>
                     </home-card>
                 </li>
                 <li>
                     <home-card>
-                        <span slot="header">completion rate</span>
-                        <span slot="description">
-                            <completion-rate></completion-rate>
-                        </span>
-                    </home-card>
-                </li>
-                <li>
-                    <home-card>
                         <span slot="header">weekly average</span>
+                        <span slot="description">
+                            some stuff
+                        </span>
                     </home-card>
                 </li>
             </ul>

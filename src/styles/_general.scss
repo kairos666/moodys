@@ -31,12 +31,12 @@ h2 .material-icons { margin-right:$gutter-base; font-size:inherit; position:rela
 a .material-icons { margin-right:$gutter-base; }
 
 /* mood figure (mood icon + label) */
-.mood-figure { margin:0 0 0 1rem; float:right; display:flex; justify-content:flex-end; flex-direction:row-reverse; align-items:center;
+.mood-figure { display:flex; justify-content:flex-end; flex-direction:row-reverse; align-items:center;
   figcaption { margin-right:$gutter-base; }
 }
 
 /* completion figure (percentage + details on respondents) */
-.completion-figure { margin:0 0 0 1rem; float:right; display:flex; justify-content:flex-end; flex-direction:row-reverse; align-items:center;
+.completion-figure { display:flex; justify-content:flex-end; flex-direction:row-reverse; align-items:center;
   > span { display:block; font-size:px2rem(45); line-height:px2rem(53);
     &:after { content:'%'; font-size:.5em; }
   }
