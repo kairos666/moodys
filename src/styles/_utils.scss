@@ -6,6 +6,7 @@
     clear: both;
   }
 }
+.clearfix { @include clearfix; }
 
 /* SR ONLY */
 @mixin sr-only {
@@ -18,6 +19,7 @@
   clip: rect(0,0,0,0);
   border: 0;
 }
+.sr-only { @include sr-only; }
 
 /* font REM calculations */
 @function px2rem($px) {

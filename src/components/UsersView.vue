@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1><i class="material-icons">group</i>Users</h1>
+        <h1><i class="material-icons">group</i>Today's mood for all users</h1>
         <ul class="mdl-list">
             <li class="mdl-list__item mdl-list__item--two-line" @click.prevent="displayDetails(user.id)" :class="{ 'is-current-user':user.isCurrentUser }" v-for="user in users">
                 <span class="mdl-list__item-primary-content">

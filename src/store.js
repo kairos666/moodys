@@ -4,6 +4,7 @@ import firebaseConfig from '@/config/firebase';
 import firebaseHelpers from '@/utils/firebase-helpers';
 import asyncFeedback from '@/store-modules/async-state-module';
 import authModule from '@/store-modules/authentication-state-module';
+import statsModule from '@/store-modules/statistics-module';
 import firebase from 'firebase';
 
 Vue.use(Vuex);
@@ -17,7 +18,8 @@ let auth = firebase.auth(firebaseApp);
 const store = new Vuex.Store({
     modules: {
         asyncTransactions: asyncFeedback.asyncStateModule,
-        auth: authModule.authStore(auth)
+        auth: authModule.authStore(auth),
+        stats: statsModule
     },
     state: {
         users: {},

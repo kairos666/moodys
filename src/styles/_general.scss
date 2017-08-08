@@ -25,6 +25,20 @@ html body { font-family: "Roboto","Helvetica","Arial",sans-serif;
 
 /* headers */
 h1 .material-icons { margin-right:$gutter-base*2; font-size:inherit; position:relative; top:9px; }
+h2 .material-icons { margin-right:$gutter-base; font-size:inherit; position:relative; top:9px; }
 
 /* links */
 a .material-icons { margin-right:$gutter-base; }
+
+/* mood figure (mood icon + label) */
+.mood-figure { display:flex; justify-content:flex-end; flex-direction:row-reverse; align-items:center;
+  figcaption { margin-right:$gutter-base; }
+}
+
+/* completion figure (percentage + details on respondents) */
+.completion-figure { display:flex; justify-content:flex-end; flex-direction:row-reverse; align-items:center;
+  > span { display:block; font-size:px2rem(45); line-height:px2rem(53);
+    &:after { content:'%'; font-size:.5em; }
+  }
+  figcaption { margin-right:$gutter-base; }
+}
