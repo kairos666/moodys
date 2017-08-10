@@ -1,7 +1,7 @@
 <template>
     <figure class="chart-figure">
-        <line-chart :data="barChartData" :options="barChartOptions"></line-chart>
-        <figcaption>chart caption</figcaption>
+        <line-chart :data="lineChartData" :options="lineChartOptions"></line-chart>
+        <figcaption>chart caption <i class="icon-apocalyptic"></i></figcaption>
     </figure>
 </template>
 
@@ -11,7 +11,7 @@
     export default {
         data() {
             return {
-                barChartData: {
+                lineChartData: {
                     labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
                     datasets: [
                         {
@@ -31,19 +31,32 @@
                         }
                     ]
                 },
-                barChartOptions: {
+                lineChartOptions: {
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
                         yAxes: [{
                             ticks: {
-                                fontFamily: 'Material Icons',
+                                fontFamily: 'icomoon',
+                                fontSize: 24,
+                                padding: 10,
                                 callback: function(value, index, values) {
                                     // match each value with corresponding font icon
-                                    // console.log('value: ', value);
-                                    // console.log('values: ', values);
-                                    // console.log('index: ', index);
-                                    return '';
+                                    let iconLabel;
+                                    switch (value) {
+                                    case -5: iconLabel = ''; break;
+                                    case -4: iconLabel = ''; break;
+                                    case -3: iconLabel = ''; break;
+                                    case -2: iconLabel = ''; break;
+                                    case -1: iconLabel = ''; break;
+                                    case 0: iconLabel = ''; break;
+                                    case 1: iconLabel = ''; break;
+                                    case 2: iconLabel = ''; break;
+                                    case 3: iconLabel = ''; break;
+                                    case 4: iconLabel = ''; break;
+                                    case 5: iconLabel = ''; break;
+                                    }
+                                    return iconLabel;
                                 }
                             }
                         }]
@@ -58,5 +71,5 @@
 </script>
 
 <style scoped lang="scss">
-    
+    @import '../../styles/_moodies-icon-font.scss';
 </style>
