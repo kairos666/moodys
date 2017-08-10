@@ -39,7 +39,7 @@
                             ticks: {
                                 fontFamily: 'icomoon',
                                 fontSize: 24,
-                                padding: 10,
+                                padding: 5,
                                 callback: function(value, index, values) {
                                     // match each value with corresponding font icon
                                     let iconLabel;
