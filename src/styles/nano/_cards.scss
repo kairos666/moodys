@@ -4,7 +4,7 @@
 
 /* layout */
 .mdl-card-holder {
-    .mdl-card { width:100%; }
+    .mdl-card { width:calc(100% - .1px); }
 }
 
 /**
@@ -20,6 +20,7 @@
 .home-card__profile {
     .mood-figure { margin:0 0 0 1rem; float:right; }
 }
+/*** specific home card | MY WEEK ***/
 /*** specific home card | AUTHENTICATE-CARD ***/
 /*** specific home card | DAY-INDICATOR-CARD ***/
 .home-card__day-indicator {

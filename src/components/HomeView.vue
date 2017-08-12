@@ -27,6 +27,18 @@
                         </span>
                     </home-card>
                 </li>
+                <li v-if="currentUserData"> <!-- if connected weekly status -->
+                    <home-card class="home-card__weekly-user-chart">
+                        <span slot="header">my week</span>
+                        <span slot="description">
+                            <weekly-chart :datasets="[{
+                                label: 'Laurent Maggi',
+                                backgroundColor: 'rgba(0, 150, 136, .5)',
+                                data: [5, 4, -2, 1, -5]
+                            }]"></weekly-chart>
+                        </span>
+                    </home-card>
+                </li>
                 <li v-if="!currentUserData"> <!-- if not connected profile + sign in / sign up -->
                     <home-card class="home-card__authenticate">
                         <span slot="header">no authenticated user</span>
@@ -57,7 +69,21 @@
                     <home-card class="home-card__weekly-chart">
                         <span slot="header">weekly average</span>
                         <span slot="description">
-                            <weekly-chart></weekly-chart>
+                            <weekly-chart :datasets="[{
+                                label: 'David Maggi',
+                                backgroundColor: 'rgba(63, 81, 181, .5)',
+                                data: [-4, -3, -2, -1, 0]
+                            },
+                            {
+                                label: 'Jinglu Dai',
+                                backgroundColor: 'rgba(156, 39, 176, .5)',
+                                data: [5, -5, 4, -4, 0]
+                            },
+                            {
+                                label: 'Laurent Maggi',
+                                backgroundColor: 'rgba(0, 150, 136, .5)',
+                                data: [5, 4, -2, 1, -5]
+                            }]"></weekly-chart>
                         </span>
                     </home-card>
                 </li>

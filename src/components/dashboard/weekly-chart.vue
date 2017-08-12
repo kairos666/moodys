@@ -1,6 +1,6 @@
 <template>
     <figure class="chart-figure">
-        <line-chart :data="lineChartData" :options="lineChartOptions"></line-chart>
+        <line-chart :data="chartData" :options="lineChartOptions"></line-chart>
         <figcaption>chart caption <i class="icon-apocalyptic"></i></figcaption>
     </figure>
 </template>
@@ -9,27 +9,12 @@
     import LineChart from '@/components/nano/line-chart';
     
     export default {
+        props: ['datasets'],
         data() {
             return {
                 lineChartData: {
                     labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-                    datasets: [
-                        {
-                            label: 'David Maggi',
-                            backgroundColor: 'rgba(63, 81, 181, .5)',
-                            data: [-4, -3, -2, -1, 0]
-                        },
-                        {
-                            label: 'Jinglu Dai',
-                            backgroundColor: 'rgba(156, 39, 176, .5)',
-                            data: [5, -5, 4, -4, 0]
-                        },
-                        {
-                            label: 'Laurent Maggi',
-                            backgroundColor: 'rgba(0, 150, 136, .5)',
-                            data: [5, 4, -2, 1, -5]
-                        }
-                    ]
+                    datasets: []
                 },
                 lineChartOptions: {
                     responsive: true,
@@ -64,6 +49,11 @@
                 }
             };
         },
+        computed: {
+            chartData() {
+                return Object.assign(this.lineChartData, { datasets: this.datasets });
+            }
+        },
         components: {
             'line-chart': LineChart
         }
@@ -72,4 +62,5 @@
 
 <style scoped lang="scss">
     @import '../../styles/_moodies-icon-font.scss';
+    .chart-figure { margin:0; }
 </style>
