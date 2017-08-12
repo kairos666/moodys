@@ -31,13 +31,13 @@ const store = new Vuex.Store({
             // no authenticated user case (no data mood case)
             if (!state.auth.currentFirebaseUser) return null;
             // authenticated case
-            return firebaseHelpers.getCurrentMood(state.moods, state.auth.currentFirebaseUser.uid);
+            return firebaseHelpers.getCurrentMood(state.daysmoods, state.auth.currentFirebaseUser.uid);
         },
         usersArray(state) {
             // no authenticated user case
             if (!state.auth.currentFirebaseUser) return [];
             // authenticated case
-            return firebaseHelpers.formatUsersToArray(state.users, state.auth.currentFirebaseUser.uid, state.moods);
+            return firebaseHelpers.formatUsersToArray(state.users, state.auth.currentFirebaseUser.uid, state.daysmoods);
         }
     },
     mutations: {

@@ -42,30 +42,14 @@ let getAllMoods = function() {
 
 /**
  * get current mood from uid user
- * @param {Object} moodsObj
+ * @param {Object} daysmoodsObj
  * @param {String} uid
  * @return {String|null} current mood of this user
  */
-let getCurrentMood = function(moodsObj, uid) {
-    // get timestamp limit for today
-    let now = new Date();
-    let timestampThresholdForToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-
-    // get registered timestamps sorted from newer to older
-    let sortedKeys = Object.keys(moodsObj).reverse();
-
-    // get registered timestamps sorted and limited to today entries
-    let relevantKeysIndexThreshold = sortedKeys.findIndex(timestamp => (timestamp < timestampThresholdForToday));
-    let relevantKeys = (relevantKeysIndexThreshold !== -1) ? sortedKeys.splice(0, relevantKeysIndexThreshold) : sortedKeys;
-
-    // extract user current mood (if exists)
-    if (relevantKeys.length !== 0) {
-        let foundMood = relevantKeys.map(timestamp => moodsObj[timestamp]).find(item => (item.uid === uid));
-        // return value corresponding to uid user
-        if (foundMood) return foundMood.value;
-    }
-
-    // otherwise return the no data value
+let getCurrentMood = function(daymoodsObj, uid) {
+    // find, if exists, relevant entry in object
+    let foundUserEntryForTheDay = Object.keys(daymoodsObj).find(item => (item === uid));
+    if (foundUserEntryForTheDay !== undefined) return daymoodsObj[foundUserEntryForTheDay].value;
     return null;
 };
 
