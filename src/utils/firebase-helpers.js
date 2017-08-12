@@ -83,6 +83,21 @@ let onAllMoodsChange = function(cb, isToBeShutDown) {
 };
 
 /**
+ * get notified on all day's moods updates
+ * @param {function(FirebaseSnapshot)} cb
+ * @param {Boolean} isToBeShutDown
+ */
+let onDayMoodsChange = function(cb, isToBeShutDown) {
+    let now = new Date();
+    let dayTimestamp = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    if (!isToBeShutDown) {
+        firebaseDB.ref(`daysmoods/${dayTimestamp}`).orderByKey().on('value', cb);
+    } else {
+        firebaseDB.ref(`daysmoods/${dayTimestamp}`).orderByKey().off('value', cb);
+    }
+};
+
+/**
  * add mood entry
  * @param {String} moodIndex
  * @param {String} userId
@@ -90,11 +105,15 @@ let onAllMoodsChange = function(cb, isToBeShutDown) {
 let addMoodEntry = function(moodIndex, userId) {
     if (moodsConfig.moodIndexes.includes(moodIndex)) {
         // mood entry
-        let timestamp = Date.now();
-        let moodEntry = { value: moodIndex, timestamp: timestamp, uid: userId };
+        let now = new Date();
+        let timestamp = now.getTime();
+        let dayTimestamp = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+        let moodEntry = { value: moodIndex, dayTimestamp: dayTimestamp, timestamp: timestamp, uid: userId };
 
-        // send to firebase
+        // send to firebase - all moods
         firebaseDB.ref(`moods/${timestamp}`).set(moodEntry);
+        // send to firebase - today's moods
+        firebaseDB.ref(`daysmoods/${dayTimestamp}/${userId}`).set(moodEntry);
     } else {
         throw new Error(`Try to update user ${userId}'s mood with invalid index: ${moodIndex}`);
     }
@@ -104,6 +123,7 @@ let addMoodEntry = function(moodIndex, userId) {
  * add user metadata corresponding to user account (in addition to email and password)
  * @param {String} userID
  * @param {Object} userMetaData
+ * @return {Promise}
  */
 let setUserEntry = function(userID, userMetaData) {
     return firebaseDB.ref(`users/${userID}`).set(userMetaData);
@@ -148,5 +168,6 @@ export default {
     onAllUsersChange: onAllUsersChange,
     addMoodEntry: addMoodEntry,
     setUserEntry: setUserEntry,
-    formatUsersToArray: formatUsersToArray
+    formatUsersToArray: formatUsersToArray,
+    onDayMoodsChange: onDayMoodsChange
 };
