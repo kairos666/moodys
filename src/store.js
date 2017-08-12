@@ -23,20 +23,21 @@ const store = new Vuex.Store({
     },
     state: {
         users: {},
-        moods: {}
+        moods: {},
+        daysmoods: {}
     },
     getters: {
         currentUserMood(state) {
             // no authenticated user case (no data mood case)
             if (!state.auth.currentFirebaseUser) return null;
             // authenticated case
-            return firebaseHelpers.getCurrentMood(state.moods, state.auth.currentFirebaseUser.uid);
+            return firebaseHelpers.getCurrentMood(state.daysmoods, state.auth.currentFirebaseUser.uid);
         },
         usersArray(state) {
             // no authenticated user case
             if (!state.auth.currentFirebaseUser) return [];
             // authenticated case
-            return firebaseHelpers.formatUsersToArray(state.users, state.auth.currentFirebaseUser.uid, state.moods);
+            return firebaseHelpers.formatUsersToArray(state.users, state.auth.currentFirebaseUser.uid, state.daysmoods);
         }
     },
     mutations: {
@@ -45,6 +46,9 @@ const store = new Vuex.Store({
         },
         updateMoods(state, payload) {
             state.moods = payload;
+        },
+        updateDaysMoods(state, payload) {
+            state.daysmoods = payload;
         }
     },
     actions: {

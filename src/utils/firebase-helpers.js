@@ -42,30 +42,14 @@ let getAllMoods = function() {
 
 /**
  * get current mood from uid user
- * @param {Object} moodsObj
+ * @param {Object} daysmoodsObj
  * @param {String} uid
  * @return {String|null} current mood of this user
  */
-let getCurrentMood = function(moodsObj, uid) {
-    // get timestamp limit for today
-    let now = new Date();
-    let timestampThresholdForToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-
-    // get registered timestamps sorted from newer to older
-    let sortedKeys = Object.keys(moodsObj).reverse();
-
-    // get registered timestamps sorted and limited to today entries
-    let relevantKeysIndexThreshold = sortedKeys.findIndex(timestamp => (timestamp < timestampThresholdForToday));
-    let relevantKeys = (relevantKeysIndexThreshold !== -1) ? sortedKeys.splice(0, relevantKeysIndexThreshold) : sortedKeys;
-
-    // extract user current mood (if exists)
-    if (relevantKeys.length !== 0) {
-        let foundMood = relevantKeys.map(timestamp => moodsObj[timestamp]).find(item => (item.uid === uid));
-        // return value corresponding to uid user
-        if (foundMood) return foundMood.value;
-    }
-
-    // otherwise return the no data value
+let getCurrentMood = function(daymoodsObj, uid) {
+    // find, if exists, relevant entry in object
+    let foundUserEntryForTheDay = Object.keys(daymoodsObj).find(item => (item === uid));
+    if (foundUserEntryForTheDay !== undefined) return daymoodsObj[foundUserEntryForTheDay].value;
     return null;
 };
 
@@ -83,6 +67,21 @@ let onAllMoodsChange = function(cb, isToBeShutDown) {
 };
 
 /**
+ * get notified on all day's moods updates
+ * @param {function(FirebaseSnapshot)} cb
+ * @param {Boolean} isToBeShutDown
+ */
+let onDayMoodsChange = function(cb, isToBeShutDown) {
+    let now = new Date();
+    let dayTimestamp = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    if (!isToBeShutDown) {
+        firebaseDB.ref(`daysmoods/${dayTimestamp}`).orderByKey().on('value', cb);
+    } else {
+        firebaseDB.ref(`daysmoods/${dayTimestamp}`).orderByKey().off('value', cb);
+    }
+};
+
+/**
  * add mood entry
  * @param {String} moodIndex
  * @param {String} userId
@@ -90,11 +89,15 @@ let onAllMoodsChange = function(cb, isToBeShutDown) {
 let addMoodEntry = function(moodIndex, userId) {
     if (moodsConfig.moodIndexes.includes(moodIndex)) {
         // mood entry
-        let timestamp = Date.now();
-        let moodEntry = { value: moodIndex, timestamp: timestamp, uid: userId };
+        let now = new Date();
+        let timestamp = now.getTime();
+        let dayTimestamp = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+        let moodEntry = { value: moodIndex, dayTimestamp: dayTimestamp, timestamp: timestamp, uid: userId };
 
-        // send to firebase
+        // send to firebase - all moods
         firebaseDB.ref(`moods/${timestamp}`).set(moodEntry);
+        // send to firebase - today's moods
+        firebaseDB.ref(`daysmoods/${dayTimestamp}/${userId}`).set(moodEntry);
     } else {
         throw new Error(`Try to update user ${userId}'s mood with invalid index: ${moodIndex}`);
     }
@@ -104,6 +107,7 @@ let addMoodEntry = function(moodIndex, userId) {
  * add user metadata corresponding to user account (in addition to email and password)
  * @param {String} userID
  * @param {Object} userMetaData
+ * @return {Promise}
  */
 let setUserEntry = function(userID, userMetaData) {
     return firebaseDB.ref(`users/${userID}`).set(userMetaData);
@@ -148,5 +152,6 @@ export default {
     onAllUsersChange: onAllUsersChange,
     addMoodEntry: addMoodEntry,
     setUserEntry: setUserEntry,
-    formatUsersToArray: formatUsersToArray
+    formatUsersToArray: formatUsersToArray,
+    onDayMoodsChange: onDayMoodsChange
 };

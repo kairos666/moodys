@@ -29,9 +29,11 @@ let statsModule = {
 
             return result;
         },
-        todayCompletionObject(state, getters) {
+        todayCompletionObject(state, getters, rootState) {
+            // total nb of users
             let totalUsers = getters.usersArray.length;
-            let respondentUsers = getters.usersArray.filter(item => (item.currentMood !== null)).length;
+            // total nb of today's respondents
+            let respondentUsers = Object.keys(rootState.daysmoods).length;
             let completionRate = Math.round((respondentUsers / totalUsers) * 100);
 
             return new CompletionObject(completionRate, respondentUsers, totalUsers);

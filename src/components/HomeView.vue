@@ -54,10 +54,10 @@
                     </home-card>
                 </li>
                 <li>
-                    <home-card>
+                    <home-card class="home-card__weekly-chart">
                         <span slot="header">weekly average</span>
                         <span slot="description">
-                            some stuff
+                            <weekly-chart></weekly-chart>
                         </span>
                     </home-card>
                 </li>
@@ -73,6 +73,7 @@
     import Emoji from '@/components/nano/Emoji';
     import AverageMood from '@/components/dashboard/average-mood';
     import CompletionRate from '@/components/dashboard/completion-rate';
+    import WeeklyChart from '@/components/dashboard/weekly-chart';
 
     export default {
         computed: {
@@ -90,7 +91,8 @@
             'home-card': HomeCard,
             'emoji': Emoji,
             'average-mood': AverageMood,
-            'completion-rate': CompletionRate
+            'completion-rate': CompletionRate,
+            'weekly-chart': WeeklyChart
         }
     };
 </script>
