@@ -31,11 +31,7 @@
                     <home-card class="home-card__weekly-user-chart">
                         <span slot="header">my week</span>
                         <span slot="description">
-                            <weekly-chart :datasets="[{
-                                label: 'Laurent Maggi',
-                                backgroundColor: 'rgba(0, 150, 136, .5)',
-                                data: [5, 4, -2, 1, -5]
-                            }]"></weekly-chart>
+                            <weekly-chart :datasets="[]"></weekly-chart>
                         </span>
                     </home-card>
                 </li>
@@ -69,7 +65,7 @@
                     <home-card class="home-card__weekly-chart">
                         <span slot="header">weekly average</span>
                         <span slot="description">
-                            <weekly-chart :datasets="[{
+                            <!-- <weekly-chart :datasets="[{
                                 label: 'David Maggi',
                                 backgroundColor: 'rgba(63, 81, 181, .5)',
                                 data: [-4, -3, -2, -1, 0]
@@ -83,7 +79,7 @@
                                 label: 'Laurent Maggi',
                                 backgroundColor: 'rgba(0, 150, 136, .5)',
                                 data: [5, 4, -2, 1, -5]
-                            }]"></weekly-chart>
+                            }]"></weekly-chart> -->
                         </span>
                     </home-card>
                 </li>
