@@ -1,5 +1,10 @@
 import moment from 'moment';
 
+let isWeekEnd = function() {
+    if (moment().format('d') === '0' || moment().format('d') === '6') return true;
+    return false;
+};
+
 let currentWeekTimestamps = function(isFullWeek) {
     let monday = moment().startOf('isoweek');
     let tuesday = moment().startOf('isoweek').add(1, 'days');
@@ -10,14 +15,15 @@ let currentWeekTimestamps = function(isFullWeek) {
     let sunday = moment().startOf('isoweek').add(6, 'days');
 
     if (!isFullWeek) {
-         return [monday.unix(), tuesday.unix(), wednesday.unix(), thursday.unix(), friday.unix()]
+        return [monday.unix(), tuesday.unix(), wednesday.unix(), thursday.unix(), friday.unix()]
             .map(timestamp => timestamp * 1000);
     } else {
-         return [monday.unix(), tuesday.unix(), wednesday.unix(), thursday.unix(), friday.unix(), saturday.unix(), sunday.unix()]
+        return [monday.unix(), tuesday.unix(), wednesday.unix(), thursday.unix(), friday.unix(), saturday.unix(), sunday.unix()]
             .map(timestamp => timestamp * 1000);
-    }   
+    }
 };
 
 export default {
-    currentWeekTimestamps: currentWeekTimestamps
+    currentWeekTimestamps: currentWeekTimestamps,
+    isWeekEnd: isWeekEnd
 };

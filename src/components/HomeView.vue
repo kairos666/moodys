@@ -31,6 +31,7 @@
                     <home-card class="home-card__weekly-user-chart">
                         <span slot="header">my week</span>
                         <span slot="description">
+                            {{currentUserWeekMoodArray}}
                             <weekly-chart :datasets="[]"></weekly-chart>
                         </span>
                     </home-card>
@@ -106,7 +107,8 @@
                 return (this.currentUserData) ? emojiHelpers.emojiData(this.currentUserData.currentMood) : '';
             },
             ...mapGetters({
-                usersArray: 'usersArray'
+                usersArray: 'usersArray',
+                currentUserWeekMoodArray: 'currentUserWeekMoods'
             })
         },
         components: {
