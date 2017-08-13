@@ -65,7 +65,9 @@
                     <home-card class="home-card__weekly-chart">
                         <span slot="header">weekly average</span>
                         <span slot="description">
-                            <weekly-chart :datasets="averageWeeklyMoodDataset" :full-week="isWeekEnd()"></weekly-chart>
+                            <weekly-chart :datasets="averageWeeklyMoodDataset" :full-week="isWeekEnd()">
+                                <span>all users taken into account</span>
+                            </weekly-chart>
                         </span>
                     </home-card>
                 </li>
@@ -95,15 +97,23 @@
             userWeeklyMoodDataset() {
                 return [{
                     label: `${this.currentUserData.firstname} ${this.currentUserData.lastname}`,
-                    backgroundColor: 'rgba(0, 150, 136, .5)',
-                    data: this.currentUserWeekMood.weekMoods
+                    backgroundColor: 'rgba(255, 87, 34, .6)',
+                    data: this.currentUserWeekMood.weekMoods,
+                    fill: 'start'
                 }];
             },
             averageWeeklyMoodDataset() {
                 return [{
                     label: `daily average mood`,
-                    backgroundColor: 'rgba(0, 150, 136, .5)',
-                    data: this.averageWeekMoods.weekMoods
+                    backgroundColor: 'rgba(255, 87, 34, .3)',
+                    borderColor: 'rgba(255, 87, 34, .3)',
+                    data: this.averageWeekMoods.weekMoods,
+                    fill: 'start'
+                }, {
+                    label: `${this.currentUserData.firstname} ${this.currentUserData.lastname}`,
+                    borderColor: 'rgba(255, 87, 34, .75)',
+                    data: this.currentUserWeekMood.weekMoods,
+                    fill: false
                 }];
             },
             ...mapGetters({

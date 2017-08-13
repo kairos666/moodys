@@ -1,7 +1,9 @@
 <template>
     <figure class="chart-figure">
         <line-chart :data="chartData" :options="lineChartOptions"></line-chart>
-        <figcaption>chart caption <i class="icon-apocalyptic"></i></figcaption>
+        <figcaption>
+            <slot></slot>
+        </figcaption>
     </figure>
 </template>
 
@@ -62,6 +64,8 @@
 </script>
 
 <style scoped lang="scss">
+    @import '../../styles/_variables.scss';
     @import '../../styles/_moodies-icon-font.scss';
     .chart-figure { margin:0; }
+    figcaption { padding-top:$gutter-base; text-align:center; }
 </style>
