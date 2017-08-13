@@ -44,6 +44,42 @@ let userWeekMoodFormat = function(moods, stampTargets, usersID) {
     return result;
 };
 
+let averageWeekMoodFormat = function(moods, stampTargets) {
+    let result = {
+        weekAverage: null,
+        weekMoods: []
+    };
+
+    // set week moods
+    let weekMoods = stampTargets.map(dayStamp => {
+        // map day entries
+        let weekDayEntry = moods[dayStamp];
+        if (weekDayEntry) return weekDayEntry;
+        return null;
+    }).map(weekDayEntry => {
+        // skip null entries
+        if (!weekDayEntry) return null;
+        // average day entry
+        let averageTempArray = Object.keys(weekDayEntry).map(uid => {
+            return weekDayEntry[uid].value;
+        }).filter(item => (item !== null && item !== 'sick' && item !== 'holiday')).map(item => parseInt(item));
+
+        return Math.round(averageTempArray.reduce((a, b) => {
+            return a + b;
+        }, 0) / averageTempArray.length);
+    });
+    result.weekMoods = weekMoods;
+
+    // calculate week average
+    let averageTempArray = weekMoods.filter(item => (item !== null && item !== 'sick' && item !== 'holiday'))
+        .map(item => parseInt(item));
+    result.weekAverage = Math.round(averageTempArray.reduce((a, b) => {
+        return a + b;
+    }, 0) / averageTempArray.length);
+
+    return result;
+};
+
 class CompletionObject {
     constructor(completionRate, respondentNb, totalUserNb) {
         this.completionRate = completionRate;
@@ -91,6 +127,19 @@ let statsModule = {
                 // default if no data is available
                 return {
                     uid: '',
+                    weekAverage: null,
+                    weekMoods: []
+                };
+            }
+        },
+        averageWeekMoods(state, getters, rootState) {
+            let targetDaysStamps = timeHelpers.currentWeekTimestamps(timeHelpers.isWeekEnd);
+            if (rootState.auth.currentFirebaseUser && rootState.weekmoods) {
+                // when enough data is available
+                return averageWeekMoodFormat(rootState.weekmoods, targetDaysStamps);
+            } else {
+                // default if no data is available
+                return {
                     weekAverage: null,
                     weekMoods: []
                 };
