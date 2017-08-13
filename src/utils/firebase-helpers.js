@@ -1,4 +1,5 @@
 import moodsConfig from '@/config/moods';
+import moment from 'moment';
 let firebaseDB;
 
 /**
@@ -72,12 +73,24 @@ let onAllMoodsChange = function(cb, isToBeShutDown) {
  * @param {Boolean} isToBeShutDown
  */
 let onDayMoodsChange = function(cb, isToBeShutDown) {
-    let now = new Date();
-    let dayTimestamp = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    let dayTimestamp = moment().startOf('date').unix() * 1000;
     if (!isToBeShutDown) {
         firebaseDB.ref(`daysmoods/${dayTimestamp}`).orderByKey().on('value', cb);
     } else {
         firebaseDB.ref(`daysmoods/${dayTimestamp}`).orderByKey().off('value', cb);
+    }
+};
+
+/**
+ * get notified on all week's moods updates
+ * @param {function(FirebaseSnapshot)} cb
+ * @param {Boolean} isToBeShutDown
+ */
+let onWeekMoodsChange = function(cb, isToBeShutDown) {
+    if (!isToBeShutDown) {
+        firebaseDB.ref(`daysmoods`).orderByKey().limitToLast(7).on('value', cb);
+    } else {
+        firebaseDB.ref(`daysmoods`).orderByKey().limitToLast(7).off('value', cb);
     }
 };
 
@@ -89,9 +102,8 @@ let onDayMoodsChange = function(cb, isToBeShutDown) {
 let addMoodEntry = function(moodIndex, userId) {
     if (moodsConfig.moodIndexes.includes(moodIndex)) {
         // mood entry
-        let now = new Date();
-        let timestamp = now.getTime();
-        let dayTimestamp = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+        let timestamp = moment().unix() * 1000;
+        let dayTimestamp = moment().startOf('date').unix() * 1000;
         let moodEntry = { value: moodIndex, dayTimestamp: dayTimestamp, timestamp: timestamp, uid: userId };
 
         // send to firebase - all moods
@@ -150,8 +162,9 @@ export default {
     getAllUsers: getAllUsers,
     onAllMoodsChange: onAllMoodsChange,
     onAllUsersChange: onAllUsersChange,
+    onDayMoodsChange: onDayMoodsChange,
+    onWeekMoodsChange: onWeekMoodsChange,
     addMoodEntry: addMoodEntry,
     setUserEntry: setUserEntry,
-    formatUsersToArray: formatUsersToArray,
-    onDayMoodsChange: onDayMoodsChange
+    formatUsersToArray: formatUsersToArray
 };

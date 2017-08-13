@@ -1,7 +1,9 @@
 <template>
     <figure class="chart-figure">
-        <line-chart :data="lineChartData" :options="lineChartOptions"></line-chart>
-        <figcaption>chart caption <i class="icon-apocalyptic"></i></figcaption>
+        <line-chart :data="chartData" :options="lineChartOptions"></line-chart>
+        <figcaption>
+            <slot></slot>
+        </figcaption>
     </figure>
 </template>
 
@@ -9,31 +11,17 @@
     import LineChart from '@/components/nano/line-chart';
     
     export default {
+        props: ['datasets', 'full-week'],
         data() {
             return {
                 lineChartData: {
-                    labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-                    datasets: [
-                        {
-                            label: 'David Maggi',
-                            backgroundColor: 'rgba(63, 81, 181, .5)',
-                            data: [-4, -3, -2, -1, 0]
-                        },
-                        {
-                            label: 'Jinglu Dai',
-                            backgroundColor: 'rgba(156, 39, 176, .5)',
-                            data: [5, -5, 4, -4, 0]
-                        },
-                        {
-                            label: 'Laurent Maggi',
-                            backgroundColor: 'rgba(0, 150, 136, .5)',
-                            data: [5, 4, -2, 1, -5]
-                        }
-                    ]
+                    labels: (this.fullWeek) ? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'staurday', 'sunday'] : ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+                    datasets: []
                 },
                 lineChartOptions: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    spanGaps: true,
                     scales: {
                         yAxes: [{
                             ticks: {
@@ -64,6 +52,11 @@
                 }
             };
         },
+        computed: {
+            chartData() {
+                return Object.assign(this.lineChartData, { datasets: this.datasets });
+            }
+        },
         components: {
             'line-chart': LineChart
         }
@@ -71,5 +64,8 @@
 </script>
 
 <style scoped lang="scss">
+    @import '../../styles/_variables.scss';
     @import '../../styles/_moodies-icon-font.scss';
+    .chart-figure { margin:0; }
+    figcaption { padding-top:$gutter-base; text-align:center; }
 </style>

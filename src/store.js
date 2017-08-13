@@ -24,7 +24,8 @@ const store = new Vuex.Store({
     state: {
         users: {},
         moods: {},
-        daysmoods: {}
+        daysmoods: {},
+        weekmoods: {}
     },
     getters: {
         currentUserMood(state) {
@@ -49,6 +50,9 @@ const store = new Vuex.Store({
         },
         updateDaysMoods(state, payload) {
             state.daysmoods = payload;
+        },
+        updateWeekMoods(state, payload) {
+            state.weekmoods = payload;
         }
     },
     actions: {

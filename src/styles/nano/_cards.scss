@@ -4,7 +4,7 @@
 
 /* layout */
 .mdl-card-holder {
-    .mdl-card { width:100%; }
+    .mdl-card { width:calc(100% - .1px); }
 }
 
 /**
@@ -19,6 +19,12 @@
 /*** specific home card | PROFILE-CARD ***/
 .home-card__profile {
     .mood-figure { margin:0 0 0 1rem; float:right; }
+}
+/*** specific home card | MY WEEK ***/
+/*** specific home card | MY WEEK AVERAGE ***/
+.home-card__weekly-user-average-indicator {
+    .mdl-card__supporting-text > * { display:flex; justify-content:space-between; }
+    .mood-figure { margin:0; padding-left:$gutter-base*2; flex:1 1 auto; justify-content:flex-start; }
 }
 /*** specific home card | AUTHENTICATE-CARD ***/
 /*** specific home card | DAY-INDICATOR-CARD ***/

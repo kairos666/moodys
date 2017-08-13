@@ -27,6 +27,25 @@
                         </span>
                     </home-card>
                 </li>
+                <li v-if="currentUserData">
+                    <home-card class="home-card__weekly-user-average-indicator">
+                        <span slot="header">my week average</span>
+                        <span slot="description">
+                            <figure class="mood-figure">
+                                <emoji :mood="currentUserWeekMood.weekAverage"></emoji>
+                                <figcaption>{{getEmojiLabelByValue(currentUserWeekMood.weekAverage)}}</figcaption>
+                            </figure>
+                        </span>
+                    </home-card>
+                </li>
+                <li v-if="currentUserData"> <!-- if connected weekly status -->
+                    <home-card class="home-card__weekly-user-chart">
+                        <span slot="header">my week</span>
+                        <span slot="description">
+                            <weekly-chart :datasets="userWeeklyMoodDataset" :full-week="isWeekEnd()"></weekly-chart>
+                        </span>
+                    </home-card>
+                </li>
                 <li v-if="!currentUserData"> <!-- if not connected profile + sign in / sign up -->
                     <home-card class="home-card__authenticate">
                         <span slot="header">no authenticated user</span>
@@ -46,7 +65,7 @@
             <ul class="mdl-card-holder">
                 <li>
                     <home-card class="home-card__day-indicator">
-                        <span slot="header">Today's indicators</span>
+                        <span slot="header">today's indicators</span>
                         <span slot="description">
                             <completion-rate></completion-rate>
                             <average-mood></average-mood>
@@ -57,7 +76,9 @@
                     <home-card class="home-card__weekly-chart">
                         <span slot="header">weekly average</span>
                         <span slot="description">
-                            <weekly-chart></weekly-chart>
+                            <weekly-chart :datasets="averageWeeklyMoodDataset" :full-week="isWeekEnd()">
+                                <span>all users taken into account</span>
+                            </weekly-chart>
                         </span>
                     </home-card>
                 </li>
@@ -74,6 +95,7 @@
     import AverageMood from '@/components/dashboard/average-mood';
     import CompletionRate from '@/components/dashboard/completion-rate';
     import WeeklyChart from '@/components/dashboard/weekly-chart';
+    import timeHelpers from '@/utils/time-helpers';
 
     export default {
         computed: {
@@ -83,9 +105,40 @@
             currentMood() {
                 return (this.currentUserData) ? emojiHelpers.emojiData(this.currentUserData.currentMood) : '';
             },
+            userWeeklyMoodDataset() {
+                return [{
+                    label: `${this.currentUserData.firstname} ${this.currentUserData.lastname}`,
+                    backgroundColor: 'rgba(255, 87, 34, .6)',
+                    data: this.currentUserWeekMood.weekMoods,
+                    fill: 'start'
+                }];
+            },
+            averageWeeklyMoodDataset() {
+                return [{
+                    label: `daily average mood`,
+                    backgroundColor: 'rgba(255, 87, 34, .3)',
+                    borderColor: 'rgba(255, 87, 34, .3)',
+                    data: this.averageWeekMoods.weekMoods,
+                    fill: 'start'
+                }, {
+                    label: `${this.currentUserData.firstname} ${this.currentUserData.lastname}`,
+                    borderColor: 'rgba(255, 87, 34, .75)',
+                    data: this.currentUserWeekMood.weekMoods,
+                    fill: false
+                }];
+            },
             ...mapGetters({
-                usersArray: 'usersArray'
+                usersArray: 'usersArray',
+                currentUserWeekMood: 'currentUserWeekMoods',
+                averageWeekMoods: 'averageWeekMoods'
             })
+        },
+        methods: {
+            isWeekEnd() { return timeHelpers.isWeekEnd() },
+            getEmojiLabelByValue(value) {
+                let relatedEmojiData = emojiHelpers.emojiData(value);
+                return (value && relatedEmojiData) ? emojiHelpers.emojiData(value).label : '';
+            }
         },
         components: {
             'home-card': HomeCard,
