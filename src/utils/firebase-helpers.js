@@ -82,6 +82,19 @@ let onDayMoodsChange = function(cb, isToBeShutDown) {
 };
 
 /**
+ * get notified on all week's moods updates
+ * @param {function(FirebaseSnapshot)} cb
+ * @param {Boolean} isToBeShutDown
+ */
+let onWeekMoodsChange = function(cb, isToBeShutDown) {
+    if (!isToBeShutDown) {
+        firebaseDB.ref(`daysmoods`).orderByKey().limitToLast(7).on('value', cb);
+    } else {
+        firebaseDB.ref(`daysmoods`).orderByKey().limitToLast(7).off('value', cb);
+    }
+};
+
+/**
  * add mood entry
  * @param {String} moodIndex
  * @param {String} userId
@@ -149,8 +162,9 @@ export default {
     getAllUsers: getAllUsers,
     onAllMoodsChange: onAllMoodsChange,
     onAllUsersChange: onAllUsersChange,
+    onDayMoodsChange: onDayMoodsChange,
+    onWeekMoodsChange: onWeekMoodsChange,
     addMoodEntry: addMoodEntry,
     setUserEntry: setUserEntry,
-    formatUsersToArray: formatUsersToArray,
-    onDayMoodsChange: onDayMoodsChange
+    formatUsersToArray: formatUsersToArray
 };

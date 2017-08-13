@@ -111,6 +111,10 @@ let authStore = auth => {
                     let daysMoodsUpdate = snapshot.val();
                     if (daysMoodsUpdate !== null) context.commit('updateDaysMoods', daysMoodsUpdate);
                 };
+                let weekMoodsUpdateCallback = function(snapshot) {
+                    let weekMoodsUpdate = snapshot.val();
+                    if (weekMoodsUpdate !== null) context.commit('updateWeekMoods', weekMoodsUpdate);
+                };
 
                 if (payload !== null) {
                     console.info('user connected: ', payload);
@@ -119,6 +123,7 @@ let authStore = auth => {
                     firebaseHelpers.onAllUsersChange(usersUpdateCallback);
                     firebaseHelpers.onAllMoodsChange(moodsUpdateCallback);
                     firebaseHelpers.onDayMoodsChange(daysMoodsUpdateCallback);
+                    firebaseHelpers.onWeekMoodsChange(weekMoodsUpdateCallback);
                 } else {
                     console.info('user disconnected');
 
@@ -126,6 +131,7 @@ let authStore = auth => {
                     firebaseHelpers.onAllUsersChange(usersUpdateCallback, true);
                     firebaseHelpers.onAllMoodsChange(moodsUpdateCallback, true);
                     firebaseHelpers.onDayMoodsChange(daysMoodsUpdateCallback, true);
+                    firebaseHelpers.onWeekMoodsChange(weekMoodsUpdateCallback, true);
 
                     // navigate back to home
                     router.push('/');
