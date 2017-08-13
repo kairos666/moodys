@@ -1,4 +1,5 @@
 import moodsConfig from '@/config/moods';
+import moment from 'moment';
 let firebaseDB;
 
 /**
@@ -72,8 +73,7 @@ let onAllMoodsChange = function(cb, isToBeShutDown) {
  * @param {Boolean} isToBeShutDown
  */
 let onDayMoodsChange = function(cb, isToBeShutDown) {
-    let now = new Date();
-    let dayTimestamp = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    let dayTimestamp = moment().startOf('date').unix() * 1000;
     if (!isToBeShutDown) {
         firebaseDB.ref(`daysmoods/${dayTimestamp}`).orderByKey().on('value', cb);
     } else {
@@ -89,9 +89,8 @@ let onDayMoodsChange = function(cb, isToBeShutDown) {
 let addMoodEntry = function(moodIndex, userId) {
     if (moodsConfig.moodIndexes.includes(moodIndex)) {
         // mood entry
-        let now = new Date();
-        let timestamp = now.getTime();
-        let dayTimestamp = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+        let timestamp = moment().unix() * 1000;
+        let dayTimestamp = moment().startOf('date').unix() * 1000;
         let moodEntry = { value: moodIndex, dayTimestamp: dayTimestamp, timestamp: timestamp, uid: userId };
 
         // send to firebase - all moods
