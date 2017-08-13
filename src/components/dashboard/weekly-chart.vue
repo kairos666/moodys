@@ -9,16 +9,17 @@
     import LineChart from '@/components/nano/line-chart';
     
     export default {
-        props: ['datasets'],
+        props: ['datasets', 'full-week'],
         data() {
             return {
                 lineChartData: {
-                    labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+                    labels: (this.fullWeek) ? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'staurday', 'sunday'] : ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
                     datasets: []
                 },
                 lineChartOptions: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    spanGaps: true,
                     scales: {
                         yAxes: [{
                             ticks: {

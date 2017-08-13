@@ -31,8 +31,7 @@
                     <home-card class="home-card__weekly-user-chart">
                         <span slot="header">my week</span>
                         <span slot="description">
-                            {{currentUserWeekMoodArray}}
-                            <weekly-chart :datasets="[]"></weekly-chart>
+                            <weekly-chart :datasets="userWeeklyMoodDataset" :full-week="isWeekEnd()"></weekly-chart>
                         </span>
                     </home-card>
                 </li>
@@ -97,6 +96,7 @@
     import AverageMood from '@/components/dashboard/average-mood';
     import CompletionRate from '@/components/dashboard/completion-rate';
     import WeeklyChart from '@/components/dashboard/weekly-chart';
+    import timeHelpers from '@/utils/time-helpers';
 
     export default {
         computed: {
@@ -106,10 +106,20 @@
             currentMood() {
                 return (this.currentUserData) ? emojiHelpers.emojiData(this.currentUserData.currentMood) : '';
             },
+            userWeeklyMoodDataset() {
+                return [{
+                    label: `${this.currentUserData.firstname} ${this.currentUserData.lastname}`,
+                    backgroundColor: 'rgba(0, 150, 136, .5)',
+                    data: this.currentUserWeekMood.weekMoods
+                }];
+            },
             ...mapGetters({
                 usersArray: 'usersArray',
-                currentUserWeekMoodArray: 'currentUserWeekMoods'
+                currentUserWeekMood: 'currentUserWeekMoods'
             })
+        },
+        methods: {
+            isWeekEnd() { return timeHelpers.isWeekEnd() }
         },
         components: {
             'home-card': HomeCard,
