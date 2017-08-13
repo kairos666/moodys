@@ -27,6 +27,17 @@
                         </span>
                     </home-card>
                 </li>
+                <li v-if="currentUserData">
+                    <home-card class="home-card__weekly-user-average-indicator">
+                        <span slot="header">my week average</span>
+                        <span slot="description">
+                            <figure class="mood-figure">
+                                <emoji :mood="currentUserWeekMood.weekAverage"></emoji>
+                                <figcaption>{{getEmojiLabelByValue(currentUserWeekMood.weekAverage)}}</figcaption>
+                            </figure>
+                        </span>
+                    </home-card>
+                </li>
                 <li v-if="currentUserData"> <!-- if connected weekly status -->
                     <home-card class="home-card__weekly-user-chart">
                         <span slot="header">my week</span>
@@ -54,7 +65,7 @@
             <ul class="mdl-card-holder">
                 <li>
                     <home-card class="home-card__day-indicator">
-                        <span slot="header">Today's indicators</span>
+                        <span slot="header">today's indicators</span>
                         <span slot="description">
                             <completion-rate></completion-rate>
                             <average-mood></average-mood>
@@ -123,7 +134,11 @@
             })
         },
         methods: {
-            isWeekEnd() { return timeHelpers.isWeekEnd() }
+            isWeekEnd() { return timeHelpers.isWeekEnd() },
+            getEmojiLabelByValue(value) {
+                let relatedEmojiData = emojiHelpers.emojiData(value);
+                return (value && relatedEmojiData) ? emojiHelpers.emojiData(value).label : '';
+            }
         },
         components: {
             'home-card': HomeCard,
