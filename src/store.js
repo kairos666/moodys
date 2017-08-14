@@ -5,6 +5,7 @@ import firebaseHelpers from '@/utils/firebase-helpers';
 import asyncFeedback from '@/store-modules/async-state-module';
 import authModule from '@/store-modules/authentication-state-module';
 import statsModule from '@/store-modules/statistics-module';
+import offlineModule from '@/store-modules/offline-module';
 import firebase from 'firebase';
 
 Vue.use(Vuex);
@@ -19,7 +20,8 @@ const store = new Vuex.Store({
     modules: {
         asyncTransactions: asyncFeedback.asyncStateModule,
         auth: authModule.authStore(auth),
-        stats: statsModule
+        stats: statsModule,
+        offline: offlineModule.offlineStore(db)
     },
     state: {
         users: {},
@@ -66,6 +68,11 @@ const store = new Vuex.Store({
 // set auth status change handler
 auth.onAuthStateChanged(resp => {
     store.dispatch('updateAuthUser', resp);
+});
+
+// set db connection change handler
+db.ref('.info/connected').on('value', snap => {
+    store.dispatch('updateDBConnectionStatus', (snap.val() === true));
 });
 
 export default store;
