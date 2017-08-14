@@ -1,5 +1,6 @@
 let offlineModule = database => {
     return {
+        namespaced: true,
         state: {
             isDBOnline: false
         },

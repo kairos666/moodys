@@ -72,7 +72,7 @@ auth.onAuthStateChanged(resp => {
 
 // set db connection change handler
 db.ref('.info/connected').on('value', snap => {
-    store.dispatch('updateDBConnectionStatus', (snap.val() === true));
+    store.dispatch('offline/updateDBConnectionStatus', (snap.val() === true));
 });
 
 export default store;
