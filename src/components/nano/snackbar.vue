@@ -1,44 +1,46 @@
 <template>
-    <aside v-if="isSnackbarShown">{{snackbarContent}}</aside>
+    <aside class="snack" v-if="isSnackbarShown">
+        <transition-group name="snack-list">
+            <section class="snack__item" v-for="(item, index) in snacks" v-bind:key="index" v-html="item"></section>
+        </transition-group>
+    </aside>
 </template>
 
 <script>
     import { mapState } from 'vuex';
+    import snackBarMessages from '@/config/snack-bar-messages';
 
     // react to all changes in snackable data
     export default {
         data() {
             return {
-                isSnackbarShown: false,
-                snackbarContent: ''
+                snacks: []
             };
         },
         computed: {
+            isSnackbarShown() { return (this.snacks.length !== 0) },
             ...mapState('offline/', {
                 isDBOnline: 'isDBOnline'
             })
         },
         methods: {
-            showSnackBar(content) {
-                // show
-                this.snackbarContent = content;
-                this.isSnackbarShown = true;
+            startSnack(content) {
+                this.snacks.push(content);
 
-                // timed hiding
-                setTimeout(() => {
-                    this.isSnackbarShown = false;
-                    this.snackbarContent = '';
-                }, 1500);
+                setTimeout(this.endSnack, 1500);
+            },
+            endSnack() {
+                this.snacks.shift();
             }
         },
         watch: {
             isDBOnline(val) {
                 if (val) {
                     // connected to DB
-                    this.showSnackBar('database connected');
+                    this.startSnack(snackBarMessages.onlineDB);
                 } else {
                     // disconnected from DB
-                    this.showSnackBar('database disconnected');
+                    this.startSnack(snackBarMessages.offlineDB);
                 }
             }
         }
@@ -48,5 +50,9 @@
 <style scoped lang="scss">
     @import '../../styles/_variables.scss';
     @import '../../styles/_utils.scss';
-    aside { position:fixed; z-index:666; border-radius:2px; right:$gutter-base; bottom:$gutter-base; padding:$gutter-base; background-color:$snack-bar-bg; color:#fff; }
+
+    aside { position:fixed; z-index:666; right:$gutter-base; bottom:$gutter-base; }
+
+    .snack-list-enter-active, .snack-list-leave-active { transition: all .5s; }
+    .snack-list-enter, .snack-list-leave-to { opacity: 0; transform: translateY(30px); }
 </style>
