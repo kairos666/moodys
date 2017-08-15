@@ -37,9 +37,12 @@ let userWeekMoodFormat = function(moods, stampTargets, usersID) {
     // calculate week average
     let averageTempArray = weekMoods.filter(item => (item !== null && item !== 'sick' && item !== 'holiday'))
         .map(item => parseInt(item));
-    result.weekAverage = '' + Math.round(averageTempArray.reduce((a, b) => {
-        return a + b;
-    }, 0) / averageTempArray.length);
+
+    if (averageTempArray.length !== 0) {
+        result.weekAverage = '' + Math.round(averageTempArray.reduce((a, b) => {
+            return a + b;
+        }, 0) / averageTempArray.length);
+    }
 
     return result;
 };
@@ -73,9 +76,12 @@ let averageWeekMoodFormat = function(moods, stampTargets) {
     // calculate week average
     let averageTempArray = weekMoods.filter(item => (item !== null && item !== 'sick' && item !== 'holiday'))
         .map(item => parseInt(item));
-    result.weekAverage = '' + Math.round(averageTempArray.reduce((a, b) => {
-        return a + b;
-    }, 0) / averageTempArray.length);
+
+    if (averageTempArray.length !== 0) {
+        result.weekAverage = '' + Math.round(averageTempArray.reduce((a, b) => {
+            return a + b;
+        }, 0) / averageTempArray.length);
+    }
 
     return result;
 };
