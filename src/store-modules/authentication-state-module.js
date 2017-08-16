@@ -6,6 +6,7 @@ let authStore = auth => {
     // return store module
     return {
         state: {
+            isInitalAuthDone: false,
             currentFirebaseUser: null
         },
         getters: {
@@ -16,6 +17,9 @@ let authStore = auth => {
         mutations: {
             updateAuthUser(state, payload) {
                 state.currentFirebaseUser = payload;
+            },
+            initialAuthDone(state) {
+                state.isInitalAuthDone = true;
             }
         },
         actions: {
@@ -98,6 +102,9 @@ let authStore = auth => {
                 });
             },
             updateAuthUser(context, payload) {
+                // first time = initial auto login resolution is a success
+                if (!context.isInitalAuthDone) context.dispatch('initialAuthDone', true);
+
                 // prepare callbacks
                 let usersUpdateCallback = function(snapshot) {
                     let usersUpdate = snapshot.val();
@@ -137,6 +144,9 @@ let authStore = auth => {
                     router.push('/');
                 }
                 context.commit('updateAuthUser', payload);
+            },
+            initialAuthDone(context) {
+                context.commit('initialAuthDone');
             }
         }
     };
