@@ -103,12 +103,15 @@ let authStore = auth => {
             },
             updateAuthUser(context, payload) {
                 // first time = initial auto login resolution is a success
-                if (!context.isInitalAuthDone) context.dispatch('initialAuthDone', true);
+                if (!context.isInitalAuthDone) context.dispatch('initialAuthDone');
 
                 // prepare callbacks
                 let usersUpdateCallback = function(snapshot) {
                     let usersUpdate = snapshot.val();
-                    if (usersUpdate !== null) context.commit('updateUsers', usersUpdate);
+                    if (usersUpdate !== null) {
+                        context.commit('updateUsers', usersUpdate);
+                        context.dispatch('initialAuthDone');
+                    }
                 };
                 let moodsUpdateCallback = function(snapshot) {
                     let moodsUpdate = snapshot.val();

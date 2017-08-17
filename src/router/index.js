@@ -10,6 +10,7 @@ import ResetPassword from '@/components/ResetPassword';
 import SignUp from '@/components/SignUp';
 import Profile from '@/components/Profile';
 import PageNotFound from '@/components/PageNotFound';
+import InitialLoading from '@/components/InitialLoading';
 
 Vue.use(Router);
 
@@ -65,6 +66,11 @@ const VueRouter = new Router({
             component: InputUserView
         },
         {
+            path: '/loading',
+            name: 'initial-loading',
+            component: InitialLoading
+        },
+        {
             path: '*',
             name: '404',
             component: PageNotFound
@@ -72,7 +78,25 @@ const VueRouter = new Router({
     ]
 });
 
+let delayFirstNavigation = (to, router, storeInstance) => {
+    // react to change
+    storeInstance.watch(
+        state => state.auth.isInitalAuthDone,
+        value => {
+            if (value) router.push(to.path);
+        }
+    );
+};
+
 VueRouter.beforeEach((to, from, next) => {
+    if (!store.state.auth.isInitalAuthDone && to.name !== 'initial-loading') {
+        delayFirstNavigation(to, VueRouter, store);
+
+        // cancel current navigation
+        next('/loading');
+        return;
+    }
+
     // public pages
     if (!routeRuleFinder(to.name)) {
         next();
@@ -97,7 +121,6 @@ VueRouter.beforeEach((to, from, next) => {
 
     // need authentication and none was provided, go to sign in/up
     if (routeRuleFinder(to.name) && !store.getters.isAuthenticated) {
-        console.warn('TODO need to handle cases where user have bearer token but not yet authenticated --> trigger when navigating to guarded link to soon');
         next('/authenticate');
     }
 });
