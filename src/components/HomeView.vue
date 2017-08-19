@@ -73,6 +73,17 @@
                     </home-card>
                 </li>
                 <li>
+                    <home-card class="home-card__day-indicator">
+                        <span slot="header">week overall average</span>
+                        <span slot="description">
+                            <figure class="mood-figure">
+                                <emoji :mood="averageWeekMoods.weekAverage"></emoji>
+                                <figcaption>{{weekOverallMood.label}}</figcaption>
+                            </figure>
+                        </span>
+                    </home-card>
+                </li>
+                <li>
                     <home-card class="home-card__weekly-chart">
                         <span slot="header">weekly average</span>
                         <span slot="description">
@@ -104,6 +115,9 @@
             },
             currentMood() {
                 return (this.currentUserData) ? emojiHelpers.emojiData(this.currentUserData.currentMood) : '';
+            },
+            weekOverallMood() {
+                return (this.averageWeekMoods) ? emojiHelpers.emojiData(this.averageWeekMoods.weekAverage) : '';
             },
             userWeeklyMoodDataset() {
                 return [{
