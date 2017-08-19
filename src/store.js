@@ -2,6 +2,7 @@ import Vuex from 'vuex';
 import Vue from 'vue';
 import firebaseConfig from '@/config/firebase';
 import firebaseHelpers from '@/utils/firebase-helpers';
+import LSHelpers from '@/utils/local-storage-helpers';
 import asyncFeedback from '@/store-modules/async-state-module';
 import authModule from '@/store-modules/authentication-state-module';
 import statsModule from '@/store-modules/statistics-module';
@@ -9,6 +10,9 @@ import offlineModule from '@/store-modules/offline-module';
 import firebase from 'firebase';
 
 Vue.use(Vuex);
+
+// local storage retrieval
+let localyStored = LSHelpers.getAll();
 
 // firebase setup
 let firebaseApp = firebase.initializeApp(firebaseConfig);
@@ -24,10 +28,10 @@ const store = new Vuex.Store({
         offline: offlineModule.offlineStore(db)
     },
     state: {
-        users: {},
-        moods: {},
-        daysmoods: {},
-        weekmoods: {}
+        users: (localyStored.users) ? localyStored.users : {},
+        moods: (localyStored.moods) ? localyStored.moods : {},
+        daysmoods: (localyStored.dayMoods) ? localyStored.dayMoods : {},
+        weekmoods: (localyStored.weekMoods) ? localyStored.weekMoods : {}
     },
     getters: {
         currentUserMood(state) {
@@ -46,15 +50,19 @@ const store = new Vuex.Store({
     mutations: {
         updateUsers(state, payload) {
             state.users = payload;
+            LSHelpers.setAllUsers(payload);
         },
         updateMoods(state, payload) {
             state.moods = payload;
+            LSHelpers.setAllMoods(payload);
         },
         updateDaysMoods(state, payload) {
             state.daysmoods = payload;
+            LSHelpers.setDayMoods(payload);
         },
         updateWeekMoods(state, payload) {
             state.weekmoods = payload;
+            LSHelpers.setWeekMoods(payload);
         }
     },
     actions: {

@@ -1,5 +1,6 @@
 import router from '@/router/index';
 import firebaseHelpers from '@/utils/firebase-helpers';
+import LSHelpers from '@/utils/local-storage-helpers';
 import asyncFeedback from '@/store-modules/async-state-module';
 
 let authStore = auth => {
@@ -142,6 +143,9 @@ let authStore = auth => {
                     firebaseHelpers.onAllMoodsChange(moodsUpdateCallback, true);
                     firebaseHelpers.onDayMoodsChange(daysMoodsUpdateCallback, true);
                     firebaseHelpers.onWeekMoodsChange(weekMoodsUpdateCallback, true);
+
+                    // clean local storage
+                    LSHelpers.removeLocalyStoredData();
 
                     // navigate back to home
                     router.push('/');
