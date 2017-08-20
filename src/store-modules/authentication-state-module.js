@@ -1,11 +1,13 @@
 import router from '@/router/index';
 import firebaseHelpers from '@/utils/firebase-helpers';
+import LSHelpers from '@/utils/local-storage-helpers';
 import asyncFeedback from '@/store-modules/async-state-module';
 
 let authStore = auth => {
     // return store module
     return {
         state: {
+            isInitalAuthDone: false,
             currentFirebaseUser: null
         },
         getters: {
@@ -16,6 +18,9 @@ let authStore = auth => {
         mutations: {
             updateAuthUser(state, payload) {
                 state.currentFirebaseUser = payload;
+            },
+            initialAuthDone(state) {
+                state.isInitalAuthDone = true;
             }
         },
         actions: {
@@ -98,10 +103,16 @@ let authStore = auth => {
                 });
             },
             updateAuthUser(context, payload) {
+                // first time = initial auto login resolution is a success
+                if (!context.isInitalAuthDone) context.dispatch('initialAuthDone');
+
                 // prepare callbacks
                 let usersUpdateCallback = function(snapshot) {
                     let usersUpdate = snapshot.val();
-                    if (usersUpdate !== null) context.commit('updateUsers', usersUpdate);
+                    if (usersUpdate !== null) {
+                        context.commit('updateUsers', usersUpdate);
+                        context.dispatch('initialAuthDone');
+                    }
                 };
                 let moodsUpdateCallback = function(snapshot) {
                     let moodsUpdate = snapshot.val();
@@ -133,10 +144,16 @@ let authStore = auth => {
                     firebaseHelpers.onDayMoodsChange(daysMoodsUpdateCallback, true);
                     firebaseHelpers.onWeekMoodsChange(weekMoodsUpdateCallback, true);
 
+                    // clean local storage
+                    LSHelpers.removeLocalyStoredData();
+
                     // navigate back to home
                     router.push('/');
                 }
                 context.commit('updateAuthUser', payload);
+            },
+            initialAuthDone(context) {
+                context.commit('initialAuthDone');
             }
         }
     };

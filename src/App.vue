@@ -21,11 +21,13 @@
                 </transition>
             </div>
         </main>
+        <snack-bar></snack-bar>
     </div>
 </template>
 
 <script>
     import ProfileNav from '@/components/nano/profile-nav';
+    import SnackBar from '@/components/nano/snackbar';
     require('material-design-lite');
 
     export default {
@@ -37,7 +39,8 @@
             }
         },
         components: {
-            'profile-nav': ProfileNav
+            'profile-nav': ProfileNav,
+            'snack-bar': SnackBar
         }
     };
 </script>
@@ -50,4 +53,5 @@
     @import './styles/_include-media.scss';
     @import './styles/_general.scss';
     @import './styles/_forms.scss';
+    @import './styles/nano/_snackbar.scss';
 </style>

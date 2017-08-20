@@ -1,0 +1,4 @@
+.snack {
+    .snack__item { min-width:150px; border-radius:2px; padding:$gutter-base; background-color:$snack-bar-bg; color:#fff; text-transform:uppercase; margin-top:$gutter-base; }
+    .material-icons { vertical-align:bottom; margin-right:$gutter-base; }
+}

@@ -1,5 +1,5 @@
 <template>
-    <form>
+    <form v-if="currentUserData">
         <header class="mdl-list__item">
             <span class="mdl-list__item-primary-content">
                 <img class="material-icons mdl-list__item-avatar" :src="currentUserData.avatar" :alt="('avatar de ' + currentUserData.firstname)" >
