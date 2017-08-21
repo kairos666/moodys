@@ -2,15 +2,15 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import store from '@/store';
 import accessRules from '@/config/access';
-import UsersView from '@/components/UsersView';
-import InputUserView from '@/components/InputUserView';
 import HomeView from '@/components/HomeView';
-import SignInView from '@/components/SignInView';
-import ResetPassword from '@/components/ResetPassword';
-import SignUp from '@/components/SignUp';
-import Profile from '@/components/Profile';
-import PageNotFound from '@/components/PageNotFound';
-import InitialLoading from '@/components/InitialLoading';
+const UsersView = () => import('@/components/UsersView');
+const InputUserView = () => import('@/components/InputUserView');
+const SignInView = () => import('@/components/SignInView');
+const ResetPassword = () => import('@/components/ResetPassword');
+const SignUp = () => import('@/components/SignUp');
+const Profile = () => import('@/components/Profile');
+const PageNotFound = () => import('@/components/PageNotFound');
+const InitialLoading = () => import('@/components/InitialLoading');
 
 Vue.use(Router);
 
