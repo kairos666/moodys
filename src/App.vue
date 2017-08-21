@@ -2,7 +2,7 @@
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
         <header class="mdl-layout__header">
             <div class="mdl-layout__header-row">
-                <span class="mdl-layout-title">Moodys</span>
+                <span class="mdl-layout-title"><img src="/static/img/icons/favicon-32x32.png" />Moodys <small>[alpha]</small></span>
                 <div class="mdl-layout-spacer"></div>
                 <profile-nav></profile-nav>
             </div>
@@ -54,4 +54,6 @@
     @import './styles/_general.scss';
     @import './styles/_forms.scss';
     @import './styles/nano/_snackbar.scss';
+
+    .mdl-layout-title img { margin-right:$gutter-base; }
 </style>
