@@ -128,7 +128,7 @@ let authStore = auth => {
                 };
 
                 if (payload !== null) {
-                    console.info('user connected: ', payload);
+                    // console.info('user connected: ', payload);
 
                     // setup updates listeners
                     firebaseHelpers.onAllUsersChange(usersUpdateCallback);
@@ -136,7 +136,7 @@ let authStore = auth => {
                     firebaseHelpers.onDayMoodsChange(daysMoodsUpdateCallback);
                     firebaseHelpers.onWeekMoodsChange(weekMoodsUpdateCallback);
                 } else {
-                    console.info('user disconnected');
+                    // console.info('user disconnected');
 
                     // close updates listeners
                     firebaseHelpers.onAllUsersChange(usersUpdateCallback, true);
