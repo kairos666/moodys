@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 let isLocalStorageAvailableFinder = function() {
     // modernizr technic
     let test = 'test';
@@ -72,11 +74,24 @@ let setAllMoods = (dataObj) => setLS(storageKeys.moods, dataObj);
 let removeAllMoods = () => removeLS(storageKeys.moods);
 
 /* DAY MOODS */
-let getDayMoods = () => getLS(storageKeys.dayMoods);
+let getDayMoods = () => {
+    // retrieve local storage unfiltered (may be older than 1 day)
+    let dayMoods = getLS(storageKeys.dayMoods);
+    if (!dayMoods) return dayMoods;
+
+    // filter out entries that are too old
+    let dayThreshold = moment().startOf('date').unix() * 1000;
+    let toBeDeletedKeys = Object.keys(dayMoods).filter(uid => (dayMoods[uid].dayTimestamp < dayThreshold));
+    toBeDeletedKeys.forEach(key => {
+        delete dayMoods[key];
+    });
+
+    return dayMoods;
+};
 let setDayMoods = (dataObj) => setLS(storageKeys.dayMoods, dataObj);
 let removeDayMoods = () => removeLS(storageKeys.dayMoods);
 
-/* WEEK MOODS */
+/* WEEK MOODS (no need to filter out older keys, this is done in statistics computations) */
 let getWeekMoods = () => getLS(storageKeys.weekMoods);
 let setWeekMoods = (dataObj) => setLS(storageKeys.weekMoods, dataObj);
 let removeWeekMoods = () => removeLS(storageKeys.weekMoods);
