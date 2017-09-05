@@ -40,7 +40,6 @@
         },
         computed: {
             routeClass() {
-                console.log(this.$route);
                 return (this.$route && this.$route.name) ? this.$route.name.replace(' ', '-') : '';
             }
         },

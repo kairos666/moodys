@@ -173,6 +173,7 @@
         h2 { color:#fff; }
     }
 
+    /* section level layout */
     @include media("<=large-desktop") {
         .profile-section,
         .auth-section {
@@ -191,7 +192,19 @@
             }
         }
     }
+
+    /* inner section level layout */
     .mdl-card-holder { list-style:none; padding-left:0; margin:-$gutter-base;
         > li { padding:$gutter-base; box-sizing:border-box; }
+    }
+    .mdl-card-holder {
+        @include media(">tablet", "<=large-desktop") { display:flex; flex-wrap:wrap;
+            > li { flex-grow:0; flex-basis:50%; }
+        }
+        .dashboard-section & {
+            @include media(">large-desktop") { display:flex; flex-wrap:wrap;
+                > li { flex-grow:0; flex-basis:50%; }
+            }
+        }
     }
 </style>
