@@ -10,7 +10,7 @@
 /**
 *   HOME CARDS
 **/
-.home-cards { background-color:rgba(lighten($grey, 2%), .5); justify-content:space-between; min-height:$home-cards-min-height;
+.home-cards { background-color:rgba(255, 255, 255, .65); justify-content:space-between; min-height:$home-cards-min-height;
     .mdl-card__supporting-text { width:auto; }
     .mdl-card__actions { text-align:right; }
     .mdl-card__media { background-color:transparent; }

@@ -5,6 +5,11 @@ html body { font-family: "Roboto","Helvetica","Arial",sans-serif;
   p { margin-bottom:$gutter-base; }
 }
 
+/* route specific styles in content */
+.page-content {
+  &.home { background-image:radial-gradient(farthest-side ellipse at 10% 0, lighten($primary, 15%) 30%, lighten($primary, 25%)); }
+}
+
 /* page transitions */
 .fade-enter-active, .fade-leave-active {
   transition: all $page-tr-duration ease;
