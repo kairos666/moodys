@@ -6,7 +6,8 @@ html body { font-family: "Roboto","Helvetica","Arial",sans-serif;
 }
 
 /* route specific styles in content */
-.page-content {
+.page-content { box-sizing:border-box; min-height:calc(100vh - #{$header-big-height});
+  @include media("<=large-desktop") { min-height:calc(100vh - #{$header-small-height}); }
   &.home { background-image:radial-gradient(farthest-side ellipse at 10% 0, lighten($primary, 15%) 30%, lighten($primary, 25%)); }
 }
 
