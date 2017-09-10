@@ -78,20 +78,11 @@
                         <home-card class="home-card__allrespondent-profile-short-box">
                             <span slot="header">mood per respondent user</span>
                             <div slot="description">
-                                <figure class="profile-figure">
-                                    <img class="avatar" :src="currentUserData.avatar" :alt="('avatar de ' + currentUserData.firstname + ' ' + currentUserData.lastname)" >
-                                    <figcaption>
-                                        <span class="name">{{currentUserData.firstname}} {{currentUserData.lastname}}</span>
-                                        <span class="motto">{{currentUserData.motto}}</span>
-                                    </figcaption>
-                                </figure>
-                                <figure class="profile-figure">
-                                    <img class="avatar" :src="currentUserData.avatar" :alt="('avatar de ' + currentUserData.firstname + ' ' + currentUserData.lastname)" >
-                                    <figcaption>
-                                        <span class="name">{{currentUserData.firstname}} {{currentUserData.lastname}}</span>
-                                        <span class="motto">{{currentUserData.motto}}</span>
-                                    </figcaption>
-                                </figure>
+                                <ul>
+                                    <li v-for="someUser in usersArray.filter(user => (user.currentMood))">
+                                        <profile-box :user="someUser" :mood="someUser.currentMood"></profile-box>
+                                    </li>
+                                </ul>
                             </div>
                         </home-card>
                     </li>
