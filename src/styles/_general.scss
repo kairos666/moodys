@@ -35,9 +35,13 @@ h2 .material-icons { margin-right:$gutter-base; font-size:inherit; position:rela
 /* links */
 a .material-icons { margin-right:$gutter-base; }
 
-/* mood figure (mood icon + label) */
+/* mood figure (mood label + icon) */
 .mood-figure { display:flex; justify-content:flex-end; flex-direction:row-reverse; align-items:center;
   figcaption { margin-right:$gutter-base; }
+  &.aligned-right { justify-content:flex-start; }
+  &.aligned-left { justify-content:flex-start; flex-direction:row;
+    figcaption { margin-right:0; margin-left:$gutter-base; }
+  }
 }
 
 /* completion figure (percentage + details on respondents) */

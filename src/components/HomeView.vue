@@ -35,21 +35,25 @@
                                     </figcaption>
                                 </figure>
                             </span>
+                            <span slot="actions">
+                                <router-link class="mdl-button" :to="{ name: 'profile' }">edit profile</router-link>
+                                <router-link class="mdl-button mdl-button--colored" :to="{ name: 'mood-input' }">update mood</router-link>
+                            </span>
                         </home-card>
                     </li>
                     <li>
-                        <home-card class="home-card__profile-mood-box">
-                            <div slot="description">
+                        <home-card class="home-card__mood-box home-card__mood-box-profile">
+                            <div slot="description" class="home-card__mood-box_inner">
                                 <section>
                                     <h3>today's mood</h3>
-                                    <figure class="mood-figure">
+                                    <figure class="mood-figure aligned-right">
                                         <emoji :mood="'-5'"></emoji>
                                         <figcaption>apocalyptic</figcaption>
                                     </figure>
                                 </section>
                                 <section>
                                     <h3>my week's average mood</h3>
-                                    <figure class="mood-figure">
+                                    <figure class="mood-figure aligned-left">
                                         <emoji :mood="'1'"></emoji>
                                         <figcaption>ok</figcaption>
                                     </figure>
@@ -65,18 +69,18 @@
                 </header>
                 <ul class="mdl-card-holder">
                     <li>
-                        <home-card class="home-card__allusers-mood-box">
-                            <div slot="description">
+                        <home-card class="home-card__mood-box home-card__mood-box-allusers">
+                            <div slot="description" class="home-card__mood-box_inner">
                                 <section>
                                     <h3>today's average mood</h3>
-                                    <figure class="mood-figure">
+                                    <figure class="mood-figure aligned-right">
                                         <emoji :mood="'-1'"></emoji>
                                         <figcaption>meh</figcaption>
                                     </figure>
                                 </section>
                                 <section>
                                     <h3>week's average mood</h3>
-                                    <figure class="mood-figure">
+                                    <figure class="mood-figure aligned-left">
                                         <emoji :mood="'1'"></emoji>
                                         <figcaption>ok</figcaption>
                                     </figure>

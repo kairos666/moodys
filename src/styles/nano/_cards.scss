@@ -1,5 +1,25 @@
+/*** specific home card | PROFILE-CARD ***/
+// .home-card__profile {
+//     .mood-figure { margin:0 0 0 1rem; float:right; }
+// }
+/*** specific home card | MY WEEK ***/
+/*** specific home card | MY WEEK AVERAGE ***/
+// .home-card__weekly-user-average-indicator {
+//     .mdl-card__supporting-text > * { display:flex; justify-content:space-between; }
+//     .mood-figure { margin:0; padding-left:$gutter-base*2; flex:1 1 auto; justify-content:flex-start; }
+// }
+/*** specific home card | AUTHENTICATE-CARD ***/
+/*** specific home card | DAY-INDICATOR-CARD ***/
+// .home-card__day-indicator {
+//     .mdl-card__supporting-text > * { display:flex; justify-content:space-between; }
+//     .mood-figure, .completion-figure { flex:1 1 auto; }
+//     .mood-figure { margin:0; padding-left:$gutter-base*2; justify-content:flex-start; }
+//     .completion-figure { margin:0; }
+// }
+/*** specific home card | WEEKLY-CHART-CARD ***/
+
 /**
-*   CARDS STYLES GENERALS
+*   CARDS STYLES GENERALS V2
 **/
 
 /* layout */
@@ -11,31 +31,30 @@
 *   HOME CARDS
 **/
 .home-cards { background-color:rgba(255, 255, 255, .65); justify-content:space-between; min-height:$home-cards-min-height;
+    h3 { font-size:px2rem(24); line-height:px2rem(21); font-weight:300; color:#000; margin:0; }
     .mdl-card__supporting-text { width:auto; }
     .mdl-card__actions { text-align:right; }
     .mdl-card__media { background-color:transparent; }
 }
 
-/*** specific home card | PROFILE-CARD ***/
-.home-card__profile {
-    .mood-figure { margin:0 0 0 1rem; float:right; }
+/*** home card profile ***/
+.home-card__profile-box .profile-figure { margin:0; overflow:hidden;
+    img { float:left; border-radius:25%; margin-right:16px; }
+    figcaption { overflow:hidden;
+        span { display:block; }
+        .name { font-size:px2rem(16); line-height:px2rem(21); color:rgba(0,0,0,.87); }
+        .motto { font-size:px2rem(14); line-height:px2rem(18); color:rgba(0,0,0,.54); }
+    }
 }
-/*** specific home card | MY WEEK ***/
-/*** specific home card | MY WEEK AVERAGE ***/
-.home-card__weekly-user-average-indicator {
-    .mdl-card__supporting-text > * { display:flex; justify-content:space-between; }
-    .mood-figure { margin:0; padding-left:$gutter-base*2; flex:1 1 auto; justify-content:flex-start; }
-}
-/*** specific home card | AUTHENTICATE-CARD ***/
-/*** specific home card | DAY-INDICATOR-CARD ***/
-.home-card__day-indicator {
-    .mdl-card__supporting-text > * { display:flex; justify-content:space-between; }
-    .mood-figure, .completion-figure { flex:1 1 auto; }
-    .mood-figure { margin:0; padding-left:$gutter-base*2; justify-content:flex-start; }
-    .completion-figure { margin:0; }
-}
-/*** specific home card | WEEKLY-CHART-CARD ***/
 
-/**
-*   CARDS STYLES GENERALS (V2)
-**/
+/*** home card mood box ***/
+.home-card__mood-box {
+    h3 { padding-bottom:32px; }
+    .home-card__mood-box_inner { display:flex;
+        > * { flex:1 0 50%; box-sizing:border-box; min-height:($home-cards-min-height - 32);
+            &:first-child { padding-right:(2*$gutter-base - 1px); border-right:1px solid rgba(0, 0, 0, .5); text-align:right; }
+            &:last-child { padding-left:2*$gutter-base; }
+        }
+    }
+    .mood-figure { margin:0; }
+}
