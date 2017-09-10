@@ -27,13 +27,7 @@
                     <li>
                         <home-card class="home-card__profile-box">
                             <span slot="description">
-                                <figure class="profile-figure">
-                                    <img class="avatar" :src="currentUserData.avatar" :alt="('avatar de ' + currentUserData.firstname + ' ' + currentUserData.lastname)" >
-                                    <figcaption>
-                                        <span class="name">{{currentUserData.firstname}} {{currentUserData.lastname}}</span>
-                                        <span class="motto">{{currentUserData.motto}}</span>
-                                    </figcaption>
-                                </figure>
+                                <profile-box :user="currentUserData"></profile-box>
                             </span>
                             <span slot="actions">
                                 <router-link class="mdl-button" :to="{ name: 'profile' }">edit profile</router-link>
@@ -43,21 +37,13 @@
                     </li>
                     <li>
                         <home-card class="home-card__mood-box home-card__mood-box-profile">
-                            <div slot="description" class="home-card__mood-box_inner">
-                                <section>
-                                    <h3>today's mood</h3>
-                                    <figure class="mood-figure aligned-right">
-                                        <emoji :mood="'-5'"></emoji>
-                                        <figcaption>apocalyptic</figcaption>
-                                    </figure>
-                                </section>
-                                <section>
-                                    <h3>my week's average mood</h3>
-                                    <figure class="mood-figure aligned-left">
-                                        <emoji :mood="'1'"></emoji>
-                                        <figcaption>ok</figcaption>
-                                    </figure>
-                                </section>
+                            <div slot="description">
+                                <double-mood-box 
+                                    :title-left="'today\'s mood'" 
+                                    :mood-left="'-4'" 
+                                    :mood-right="'1'"
+                                    :title-right="'my week\'s average mood'"
+                                ></double-mood-box>
                             </div>
                         </home-card>
                     </li>
@@ -70,21 +56,13 @@
                 <ul class="mdl-card-holder">
                     <li>
                         <home-card class="home-card__mood-box home-card__mood-box-allusers">
-                            <div slot="description" class="home-card__mood-box_inner">
-                                <section>
-                                    <h3>today's average mood</h3>
-                                    <figure class="mood-figure aligned-right">
-                                        <emoji :mood="'-1'"></emoji>
-                                        <figcaption>meh</figcaption>
-                                    </figure>
-                                </section>
-                                <section>
-                                    <h3>week's average mood</h3>
-                                    <figure class="mood-figure aligned-left">
-                                        <emoji :mood="'1'"></emoji>
-                                        <figcaption>ok</figcaption>
-                                    </figure>
-                                </section>
+                            <div slot="description">
+                                <double-mood-box 
+                                    :title-left="'today\'s average mood'" 
+                                    :mood-left="'-1'" 
+                                    :mood-right="'1'"
+                                    :title-right="'week\'s average mood'"
+                                ></double-mood-box>
                             </div>
                         </home-card>
                     </li>
@@ -127,6 +105,8 @@
     import { mapGetters } from 'vuex';
     import HomeCard from '@/components/nano/home-card';
     import Emoji from '@/components/nano/Emoji';
+    import ProfileBox from '@/components/nano/profile-box';
+    import DoubleMoodBox from '@/components/dashboard/double-mood-box';
     import WeeklyChart from '@/components/dashboard/weekly-chart';
     import timeHelpers from '@/utils/time-helpers';
 
@@ -161,6 +141,8 @@
         components: {
             'home-card': HomeCard,
             'emoji': Emoji,
+            'profile-box': ProfileBox,
+            'double-mood-box': DoubleMoodBox,
             'weekly-chart': WeeklyChart
         }
     };
