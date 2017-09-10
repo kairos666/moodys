@@ -42,7 +42,7 @@
     h3 { font-size:px2rem(24); line-height:px2rem(21); font-weight:300; color:#000; margin:0; padding-bottom:px2rem(32); }
     .double-mood-box { display:flex;
         > * { flex:1 0 50%; box-sizing:border-box; min-height:($home-cards-min-height - 32);
-            &:first-child { padding-right:(2*$gutter-base - 1px); border-right:1px solid rgba(0, 0, 0, .5); text-align:right; }
+            &:first-child { padding-right:(2*$gutter-base - 1px); border-right:1px solid rgba($primary, .5); text-align:right; }
             &:last-child { padding-left:2*$gutter-base; }
         }
     }

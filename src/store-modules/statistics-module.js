@@ -1,4 +1,5 @@
 import emojiHelpers from '@/utils/emoji-helpers';
+import moment from 'moment';
 import timeHelpers from '@/utils/time-helpers';
 
 /**
@@ -150,6 +151,20 @@ let statsModule = {
                     weekMoods: []
                 };
             }
+        },
+        averageTodayMoods(state, getters, rootState) {
+            let dayStamp = moment().startOf('date').unix() * 1000;
+            let todayEntries = rootState.weekmoods[dayStamp.toString()];
+            if (!todayEntries) return null;
+
+            let averageTempArray = Object.keys(todayEntries).map(uid => {
+                return todayEntries[uid].value;
+            })
+            .filter(item => (item !== null && item !== 'sick' && item !== 'holiday')).map(item => parseInt(item));
+
+            return '' + Math.round(averageTempArray.reduce((a, b) => {
+                return a + b;
+            }, 0) / averageTempArray.length);
         }
     }
 };

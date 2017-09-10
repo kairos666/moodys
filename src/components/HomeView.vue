@@ -40,8 +40,8 @@
                             <div slot="description">
                                 <double-mood-box 
                                     :title-left="'today\'s mood'" 
-                                    :mood-left="'-4'" 
-                                    :mood-right="'1'"
+                                    :mood-left="$store.getters.currentUserMood" 
+                                    :mood-right="$store.getters.currentUserWeekMoods.weekAverage"
                                     :title-right="'my week\'s average mood'"
                                 ></double-mood-box>
                             </div>
@@ -59,8 +59,8 @@
                             <div slot="description">
                                 <double-mood-box 
                                     :title-left="'today\'s average mood'" 
-                                    :mood-left="'-1'" 
-                                    :mood-right="'1'"
+                                    :mood-left="averageTodayMoods" 
+                                    :mood-right="averageWeekMoods.weekAverage"
                                     :title-right="'week\'s average mood'"
                                 ></double-mood-box>
                             </div>
@@ -131,8 +131,9 @@
             },
             ...mapGetters({
                 usersArray: 'usersArray',
-                currentUserWeekMood: 'currentUserWeekMoods',
-                averageWeekMoods: 'averageWeekMoods'
+                currentUserWeekMood: 'currentUserWeekMoods', // currentuser today mood
+                averageWeekMoods: 'averageWeekMoods', // all users average moods for the whole week
+                averageTodayMoods: 'averageTodayMoods' // all users average mood for today
             })
         },
         methods: {
