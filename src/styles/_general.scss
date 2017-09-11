@@ -5,6 +5,12 @@ html body { font-family: "Roboto","Helvetica","Arial",sans-serif;
   p { margin-bottom:$gutter-base; }
 }
 
+/* route specific styles in content */
+.page-content { box-sizing:border-box; min-height:calc(100vh - #{$header-big-height});
+  @include media("<=large-desktop") { min-height:calc(100vh - #{$header-small-height}); }
+  &.home { background:url('/static/img/dashboard-bg.jpg') no-repeat; background-size:cover; }
+}
+
 /* page transitions */
 .fade-enter-active, .fade-leave-active {
   transition: all $page-tr-duration ease;
@@ -30,15 +36,11 @@ h2 .material-icons { margin-right:$gutter-base; font-size:inherit; position:rela
 /* links */
 a .material-icons { margin-right:$gutter-base; }
 
-/* mood figure (mood icon + label) */
+/* mood figure (mood label + icon) */
 .mood-figure { display:flex; justify-content:flex-end; flex-direction:row-reverse; align-items:center;
   figcaption { margin-right:$gutter-base; }
-}
-
-/* completion figure (percentage + details on respondents) */
-.completion-figure { display:flex; justify-content:flex-end; flex-direction:row-reverse; align-items:center;
-  > span { display:block; font-size:px2rem(45); line-height:px2rem(53);
-    &:after { content:'%'; font-size:.5em; }
+  &.aligned-right { justify-content:flex-start; }
+  &.aligned-left { justify-content:flex-start; flex-direction:row;
+    figcaption { margin-right:0; margin-left:$gutter-base; }
   }
-  figcaption { margin-right:$gutter-base; }
 }

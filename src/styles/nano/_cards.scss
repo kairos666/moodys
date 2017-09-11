@@ -1,5 +1,5 @@
 /**
-*   CARDS STYLES GENERALS
+*   CARDS STYLES GENERALS V2
 **/
 
 /* layout */
@@ -10,28 +10,26 @@
 /**
 *   HOME CARDS
 **/
-.home-cards { background-color:lighten($grey, 2%); justify-content:space-between; min-height:$home-cards-min-height;
+.home-cards { background-color:rgba(255, 255, 255, .65); justify-content:space-between; min-height:$home-cards-min-height;
     .mdl-card__supporting-text { width:auto; }
     .mdl-card__actions { text-align:right; }
     .mdl-card__media { background-color:transparent; }
 }
 
-/*** specific home card | PROFILE-CARD ***/
-.home-card__profile {
-    .mood-figure { margin:0 0 0 1rem; float:right; }
+/*** home all users box ***/
+.home-card__allrespondent-profile-short-box {
+    ul { list-style:none; padding-left:0;
+      > li { padding-top:$gutter-base;
+        &:first-child { padding-top:0; }
+      }
+    }
+
+    // completion box visible only for small screens
+    .completion-figure { margin-top:2*$gutter-base; }
+    @include media(">tablet") { 
+        .completion-figure { display:none; }
+    }
 }
-/*** specific home card | MY WEEK ***/
-/*** specific home card | MY WEEK AVERAGE ***/
-.home-card__weekly-user-average-indicator {
-    .mdl-card__supporting-text > * { display:flex; justify-content:space-between; }
-    .mood-figure { margin:0; padding-left:$gutter-base*2; flex:1 1 auto; justify-content:flex-start; }
-}
-/*** specific home card | AUTHENTICATE-CARD ***/
-/*** specific home card | DAY-INDICATOR-CARD ***/
-.home-card__day-indicator {
-    .mdl-card__supporting-text > * { display:flex; justify-content:space-between; }
-    .mood-figure, .completion-figure { flex:1 1 auto; }
-    .mood-figure { margin:0; padding-left:$gutter-base*2; justify-content:flex-start; }
-    .completion-figure { margin:0; }
-}
-/*** specific home card | WEEKLY-CHART-CARD ***/
+
+/*** home single completion box ***/
+.home-card__single-respondent-box .mdl-card__supporting-text { font-size:1.5em; display:flex; flex-direction:column; justify-content:center; }

@@ -15,7 +15,7 @@
             </nav>
         </div>
         <main class="mdl-layout__content">
-            <div class="page-content">
+            <div class="page-content" :class="routeClass">
                 <transition name="fade" mode="out-in">
                     <router-view></router-view>
                 </transition>
@@ -36,6 +36,11 @@
             hideMenu: function() {
                 this.$refs.drawer.classList.remove('is-visible');
                 document.getElementsByClassName('mdl-layout__obfuscator')[0].classList.remove('is-visible');
+            }
+        },
+        computed: {
+            routeClass() {
+                return (this.$route && this.$route.name) ? this.$route.name.replace(' ', '-') : '';
             }
         },
         components: {
