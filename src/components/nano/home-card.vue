@@ -49,6 +49,7 @@
 <style scoped lang="scss">
     @import '../../styles/_variables.scss';
     @import '../../styles/_utils.scss';
+    @import '../../styles/_include-media.scss';
     @import '../../styles/nano/_cards.scss';
     .spinner-holder { position:absolute; top:50%; left:50%; margin-left:-14px; margin-top:-18px; }
     .mdl-card__title-text > *,

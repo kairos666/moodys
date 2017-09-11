@@ -54,6 +54,13 @@
                     <h2><i class="material-icons">insert_chart</i>Moodys dashboard</h2>
                 </header>
                 <ul class="mdl-card-holder">
+                    <li class="singular-respondent-container">
+                        <home-card class="home-card__single-respondent-box">
+                            <div slot="description">
+                                <completion-rate :completion-data="$store.getters.todayCompletionObject"></completion-rate>
+                            </div>
+                        </home-card>
+                    </li>
                     <li>
                         <home-card class="home-card__mood-box home-card__mood-box-allusers">
                             <div slot="description">
@@ -83,6 +90,7 @@
                                         <profile-box :user="someUser" :mood="someUser.currentMood"></profile-box>
                                     </li>
                                 </ul>
+                                <completion-rate :completion-data="$store.getters.todayCompletionObject"></completion-rate>
                             </div>
                         </home-card>
                     </li>
@@ -98,6 +106,7 @@
     import Emoji from '@/components/nano/Emoji';
     import ProfileBox from '@/components/nano/profile-box';
     import DoubleMoodBox from '@/components/dashboard/double-mood-box';
+    import CompletionRate from '@/components/dashboard/completion-rate';
     import WeeklyChart from '@/components/dashboard/weekly-chart';
     import timeHelpers from '@/utils/time-helpers';
 
@@ -135,6 +144,7 @@
             'emoji': Emoji,
             'profile-box': ProfileBox,
             'double-mood-box': DoubleMoodBox,
+            'completion-rate': CompletionRate,
             'weekly-chart': WeeklyChart
         }
     };
@@ -169,6 +179,11 @@
                 h2 { margin-top:0; }
             }
         }
+    }
+
+    // specific case - show single respondent box from tablet and above
+    @include media("<=tablet") {
+        .singular-respondent-container { display:none; }
     }
 
     /* inner section level layout */

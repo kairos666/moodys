@@ -44,11 +44,3 @@ a .material-icons { margin-right:$gutter-base; }
     figcaption { margin-right:0; margin-left:$gutter-base; }
   }
 }
-
-/* completion figure (percentage + details on respondents) */
-.completion-figure { display:flex; justify-content:flex-end; flex-direction:row-reverse; align-items:center;
-  > span { display:block; font-size:px2rem(45); line-height:px2rem(53);
-    &:after { content:'%'; font-size:.5em; }
-  }
-  figcaption { margin-right:$gutter-base; }
-}
