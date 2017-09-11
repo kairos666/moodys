@@ -51,7 +51,7 @@
             </section>
             <section  v-if="currentUserData" class="dashboard-section">
                 <header>
-                    <h2><i class="material-icons">insert_chart</i>Moodys dashboard</h2>
+                    <h2><i class="material-icons">insert_chart</i>All users</h2>
                 </header>
                 <ul class="mdl-card-holder">
                     <li class="singular-respondent-container">
@@ -73,7 +73,7 @@
                             </div>
                         </home-card>
                     </li>
-                    <li>
+                    <li class="weekly-chart-container">
                         <home-card class="home-card__weekly-chart">
                             <span slot="header">weekly mood chart</span>
                             <span slot="description">
@@ -181,9 +181,13 @@
         }
     }
 
-    // specific case - show single respondent box from tablet and above
+    // specific cases - show single respondent box from tablet and above
     @include media("<=tablet") {
         .singular-respondent-container { display:none; }
+    }
+    // specific cases - show weekly chart as last element
+    @include media(">tablet", "<=large-desktop") {
+        .weekly-chart-container { order:666; }
     }
 
     /* inner section level layout */
