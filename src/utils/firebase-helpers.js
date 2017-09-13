@@ -146,8 +146,7 @@ let formatUsersToArray = function(usersObj, currentUserID, moods) {
             firstname: usersObj[uid].firstname,
             lastname: usersObj[uid].lastname,
             motto: usersObj[uid].motto,
-            avatar: `https://api.adorable.io/avatars/60/${uid}@adorable.png`,
-            gravatar: `https://www.gravatar.com/avatar/${md5('david.maggi@orange.com')}?s=60`
+            avatar: `https://www.gravatar.com/avatar/${md5('david2.maggi@orange.com')}?s=60&d=https://api.adorable.io/avatars/60/${uid}@adorable.png`
         };
 
         // fill array
