@@ -5,7 +5,7 @@ $grey: #e7eaec;
 $selected-color:lighten($primary, 35%);
 $selected-focus-color:lighten($primary, 5%);
 $low-color: darken(red, 8%);
-$medium-color: darken(yellow, 8%);
+$medium-color: rgba(0,0,0,.54);
 $high-color: darken(green, 5%);
 $snack-bar-bg: rgba(0, 0, 0, .75);
 
