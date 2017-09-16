@@ -35,6 +35,7 @@ const VueRouter = new Router({
             name: 'home',
             component: HomeView
         },
+        { path: '/index.html', redirect: { name: 'home' } },
         {
             path: '/authenticate',
             name: 'authenticate',
