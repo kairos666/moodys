@@ -1,4 +1,5 @@
 # moodys
+the mood notation agency
 mood board to enable users & teams to keep track of morale trends
 
 ## Build Setup
