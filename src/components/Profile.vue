@@ -30,6 +30,7 @@
         <form>
             <fieldset>
                 <legend>profile email ID<small v-if="isEmailFormValid"> - confirmation email will be sent</small></legend>
+                <p><a class="moodys-link" href="https://gravatar.com" target="_blank" title="gravatar web site">Gravatar profile picture</a> is based on this email. If no gravatar picture is found a default profile picture is generated.</p>
                 <div class="fieldset-flexer">
                     <!-- email -->
                     <div class="mdl-textfield mdl-textfield--floating-label" :class="{ 'is-focused': (focused.email || hasValues.email), 'is-invalid': errors.has('email') }">

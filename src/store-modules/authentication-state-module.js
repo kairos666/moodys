@@ -51,13 +51,20 @@ let authStore = auth => {
                     context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('reset', 'reset password reset failure - ' + err.message, true, false));
                 });
             },
+            updateUserEmail(context, payload) {
+                // check if auth email and user entry email in DB are synchronized, if not update email in DB to match auth info
+                let currentUserDBEntry = context.rootState.users[payload.uid];
+                if (currentUserDBEntry) {
+                    if (payload.email !== currentUserDBEntry.email) firebaseHelpers.updateUserEmailDBEntry(payload.uid, payload.email);
+                }
+            },
             signup(context, payload) {
                 // create user & follow with user entry
                 context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('signup', 'await - user creation'));
                 auth.createUserWithEmailAndPassword(payload.email, payload.password).then(function(user) {
                     context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('signup', 'await - user profile creation'));
 
-                    let userMetaData = new UserProfile(payload.firstname, payload.lastname, payload['famous-quote']);
+                    let userMetaData = new UserProfile(payload.firstname, payload.lastname, payload['famous-quote'], payload.email);
                     return firebaseHelpers.setUserEntry(user.uid, userMetaData);
                 }).then(function(resp) {
                     context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('signup', 'user account created', true, true));
@@ -130,6 +137,9 @@ let authStore = auth => {
                 if (payload !== null) {
                     // console.info('user connected: ', payload);
 
+                    // email synchronization checkup
+                    context.dispatch('updateUserEmail', payload);
+
                     // setup updates listeners
                     firebaseHelpers.onAllUsersChange(usersUpdateCallback);
                     firebaseHelpers.onAllMoodsChange(moodsUpdateCallback);
@@ -160,11 +170,12 @@ let authStore = auth => {
 };
 
 class UserProfile {
-    constructor(firstname, lastname, motto) {
-        if (firstname && lastname && motto) {
+    constructor(firstname, lastname, motto, email) {
+        if (firstname && lastname && motto && email) {
             this.firstname = firstname;
             this.lastname = lastname;
             this.motto = motto;
+            this.email = email;
         } else {
             // throw if invalid transaction
             throw new Error('user profile object is invalid');
