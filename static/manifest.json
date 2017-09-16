@@ -13,9 +13,8 @@
       "type": "image/png"
     }
   ],
-  "start_url": "/index.html",
-  "display": "fullscreen",
-  "orientation": "portrait",
+  "start_url": "/?launcher=true",
+  "display": "standalone",
   "background_color": "#FF5722",
   "theme_color": "#E64A19"
 }
