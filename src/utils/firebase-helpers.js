@@ -127,6 +127,16 @@ let setUserEntry = function(userID, userMetaData) {
 };
 
 /**
+ * update user email metadata corresponding to user account
+ * @param {String} userID
+ * @param {String} email
+ * @return {Promise}
+ */
+let updateUserEmailDBEntry = function(userID, email) {
+    return firebaseDB.ref(`users/${userID}`).update({ email: email });
+};
+
+/**
  * transform users database response in users array (optional parameter currentUserID)
  * @param {Object} usersObj
  * @param {String} currentUserId
@@ -146,7 +156,7 @@ let formatUsersToArray = function(usersObj, currentUserID, moods) {
             firstname: usersObj[uid].firstname,
             lastname: usersObj[uid].lastname,
             motto: usersObj[uid].motto,
-            avatar: `https://www.gravatar.com/avatar/${md5('david2.maggi@orange.com')}?s=60&d=https://api.adorable.io/avatars/60/${uid}@adorable.png`
+            avatar: `https://www.gravatar.com/avatar/${md5(usersObj[uid].email)}?s=60&d=https://api.adorable.io/avatars/60/${uid}@adorable.png`
         };
 
         // fill array
@@ -167,5 +177,6 @@ export default {
     onWeekMoodsChange: onWeekMoodsChange,
     addMoodEntry: addMoodEntry,
     setUserEntry: setUserEntry,
+    updateUserEmailDBEntry: updateUserEmailDBEntry,
     formatUsersToArray: formatUsersToArray
 };
