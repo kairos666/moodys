@@ -47,6 +47,7 @@
                         <span class="mdl-textfield__error">{{ errors.first('famous-quote') }}</span>
                     </div>
                 </div>
+                <p><a class="moodys-link" href="https://gravatar.com" target="_blank" title="gravatar web site">Gravatar profile picture</a> is based on the email provided in your account credentials. If no gravatar picture is found a default profile picture is generated.</p>
             </fieldset>
             <div class="form-actions-toolbar">
                 <button type="submit" :disabled="(!isFormValid || isWaitingReply)" @click.prevent="onSubmit()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary">Sign up</button>
