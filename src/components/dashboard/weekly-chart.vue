@@ -1,6 +1,6 @@
 <template>
     <figure class="chart-figure">
-        <line-chart :chart-data="chartData" :options="lineChartOptions"></line-chart>
+        <line-chart :chart-data="computedChartData" :options="lineChartOptions"></line-chart>
         <figcaption>
             <slot></slot>
         </figcaption>
@@ -8,17 +8,13 @@
 </template>
 
 <script>
-    import Vue from 'vue';
     import LineChart from '@/components/nano/reactive-line-chart';
     
     export default {
         props: ['datasets', 'full-week'],
         data() {
             return {
-                lineChartData: {
-                    labels: (this.fullWeek) ? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'saturday', 'sunday'] : ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-                    datasets: []
-                },
+                labels: (this.fullWeek) ? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'saturday', 'sunday'] : ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
                 lineChartOptions: {
                     responsive: true,
                     maintainAspectRatio: false,
@@ -54,9 +50,13 @@
             };
         },
         computed: {
-            chartData() {
-                Vue.set(this.lineChartData, 'datasets', this.datasets);
-                return this.lineChartData;
+            computedChartData() {
+                if (!this.datasets) return {};
+
+                return {
+                    labels: this.labels,
+                    datasets: this.datasets
+                };
             }
         },
         components: {
