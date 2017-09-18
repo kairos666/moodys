@@ -1,5 +1,6 @@
 import moodsConfig from '@/config/moods';
 import moment from 'moment';
+import timeHelpers from '@/utils/time-helpers';
 import md5 from 'blueimp-md5';
 let firebaseDB;
 
@@ -74,7 +75,7 @@ let onAllMoodsChange = function(cb, isToBeShutDown) {
  * @param {Boolean} isToBeShutDown
  */
 let onDayMoodsChange = function(cb, isToBeShutDown) {
-    let dayTimestamp = moment().startOf('date').unix() * 1000;
+    let dayTimestamp = timeHelpers.currentDayTimestamp();
     if (!isToBeShutDown) {
         firebaseDB.ref(`daysmoods/${dayTimestamp}`).orderByKey().on('value', cb);
     } else {
@@ -104,7 +105,7 @@ let addMoodEntry = function(moodIndex, userId) {
     if (moodsConfig.moodIndexes.includes(moodIndex)) {
         // mood entry
         let timestamp = moment().unix() * 1000;
-        let dayTimestamp = moment().startOf('date').unix() * 1000;
+        let dayTimestamp = timeHelpers.currentDayTimestamp();
         let moodEntry = { value: moodIndex, dayTimestamp: dayTimestamp, timestamp: timestamp, uid: userId };
 
         // send to firebase - all moods
