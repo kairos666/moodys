@@ -28,6 +28,13 @@
 
 <style scoped lang="scss">
     @import '../../styles/_variables.scss';
+    @import '../../styles/_utils.scss';
 
-    .active { background-color:$primary; }
+    .scope-selector { display:flex; padding-left:0; margin:0 0 $gutter-base*2;
+        button { flex:1 1 (100/3)+0%; }
+    }
+    button { border:none; background-color:transparent; color:$medium-color; padding:$gutter-base; font-size:px2rem(17); line-height:px2rem(24); cursor:pointer; outline:none; transition:color $btn-tr-duration, background-color $btn-tr-duration;
+        &:focus, &:hover { background-color:#fff; }
+        &.active, &:active { background-color:lighten($primary, 5%); color:#fff; }
+    }
 </style>

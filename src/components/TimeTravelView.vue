@@ -8,7 +8,7 @@
                 </header>
                 <ul class="mdl-card-holder">
                     <li>
-                        <home-card class="home-card__single-respondent-box">
+                        <home-card class="home-card__time-box">
                             <div slot="description">
                                 <scope-selector></scope-selector>
                                 <time-scope-selector scope="day"></time-scope-selector>
