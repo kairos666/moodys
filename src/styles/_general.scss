@@ -8,7 +8,8 @@ html body { font-family: "Roboto","Helvetica","Arial",sans-serif;
 /* route specific styles in content */
 .page-content { box-sizing:border-box; min-height:calc(100vh - #{$header-big-height});
   @include media("<=large-desktop") { min-height:calc(100vh - #{$header-small-height}); }
-  &.home { background:url('/static/img/dashboard-bg.jpg') no-repeat; background-size:cover; }
+  &.home,
+  &.time-travel { background:url('/static/img/dashboard-bg.jpg') no-repeat; background-size:cover; }
 }
 
 /* page transitions */
