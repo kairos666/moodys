@@ -10,8 +10,7 @@
                     <li>
                         <home-card class="home-card__time-box">
                             <div slot="description">
-                                <scope-selector></scope-selector>
-                                <time-scope-selector scope="day"></time-scope-selector>
+                                <time-travel @time-range-change="onTimeRangeChange"></time-travel>
                             </div>
                         </home-card>
                     </li>
@@ -23,14 +22,20 @@
 
 <script>
     import HomeCard from '@/components/nano/home-card';
-    import ScopeSelector from '@/components/time-travel/scope-selector';
-    import TimeScopeSelector from '@/components/time-travel/time-scope-selector';
+    import TimeTravel from '@/components/time-travel/time-travel';
 
     export default {
+        data() {
+            return {
+                timeRange: {}
+            };
+        },
+        methods: {
+            onTimeRangeChange(newValue) { this.timeRange = newValue }
+        },
         components: {
             'home-card': HomeCard,
-            'scope-selector': ScopeSelector,
-            'time-scope-selector': TimeScopeSelector
+            'time-travel': TimeTravel
         }
     };
 </script>
