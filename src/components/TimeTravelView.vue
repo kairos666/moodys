@@ -22,11 +22,21 @@
                 </header>
                 <ul class="mdl-card-holder">
                     <li>
-                        <home-card class="home-card__scoped-chart">
+                        <home-card  v-if="timeRange.scope === 'day'" class="home-card__allrespondent-profile-short-box">
+                            <span slot="header">{{timeRange.label}}</span>
                             <div slot="description">
-                                <day-chart v-if="timeRange.scope === 'day'" :datasets="datasets">{{timeRange.label}}</day-chart>
-                                <week-chart v-else-if="timeRange.scope === 'week'" :datasets="datasets" :full-week="false">{{timeRange.label}}</week-chart>
-                                <month-chart v-else="timeRange.scope === 'month'" :datasets="datasets">{{timeRange.label}}</month-chart>
+                                <transition-group name="fade" tag="ul">
+                                    <li v-for="someUser in datasets.entries" v-bind:key="someUser.id">
+                                        <profile-box :user="someUser" :mood="someUser.mood"></profile-box>
+                                    </li>
+                                </transition-group>
+                                <completion-rate :completion-data="datasets.completion"></completion-rate>
+                            </div>
+                        </home-card>
+                        <home-card v-else class="home-card__scoped-chart">
+                            <div slot="description">
+                                <week-chart v-if="timeRange.scope === 'week'" :datasets="datasets" :full-week="false">{{timeRange.label}}</week-chart>
+                                <month-chart v-else :datasets="datasets">{{timeRange.label}}</month-chart>
                             </div>
                         </home-card>
                     </li>
@@ -39,8 +49,9 @@
 <script>
     import moment from 'moment';
     import HomeCard from '@/components/nano/home-card';
+    import ProfileBox from '@/components/nano/profile-box';
+    import CompletionRate from '@/components/dashboard/completion-rate';
     import TimeTravel from '@/components/time-travel/time-travel';
-    import DailyChart from '@/components/time-travel/daily-chart';
     import WeeklyChart from '@/components/dashboard/weekly-chart';
     import MonthlyChart from '@/components/time-travel/monthly-chart';
 
@@ -107,8 +118,8 @@
                 let result;
                 switch (this.timeRange.scope) {
                 case 'day': result = this.dayDataSetBuilder(this.timeRange.range); break;
-                case 'week': result = this.weekDataSetBuilder(this.timeRange.range); break;
-                case 'month': result = this.monthDataSetBuilder(this.timeRange.range); break;
+                case 'week': result = this.wideDataSetBuilder(this.timeRange.range); break;
+                case 'month': result = this.wideDataSetBuilder(this.timeRange.range); break;
                 }
 
                 return result;
@@ -116,32 +127,43 @@
         },
         methods: {
             onTimeRangeChange(newValue) { this.timeRange = newValue },
-            dayDataSetBuilder(range) {},
-            weekDataSetBuilder(range) {
+            dayDataSetBuilder(range) {
                 // provide corresponding week mood data
-                let uid = this.$store.state.auth.currentFirebaseUser.uid; // 'DfPMZNns9sfRyKsAbjCfMckaYVD3';
-                let user = this.$store.state.users[uid];
-                let moodsSubset = filteredMoodsPerRange(this.$store.state.moods, range)
-                    .filter(item => (item.uid === uid));
+                let users = this.$store.getters.usersArray;
+                let moodsSubset = filteredMoodsPerRange(this.$store.state.moods, range).reverse();
 
-                // remove same day duplicates
-                moodsSubset = removeDayDuplicates(moodsSubset);
+                // format data array of respondent users with corresponding mood
+                let dataResult = [];
+                users.forEach(user => {
+                    let moodEntry = moodsSubset.find(item => (item.uid === user.id));
+                    if (moodEntry) {
+                        dataResult.push({
+                            mood: moodEntry.value,
+                            avatar: user.avatar,
+                            firstname: user.firstname,
+                            id: user.id,
+                            isCurrentUser: user.isCurrentUser,
+                            lastname: user.lastname,
+                            motto: user.motto
+                        });
+                    }
+                });
 
-                // insert no entry days if needed
-                moodsSubset = insertNoMoodEntries(moodsSubset, range);
+                // completion object
+                let completionResult = {
+                    completionRate: Math.round((dataResult.length / users.length) * 100),
+                    respondentNb: dataResult.length,
+                    totalUserNb: users.length
+                };
 
-                // format data for week chart
-                return [ {
-                    label: `${user.firstname} ${user.lastname}`,
-                    borderColor: 'rgba(255, 87, 34, .75)',
-                    data: moodsSubset.map(item => item.value),
-                    backgroundColor: 'rgba(255, 87, 34, .3)',
-                    fill: 'start'
-                }];
+                return {
+                    entries: dataResult,
+                    completion: completionResult
+                };
             },
-            monthDataSetBuilder(range) {
+            wideDataSetBuilder(range) {
                 // provide corresponding week mood data
-                let uid = this.$store.state.auth.currentFirebaseUser.uid; // 'DfPMZNns9sfRyKsAbjCfMckaYVD3';
+                let uid = this.$store.state.auth.currentFirebaseUser.uid;
                 let user = this.$store.state.users[uid];
                 let moodsSubset = filteredMoodsPerRange(this.$store.state.moods, range)
                     .filter(item => (item.uid === uid));
@@ -152,7 +174,7 @@
                 // insert no entry days if needed
                 moodsSubset = insertNoMoodEntries(moodsSubset, range);
 
-                // format data for week chart
+                // format data for week/month chart
                 return [ {
                     label: `${user.firstname} ${user.lastname}`,
                     borderColor: 'rgba(255, 87, 34, .75)',
@@ -165,7 +187,8 @@
         components: {
             'home-card': HomeCard,
             'time-travel': TimeTravel,
-            'day-chart': DailyChart,
+            'profile-box': ProfileBox,
+            'completion-rate': CompletionRate,
             'week-chart': WeeklyChart,
             'month-chart': MonthlyChart
         }
@@ -176,6 +199,7 @@
     @import '../styles/_variables.scss';
     @import '../styles/_utils.scss';
     @import '../styles/_include-media.scss';
+    @import '../styles/nano/_cards.scss';
 
     .time-scope-section,
     .chart-section { 
@@ -213,5 +237,13 @@
                 > li { flex:1 1 100%; }
             }
         }
+    }
+
+    .fade-enter-active, .fade-leave-active {
+        transition: opacity $list-tr-duration, transform $list-tr-duration;
+    }
+    .fade-enter, .fade-leave-to {
+        opacity: 0;
+        transform: translateX(3*$gutter-base);
     }
 </style>

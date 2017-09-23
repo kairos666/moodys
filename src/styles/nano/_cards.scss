@@ -27,7 +27,7 @@
     // completion box visible only for small screens
     .completion-figure { margin-top:2*$gutter-base; }
     @include media(">tablet") { 
-        .completion-figure { display:none; }
+        .dashboard-section & .completion-figure { display:none; }
     }
 }
 

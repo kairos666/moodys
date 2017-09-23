@@ -58,13 +58,13 @@ let getDateRange = function(scope, referenceDate) {
         if (!referenceDate) {
             // today
             min = moment().startOf('date');
-            max = min;
-            result.label = min.format('Do MMMM YYYY');
+            max = moment().endOf('date');
+            result.label = min.format('dddd Do MMM YYYY');
         } else {
             // reference day
             min = moment(referenceDate).startOf('date');
-            max = min;
-            result.label = min.format('Do MMMM YYYY');
+            max = moment(referenceDate).endOf('date');
+            result.label = min.format('dddd Do MMM YYYY');
         }
         break;
     case 'week':
