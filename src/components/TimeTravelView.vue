@@ -14,6 +14,13 @@
                             </div>
                         </home-card>
                     </li>
+                </ul>
+            </section>
+            <section  class="chart-section">
+                <header>
+                    <h2><i class="material-icons">timeline</i>mood chart</h2>
+                </header>
+                <ul class="mdl-card-holder">
                     <li>
                         <home-card class="home-card__scoped-chart">
                             <div slot="description">
@@ -170,7 +177,8 @@
     @import '../styles/_utils.scss';
     @import '../styles/_include-media.scss';
 
-    .time-scope-section { 
+    .time-scope-section,
+    .chart-section { 
         h2 { color:#fff; }
     }
 
@@ -186,6 +194,7 @@
                 &:first-child { padding-right:$gutter-base; }
                 &:last-child { padding-left:$gutter-base; }
                 &.time-scope-section { flex-basis:(100/3)+0%; }
+                &.chart-section { flex-basis:(200/3)+0%; }
                 h2 { margin-top:0; }
             }
         }
@@ -199,9 +208,9 @@
         @include media(">tablet", "<=large-desktop") { display:flex; flex-wrap:wrap;
             > li { flex-grow:0; flex-basis:50%; }
         }
-        .dashboard-section & {
-            @include media(">large-desktop") { display:flex; flex-wrap:wrap;
-                > li { flex-grow:0; flex-basis:50%; }
+        .chart-section & {
+            @include media(">tablet", "<=large-desktop") { display:flex; flex-wrap:wrap;
+                > li { flex:1 1 100%; }
             }
         }
     }
