@@ -9,7 +9,7 @@
     import moment from 'moment';
     import timeHelpers from '@/utils/time-helpers';
     import ScopeSelector from '@/components/nano/scope-selector';
-    import ItemSelector from '@/components/nano/item-selector';
+    import TimeSelector from '@/components/nano/time-selector';
 
     export default {
         data() {
@@ -61,7 +61,7 @@
         },
         components: {
             'scope-selector': ScopeSelector,
-            'item-selector': ItemSelector
+            'item-selector': TimeSelector
         }
     };
 </script>
