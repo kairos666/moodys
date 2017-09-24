@@ -11,6 +11,7 @@ const SignUp = () => import('@/components/SignUp');
 const Profile = () => import('@/components/Profile');
 const PageNotFound = () => import('@/components/PageNotFound');
 const InitialLoading = () => import('@/components/InitialLoading');
+const TimeTravelView = () => import('@/components/TimeTravelView');
 
 Vue.use(Router);
 
@@ -22,6 +23,7 @@ let routeRuleFinder = function(routeName) {
     case 'users': rule = accessRules.authenticatedUser; break;
     case 'mood-input': rule = accessRules.authenticatedUser; break;
     case 'profile': rule = accessRules.authenticatedUser; break;
+    case 'time-travel': rule = accessRules.authenticatedUser; break;
     }
 
     return rule;
@@ -70,6 +72,11 @@ const VueRouter = new Router({
             path: '/loading',
             name: 'initial-loading',
             component: InitialLoading
+        },
+        {
+            path: '/time-travel',
+            name: 'time-travel',
+            component: TimeTravelView
         },
         {
             path: '*',

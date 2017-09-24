@@ -12,6 +12,7 @@
             <nav class="mdl-navigation">
                 <router-link class="mdl-navigation__link" to="/" @click.native="hideMenu"><i class="material-icons">home</i>Home</router-link>
                 <router-link class="mdl-navigation__link" to="/users" @click.native="hideMenu"><i class="material-icons">group</i>All users</router-link>
+                <router-link class="mdl-navigation__link" to="/time-travel" @click.native="hideMenu"><i class="material-icons">alarm</i>Time travel</router-link>
             </nav>
         </div>
         <main class="mdl-layout__content">
