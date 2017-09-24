@@ -118,8 +118,8 @@
                 let result;
                 switch (this.timeRange.scope) {
                 case 'day': result = this.dayDataSetBuilder(this.timeRange.range); break;
-                case 'week': result = this.wideDataSetBuilder(this.timeRange.range); break;
-                case 'month': result = this.wideDataSetBuilder(this.timeRange.range); break;
+                case 'week': result = this.wideDataSetBuilder(this.timeRange.range, this.timeRange.userID); break;
+                case 'month': result = this.wideDataSetBuilder(this.timeRange.range, this.timeRange.userID); break;
                 }
 
                 return result;
@@ -161,9 +161,8 @@
                     completion: completionResult
                 };
             },
-            wideDataSetBuilder(range) {
+            wideDataSetBuilder(range, uid) {
                 // provide corresponding week mood data
-                let uid = this.$store.state.auth.currentFirebaseUser.uid;
                 let user = this.$store.state.users[uid];
                 let moodsSubset = filteredMoodsPerRange(this.$store.state.moods, range)
                     .filter(item => (item.uid === uid));
