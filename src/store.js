@@ -1,5 +1,6 @@
 import Vuex from 'vuex';
 import Vue from 'vue';
+import moment from 'moment';
 import firebaseConfig from '@/config/firebase';
 import firebaseHelpers from '@/utils/firebase-helpers';
 import LSHelpers from '@/utils/local-storage-helpers';
@@ -81,6 +82,33 @@ auth.onAuthStateChanged(resp => {
 // set db connection change handler
 db.ref('.info/connected').on('value', snap => {
     store.dispatch('offline/updateDBConnectionStatus', (snap.val() === true));
+});
+
+// generate notifications each mood input
+firebaseHelpers.onDayMoodsChange(update => {
+    /**
+     * heuristic 1 - consider only values that are less than 1 minute old
+     * heuristic 2 - consider only newest value
+     */
+    // convert to array and apply heuristics 1
+    let thresholdTimestamp = moment().subtract(1, 'minutes').unix() * 1000;
+    let newDayMoods = update.val();
+    let moodToNotif = Object.keys(newDayMoods).map(uid => newDayMoods[uid])
+        .filter(dayMoods => (dayMoods.timestamp > thresholdTimestamp));
+
+    // apply heuristic 2
+    if (moodToNotif.length >= 2) {
+        console.log(moodToNotif);
+        // reduce if 2 entries or more
+        moodToNotif = moodToNotif.reduce((a, b) => {
+            return (a.timestamp > b.timestamp) ? a : b;
+        });
+    } else if (moodToNotif.length === 1) { moodToNotif = moodToNotif[0] } else { moodToNotif = null }
+
+    // trigger notif if valid update
+    if (moodToNotif) {
+        console.log(moodToNotif);
+    }
 });
 
 export default store;
