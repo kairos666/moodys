@@ -1,5 +1,3 @@
-import { EventBus, NotificationEvt } from '@/utils/events-bus';
-
 let offlineModule = database => {
     return {
         namespaced: true,
@@ -16,8 +14,7 @@ let offlineModule = database => {
                 context.commit('updateDBConnectionStatus', payload);
 
                 // generate notification
-                let evt = new NotificationEvt((payload) ? 'onlineDB' : 'offlineDB');
-                EventBus.$emit(evt.type, evt);
+                context.dispatch('notify', { subType: (payload) ? 'onlineDB' : 'offlineDB' }, { root: true });
             }
         }
     };

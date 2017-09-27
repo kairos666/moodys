@@ -2,3 +2,9 @@
     .snack__item { min-width:150px; border-radius:2px; padding:$gutter-base; background-color:$snack-bar-bg; color:#fff; text-transform:uppercase; margin-top:$gutter-base; }
     .material-icons { vertical-align:bottom; margin-right:$gutter-base; }
 }
+
+// mood snacks
+.snack__item {
+    .avatar { border-radius:25%; margin-right:2*$gutter-base; }
+    .mood { margin-left:2*$gutter-base; }
+}

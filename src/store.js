@@ -9,6 +9,7 @@ import authModule from '@/store-modules/authentication-state-module';
 import statsModule from '@/store-modules/statistics-module';
 import offlineModule from '@/store-modules/offline-module';
 import firebase from 'firebase';
+import { EventBus, NotificationEvt } from '@/utils/events-bus';
 
 Vue.use(Vuex);
 
@@ -70,6 +71,11 @@ const store = new Vuex.Store({
         updateCurrentUserMood({ state }, payload) {
             // action with no commit --> firebase update
             firebaseHelpers.addMoodEntry(payload, state.auth.currentFirebaseUser.uid);
+        },
+        notify(state, payload) {
+            // generate notification
+            let evt = new NotificationEvt(payload.subType, payload.options);
+            EventBus.$emit(evt.type, evt);
         }
     }
 });
@@ -107,7 +113,18 @@ firebaseHelpers.onDayMoodsChange(update => {
 
     // trigger notif if valid update
     if (moodToNotif) {
-        console.log(moodToNotif);
+        let userData = store.getters.usersArray.find(item => (item.id === moodToNotif.uid));
+        if (userData) {
+            // extend options with user data
+            let notifData = Object.assign(moodToNotif, userData);
+            delete notifData.currentMood;
+            delete notifData.id;
+
+            // generate notification
+            store.dispatch('notify', { subType: 'moodUpdate', options: notifData });
+        } else {
+            console.warn('Couldn\'t generate notification due to unknown UID:' + moodToNotif.uid);
+        }
     }
 });
 
