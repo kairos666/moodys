@@ -7,8 +7,7 @@
 </template>
 
 <script>
-    import { mapState } from 'vuex';
-    import snackBarMessages from '@/config/snack-bar-messages';
+    import { EventBus } from '@/utils/events-bus';
 
     // react to all changes in snackable data
     export default {
@@ -18,31 +17,21 @@
             };
         },
         computed: {
-            isSnackbarShown() { return (this.snacks.length !== 0) },
-            ...mapState('offline/', {
-                isDBOnline: 'isDBOnline'
-            })
+            isSnackbarShown() { return (this.snacks.length !== 0) }
         },
         methods: {
             startSnack(content) {
                 this.snacks.push(content);
 
-                setTimeout(this.endSnack, 1500);
+                setTimeout(this.endSnack, 2000);
             },
             endSnack() {
                 this.snacks.shift();
             }
         },
-        watch: {
-            isDBOnline(val) {
-                if (val) {
-                    // connected to DB
-                    this.startSnack(snackBarMessages.onlineDB);
-                } else {
-                    // disconnected from DB
-                    this.startSnack(snackBarMessages.offlineDB);
-                }
-            }
+        created() {
+            // setup subscribing to notification event bus
+            EventBus.$on('notifications', (evt) => { this.startSnack(evt.content) });
         }
     };
 </script>
