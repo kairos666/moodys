@@ -1,6 +1,32 @@
 # moodys
 the mood notation agency. Mood boards to enable users & teams to keep track of morale trends
 
+## changelog
+### alpha-v3.1
+- improved charts
+- mood notification (in-app)
+
+### alpha-v3
+- time travel feature
+
+### alpha-v2.1
+- fixes for PWA behavior
+- gravatar profile images
+
+### alpha-v2
+- new sexy dashboard
+
+### alpha
+- various refactors
+- lazy loading for sub pages
+- bug fixes, polyfills
+
+### mvp-1.0 base moodys functionalities
+- ugly dashboard
+- users list
+- users update mood
+- account management
+
 ## Build Setup
 
 ``` bash
