@@ -21,10 +21,19 @@
                     spanGaps: true,
                     scales: {
                         yAxes: [{
+                            gridLines: {
+                                display: true,
+                                zeroLineColor: 'rgba(255, 87, 34, .75)',
+                                zeroLineWidth: 1,
+                                zeroLineBorderDash: [30, 15],
+                                color: ['rgba(0,0,0,0)', 'rgba(0,0,0,0)', 'rgba(0,0,0,0)', 'rgba(0,0,0,0)', 'rgba(0,0,0,0)', 'rgba(0,0,0,0)', 'rgba(0,0,0,0)', 'rgba(0,0,0,0)', 'rgba(0,0,0,0)', 'rgba(0,0,0,0)', 'rgba(0,0,0,0)', 'rgba(0,0,0,0)']
+                            },
                             ticks: {
                                 fontFamily: 'icomoon',
                                 fontSize: 24,
                                 padding: 5,
+                                suggestedMax: -2,
+                                suggestedMin: -2,
                                 callback: function(value, index, values) {
                                     // match each value with corresponding font icon
                                     let iconLabel;

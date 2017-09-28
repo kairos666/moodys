@@ -12,6 +12,9 @@ let offlineModule = database => {
         actions: {
             updateDBConnectionStatus(context, payload) {
                 context.commit('updateDBConnectionStatus', payload);
+
+                // generate notification
+                context.dispatch('notify', { subType: (payload) ? 'onlineDB' : 'offlineDB' }, { root: true });
             }
         }
     };
