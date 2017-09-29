@@ -12,8 +12,8 @@
                             <span slot="header">no authenticated user</span>
                             <span slot="description">Please sign in/up if you want to access data on moodys</span>
                             <span slot="actions">
-                                <router-link class="mdl-button mdl-button--colored" :to="{ name: 'sign up' }">sign up</router-link>
-                                <router-link class="mdl-button mdl-button--colored" :to="{ name: 'authenticate' }">sign in</router-link>
+                                <router-link class="mdl-button mdl-button--colored" :to="{ name: 'sign up' }"><i class="material-icons">person_add</i>sign up</router-link>
+                                <router-link class="mdl-button mdl-button--raised mdl-button--colored" :to="{ name: 'authenticate' }"><i class="material-icons">fingerprint</i>sign in</router-link>
                             </span>
                         </home-card>
                     </li>
