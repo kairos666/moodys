@@ -31,7 +31,7 @@
                             </span>
                             <span slot="actions">
                                 <router-link class="mdl-button" :to="{ name: 'profile' }">edit profile</router-link>
-                                <router-link class="mdl-button mdl-button--colored" :to="{ name: 'mood-input' }">update mood</router-link>
+                                <router-link class="mdl-button mdl-button--raised mdl-button--colored" :to="{ name: 'mood-input' }">update mood</router-link>
                             </span>
                         </home-card>
                     </li>
