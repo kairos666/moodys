@@ -3,6 +3,7 @@ html body { font-family: "Roboto","Helvetica","Arial",sans-serif;
   .page-content { padding:2*$gutter-base; }
   h1 { margin-top:0; }
   p { margin-bottom:$gutter-base; }
+  .mdl-layout-title .mdl-navigation__link { font-size:inherit; opacity:inherit; }
 }
 
 /* route specific styles in content */
