@@ -1,16 +1,34 @@
 /**
  * Background notifications (FCM + service worker dependent)
  */
-const NotificationObj = window.Notification;
-
-let pNotificationsPermission = function() {
+let pNotificationsPermission = async function() {
     // for older browsers
-    if (!NotificationObj) return Promise.reject('Notifications aren\'t supported in this browser');
+    if (!window.Notification) return Promise.reject('Notifications aren\'t supported in this browser');
 
     // resolve: permission granted = true, permission denied or dismissed = false
-    return NotificationObj.requestPermission().then(result => (result === 'granted') ? Promise.resolve(true) : Promise.resolve(false));
+    const permission = await window.Notification.requestPermission();
+
+    return (permission === 'granted') ? true : Promise.reject('Permission for Notifications was not granted');
+};
+
+let pRegistration = async function() {
+    // for older browsers
+    if (!window.navigator || !window.navigator.serviceWorker) return Promise.reject('Service Workers aren\'t supported in this browser');
+
+    // resolve: permission granted = true, permission denied or dismissed = false
+    const registration = await window.navigator.serviceWorker.getRegistration();
+
+    return (registration !== undefined) ? registration : Promise.reject('No Service Worker was registered');
+};
+
+let pGenerateNotification = async function() {
+    // act if permission is granted and registration object was found
+    await pNotificationsPermission(); // may reject otherwise don't care of this
+    const registration = await pRegistration();
+
+    return registration;
 };
 
 export default {
-    pNotificationsPermission: pNotificationsPermission
+    pGenerateNotification: pGenerateNotification
 };
