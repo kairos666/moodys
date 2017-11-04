@@ -8,6 +8,7 @@ import asyncFeedback from '@/store-modules/async-state-module';
 import authModule from '@/store-modules/authentication-state-module';
 import statsModule from '@/store-modules/statistics-module';
 import offlineModule from '@/store-modules/offline-module';
+import notificationModule from '@/store-modules/notification-module';
 import firebase from 'firebase';
 import { EventBus, NotificationEvt } from '@/utils/events-bus';
 
@@ -27,7 +28,8 @@ const store = new Vuex.Store({
         asyncTransactions: asyncFeedback.asyncStateModule,
         auth: authModule.authStore(auth),
         stats: statsModule,
-        offline: offlineModule.offlineStore(db)
+        offline: offlineModule.offlineStore(db),
+        notifications: notificationModule.notificationStore(db)
     },
     state: {
         users: (localyStored.users) ? localyStored.users : {},
