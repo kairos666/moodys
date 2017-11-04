@@ -21,6 +21,13 @@ let pRegistration = async function() {
     return (registration !== undefined) ? registration : Promise.reject('No Service Worker was registered');
 };
 
+let pSubscription = async function() {
+    const registration = await pRegistration();
+    const subscription = await registration.pushManager.subscribe({ userVisibleOnly: true });
+
+    return subscription;
+};
+
 let pGenerateNotification = async function() {
     // act if permission is granted and registration object was found
     await pNotificationsPermission(); // may reject otherwise don't care of this
@@ -30,5 +37,6 @@ let pGenerateNotification = async function() {
 };
 
 export default {
-    pGenerateNotification: pGenerateNotification
+    pGenerateNotification: pGenerateNotification,
+    pSubscription: pSubscription
 };
