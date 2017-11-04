@@ -52,7 +52,7 @@
       }
   });
 
-  // push notifications handler
+  // push notifications click behavior
   self.addEventListener('notificationclick', function(evt) {
     let notification = evt.notification;
     let action = evt.action;
@@ -64,5 +64,22 @@
       clients.openWindow('https://moodies-1ad4f.firebaseapp.com/');
       notification.close();
     }
+  });
+
+  // push notifications handler (generate actual notification)
+  self.addEventListener('push', function(evt) {
+    let options = {
+      body: 'feels OK',
+      icon: 'static/img/icons/notification-icon.png',
+      badge: 'static/img/icons/notification-icon.png',
+      requireInteraction: false,
+      data: {
+          dateOfArrival: Date.now(),
+          uid: 'DKfEtM746JacxLFM7O8K8M2iqN23'
+      }
+    };
+    evt.waitUntil(
+      self.registration.showNotification('David Maggi', options)
+    );
   });
 })();
