@@ -51,4 +51,18 @@
         });
       }
   });
+
+  // push notifications handler
+  self.addEventListener('notificationclick', function(evt) {
+    let notification = evt.notification;
+    let action = evt.action;
+    let uid = notification.data.uid;
+  
+    if (action === 'close') {
+      notification.close();
+    } else {
+      clients.openWindow('https://moodies-1ad4f.firebaseapp.com/');
+      notification.close();
+    }
+  });
 })();
