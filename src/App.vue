@@ -2,7 +2,7 @@
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
         <header class="mdl-layout__header">
             <div class="mdl-layout__header-row">
-                <span class="mdl-layout-title"><img src="/static/img/icons/favicon-32x32.png" />Moodys <small>[alpha V3.1]</small></span>
+                <span class="mdl-layout-title"><router-link class="mdl-navigation__link" to="/" @click.native="hideMenu"><img src="/static/img/icons/favicon-32x32.png" />Moodys <small>[alpha V3.2]</small></router-link></span>
                 <div class="mdl-layout-spacer"></div>
                 <profile-nav></profile-nav>
             </div>
