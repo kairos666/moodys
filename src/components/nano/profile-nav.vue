@@ -3,10 +3,11 @@
         <router-link v-if="!isAuthenticated" class="mdl-button" to="/sign-up"><i class="material-icons">person_add</i>Sign up</router-link>
         <router-link v-if="!isAuthenticated" class="mdl-button mdl-button--raised" to="/authenticate"><i class="material-icons">fingerprint</i>Sign in</router-link>
         <switch-toggle 
-            v-if="isAuthenticated && $store.state.notifications.isBrowserSupportOk && $store.state.notifications.isSWRegistered && $store.state.notifications.hasBeenInitialized" 
+            v-if="isAuthenticated && $store.state.notifications.isBrowserSupportOk && $store.state.notifications.isSWRegistered && $store.state.notifications.hasBeenInitialized && $store.state.offline.isDBOnline" 
             class="notif-switch" 
             label="notifications"
-            :initial-state="false"
+            :checked="$store.getters['notifications/notifEnabled']"
+            @toggle="$store.dispatch('notifications/notificationActivationToggle')"
         ><i class="material-icons">sms</i></switch-toggle>
         <button class="profile-button" v-if="currentUser" @click.prevent="toggleVisibility">
             <img class="avatar" :src="currentUser.avatar" :alt="('avatar de ' + currentUser.firstname + ' ' + currentUser.lastname)" />
@@ -30,7 +31,7 @@
 
 <script>
     import { mapGetters } from 'vuex';
-    import Switch from '@/components/nano/switch';
+    import Switch from '@/components/nano/switch-async';
 
     export default {
         data() {

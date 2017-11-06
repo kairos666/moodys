@@ -1,3 +1,4 @@
+import FirebaseHelpers from '@/utils/firebase-helpers';
 /**
  * get SW registration
  * @returns {Promise}
@@ -64,6 +65,9 @@ let notificationModule = database => {
             isSWRegistered: false,
             hasBeenInitialized: false
         },
+        getters: {
+            notifEnabled(state) { return (state.notifStatus === 'granted') }
+        },
         mutations: {
             initializeNotifStatus(state) { state.hasBeenInitialized = true },
             SWRegistrationUpdate(state, payload) { state.isSWRegistered = payload },
@@ -81,12 +85,21 @@ let notificationModule = database => {
                     // update subscription status and initialize
                     context.commit('notifStatusUpdate', status);
                     context.commit('initializeNotifStatus');
+
+                    // push subscription to DB (if some changes were made offline this will update entry)
+                    if (status === 'granted') {
+                        // update subscription
+                        FirebaseHelpers.setNotificationsSubscriptionEntry(context.rootState.auth.currentFirebaseUser.uid, { pouet: 'bip' });
+                    } else {
+                        // remove subscription
+                        FirebaseHelpers.removeNotificationsSubscriptionEntry(context.rootState.auth.currentFirebaseUser.uid);
+                    }
                 }).catch(() => {
                     context.commit('initializeNotifStatus');
                 });
             },
-            notificationActivationToggle(context, payload) {
-
+            notificationActivationToggle(context) {
+                console.log('toggle');
             }
         }
     };

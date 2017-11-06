@@ -167,6 +167,26 @@ let formatUsersToArray = function(usersObj, currentUserID, moods) {
     return resultArray;
 };
 
+/* NOTIFICATIONS ENDPOINTS (no need to store this in local storage - only works if online) */
+/**
+ * set PushSubscription data related to user (will completely overwrite eventual previous node)
+ * @param {String} userID
+ * @param {PushSubscription} subscriptionData
+ * @return {Promise}
+ */
+let setNotificationsSubscriptionEntry = function(userID, subscriptionData) {
+    return firebaseDB.ref(`notifsSubscriptionEntries/${userID}`).set(subscriptionData);
+};
+
+/**
+ * remove PushSubscription data related to user
+ * @param {String} userID
+ * @return {Promise}
+ */
+let removeNotificationsSubscriptionEntry = function(userID) {
+    return firebaseDB.ref(`notifsSubscriptionEntries/${userID}`).remove();
+};
+
 export default {
     initialize: initialize,
     getAllMoods: getAllMoods,
@@ -179,5 +199,7 @@ export default {
     addMoodEntry: addMoodEntry,
     setUserEntry: setUserEntry,
     updateUserEmailDBEntry: updateUserEmailDBEntry,
-    formatUsersToArray: formatUsersToArray
+    formatUsersToArray: formatUsersToArray,
+    setNotificationsSubscriptionEntry: setNotificationsSubscriptionEntry,
+    removeNotificationsSubscriptionEntry: removeNotificationsSubscriptionEntry
 };
