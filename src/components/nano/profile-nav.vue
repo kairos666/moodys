@@ -97,5 +97,5 @@
         .avatar { border-radius:25%; width:45px; height:45px; }
     }
     /* TODO remove display:none when feature is ready */
-    .notif-switch { margin-right:$gutter-base*2; /*display:none;*/ }
+    .notif-switch { margin-right:$gutter-base*2; display:none; }
 </style>
