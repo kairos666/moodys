@@ -2,6 +2,13 @@
     <menu>
         <router-link v-if="!isAuthenticated" class="mdl-button" to="/sign-up"><i class="material-icons">person_add</i>Sign up</router-link>
         <router-link v-if="!isAuthenticated" class="mdl-button mdl-button--raised" to="/authenticate"><i class="material-icons">fingerprint</i>Sign in</router-link>
+        <switch-toggle 
+            v-if="isAuthenticated && $store.state.notifications.isBrowserSupportOk && $store.state.notifications.isSWRegistered && $store.state.notifications.hasBeenInitialized && $store.state.offline.isDBOnline" 
+            class="notif-switch" 
+            label="notifications"
+            :checked="$store.getters['notifications/notifEnabled']"
+            @toggle="$store.dispatch('notifications/notificationActivationToggle')"
+        ><i class="material-icons">sms</i></switch-toggle>
         <button class="profile-button" v-if="currentUser" @click.prevent="toggleVisibility">
             <img class="avatar" :src="currentUser.avatar" :alt="('avatar de ' + currentUser.firstname + ' ' + currentUser.lastname)" />
         </button>
@@ -24,6 +31,7 @@
 
 <script>
     import { mapGetters } from 'vuex';
+    import Switch from '@/components/nano/switch-async';
 
     export default {
         data() {
@@ -53,6 +61,9 @@
                     this.$store.dispatch('logout');
                 }
             }
+        },
+        components: {
+            'switch-toggle': Switch
         },
         created() {
             // listen to route change and close if navigation occur
@@ -85,4 +96,6 @@
     .profile-button { border:none; background:none; padding:0; outline:none; cursor:pointer;
         .avatar { border-radius:25%; width:45px; height:45px; }
     }
+    /* TODO remove display:none when feature is ready */
+    .notif-switch { margin-right:$gutter-base*2; display:none; }
 </style>

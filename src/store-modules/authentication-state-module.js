@@ -164,6 +164,9 @@ let authStore = auth => {
             },
             initialAuthDone(context) {
                 context.commit('initialAuthDone');
+
+                // at first authentication initialize notification check for subscription
+                context.dispatch('notifications/initialSubscriptionCheck');
             }
         }
     };
