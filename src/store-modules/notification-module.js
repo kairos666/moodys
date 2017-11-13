@@ -19,7 +19,7 @@ let pRegistration = async function() {
  */
 let pSubscriptionStatus = async function() {
     const registration = await pRegistration();
-    const subscriptionStatus = await registration.pushManager.permissionState({ userVisibleOnly: true });
+    const subscriptionStatus = await registration.pushManager.permissionState({ userVisibleOnly: true, applicationServerKey: 'TODO' });
     // possible values "granted", "prompt", "denied"
     return subscriptionStatus;
 };
@@ -41,7 +41,7 @@ let pSubscriptionStatus = async function() {
  */
 // let pSubscribe = async function() {
 //     const registration = await pRegistration();
-//     const subscription = await registration.pushManager.subscribe({ userVisibleOnly: true });
+//     const subscription = await registration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: 'TODO' });
 
 //     return subscription;
 // };
