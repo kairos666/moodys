@@ -101,8 +101,8 @@ firebaseHelpers.onDayMoodsChange(update => {
     // convert to array and apply heuristics 1
     let thresholdTimestamp = moment().subtract(1, 'minutes').unix() * 1000;
     let newDayMoods = update.val();
-    let moodToNotif = Object.keys(newDayMoods).map(uid => newDayMoods[uid])
-        .filter(dayMoods => (dayMoods.timestamp > thresholdTimestamp));
+    let moodToNotif = (newDayMoods) ? Object.keys(newDayMoods).map(uid => newDayMoods[uid])
+        .filter(dayMoods => (dayMoods.timestamp > thresholdTimestamp)) : [];
 
     // apply heuristic 2
     if (moodToNotif.length >= 2) {
