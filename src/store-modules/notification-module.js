@@ -38,7 +38,7 @@ let pRegistration = async function() {
  * get push manager subscription status
  * @returns {Promise}
  */
-let pSubscriptionStatus = async function() {
+let pSubscriptionAllowanceStatus = async function() {
     const registration = await pRegistration();
     const subscriptionStatus = await registration.pushManager.permissionState({ userVisibleOnly: true, applicationServerKey: urlBase64ToUint8Array(vapidPublicKey) });
     // possible values "granted", "prompt", "denied"
@@ -74,7 +74,7 @@ let pSubscribe = async function() {
 let pUnsubscribe = async function() {
     const subscription = await pSubscription();
 
-    return subscription.unsubscribe();
+    return (subscription) ? subscription.unsubscribe() : false;
 };
 
 let notificationModule = database => {
@@ -82,17 +82,19 @@ let notificationModule = database => {
         namespaced: true,
         state: {
             notifStatus: 'prompt',
+            subscriptionStatus: false,
             isBrowserSupportOk: ('Notification' in window && 'navigator' in window && 'serviceWorker' in window.navigator),
             isSWRegistered: false,
             hasBeenInitialized: false
         },
         getters: {
-            notifEnabled(state) { return (state.notifStatus === 'granted') }
+            notifEnabled(state) { return (state.isBrowserSupportOk && state.isSWRegistered && state.hasBeenInitialized && state.notifStatus !== 'denied') }
         },
         mutations: {
             initializeNotifStatus(state) { state.hasBeenInitialized = true },
             SWRegistrationUpdate(state, payload) { state.isSWRegistered = payload },
-            notifStatusUpdate(state, payload) { state.notifStatus = payload }
+            notifStatusUpdate(state, payload) { state.notifStatus = payload },
+            subscriptionStatusUpdate(state, payload) { state.subscriptionStatus = payload }
         },
         actions: {
             initialSubscriptionCheck(context) {
@@ -102,42 +104,60 @@ let notificationModule = database => {
                     context.commit('SWRegistrationUpdate', false);
                 });
 
-                pSubscriptionStatus().then(status => {
+                pSubscriptionAllowanceStatus().then(status => {
                     // update subscription status and initialize
                     context.commit('notifStatusUpdate', status);
-                    context.commit('initializeNotifStatus');
 
                     // push subscription to DB (if some changes were made offline this will update entry)
                     if (status === 'granted') {
                         // update subscription
                         pSubscription().then(subscription => {
-                            FirebaseHelpers.setNotificationsSubscriptionEntry(context.rootState.auth.currentFirebaseUser.uid, subscription.toJSON());
+                            // make sure subscription (if exists) for the user is up-to-date in DB
+                            if (subscription) {
+                                // have a subscription
+                                context.commit('subscriptionStatusUpdate', subscription);
+                                FirebaseHelpers.setNotificationsSubscriptionEntry(context.rootState.auth.currentFirebaseUser.uid, subscription.toJSON());
+                            } else {
+                                // don't have a subscription
+                                FirebaseHelpers.removeNotificationsSubscriptionEntry(context.rootState.auth.currentFirebaseUser.uid);
+                            }
+                            context.commit('initializeNotifStatus');
                         });
                     } else {
                         // remove subscription
                         FirebaseHelpers.removeNotificationsSubscriptionEntry(context.rootState.auth.currentFirebaseUser.uid);
+                        context.commit('initializeNotifStatus');
                     }
                 }).catch(() => {
                     context.commit('initializeNotifStatus');
                 });
             },
-            notificationActivationToggle(context) {
-                if (context.getters.notifEnabled) {
-                    // unsubscribe notifications
-                    pUnsubscribe().then(() => {
+            _unsubscribeAction(context) {
+                pUnsubscribe().then(result => {
+                    // only update if unsubscribe was successful
+                    if (result) {
                         // update status
-                        pSubscriptionStatus().then(status => { context.commit('notifStatusUpdate', status) });
+                        context.commit('subscriptionStatusUpdate', false);
                         // update DB
                         FirebaseHelpers.removeNotificationsSubscriptionEntry(context.rootState.auth.currentFirebaseUser.uid);
-                    });
+                    }
+                });
+            },
+            _subscribeAction(context) {
+                pSubscribe().then(subscription => {
+                    // update status
+                    context.commit('subscriptionStatusUpdate', subscription);
+                    // update DB
+                    FirebaseHelpers.setNotificationsSubscriptionEntry(context.rootState.auth.currentFirebaseUser.uid, subscription.toJSON());
+                });
+            },
+            notificationActivationToggle(context) {
+                if (context.state.subscriptionStatus) {
+                    // unsubscribe notifications
+                    context.dispatch('_unsubscribeAction');
                 } else {
                     // subscribe notifications
-                    pSubscribe().then(subscription => {
-                        // update status
-                        pSubscriptionStatus().then(status => { context.commit('notifStatusUpdate', status) });
-                        // update DB
-                        FirebaseHelpers.setNotificationsSubscriptionEntry(context.rootState.auth.currentFirebaseUser.uid, subscription.toJSON());
-                    });
+                    context.dispatch('_subscribeAction');
                 }
             }
         }
