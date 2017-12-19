@@ -92,7 +92,7 @@ db.ref('.info/connected').on('value', snap => {
     store.dispatch('offline/updateDBConnectionStatus', (snap.val() === true));
 });
 
-// generate notifications each mood input
+// generate notifications (in-app) each mood input
 firebaseHelpers.onDayMoodsChange(update => {
     /**
      * heuristic 1 - consider only values that are less than 1 minute old
@@ -106,7 +106,6 @@ firebaseHelpers.onDayMoodsChange(update => {
 
     // apply heuristic 2
     if (moodToNotif.length >= 2) {
-        console.log(moodToNotif);
         // reduce if 2 entries or more
         moodToNotif = moodToNotif.reduce((a, b) => {
             return (a.timestamp > b.timestamp) ? a : b;
