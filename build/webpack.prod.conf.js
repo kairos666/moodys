@@ -99,7 +99,7 @@ var webpackConfig = merge(baseWebpackConfig, {
     new SWPrecacheWebpackPlugin({
       cacheId: 'moodies-app',
       filename: 'service-worker.js',
-      staticFileGlobs: ['dist/**/*.{js,html,css,svg,eot,ttf,woff}'],
+      staticFileGlobs: ['dist/**/*.{js,html,css,svg,eot,ttf,woff,png,jpg}'],
       minify: true,
       stripPrefix: 'dist/',
       runtimeCaching: [
