@@ -1,5 +1,6 @@
 import FirebaseHelpers from '@/utils/firebase-helpers';
-const vapidPublicKey = 'BFx9xYoe2fg5q3j0GUTgbL59MdxMmOIdX0KTRYpntTnIKaZCH0YIObpCo71sX8PiEkliXeYQtQeHZl_PxmC-bYA';
+import NotificationHelpers from '@/utils/notification-helpers';
+import WebPushConfig from '@/config/web-push';
 /**
  * format vapid key for binding to subscription
  * @param {String} base64String
@@ -40,7 +41,7 @@ let pRegistration = async function() {
  */
 let pSubscriptionAllowanceStatus = async function() {
     const registration = await pRegistration();
-    const subscriptionStatus = await registration.pushManager.permissionState({ userVisibleOnly: true, applicationServerKey: urlBase64ToUint8Array(vapidPublicKey) });
+    const subscriptionStatus = await registration.pushManager.permissionState({ userVisibleOnly: true, applicationServerKey: urlBase64ToUint8Array(WebPushConfig.vapidPublicKey) });
     // possible values "granted", "prompt", "denied"
     return subscriptionStatus;
 };
@@ -62,7 +63,7 @@ let pSubscription = async function() {
  */
 let pSubscribe = async function() {
     const registration = await pRegistration();
-    const subscription = await registration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlBase64ToUint8Array(vapidPublicKey) });
+    const subscription = await registration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlBase64ToUint8Array(WebPushConfig.vapidPublicKey) });
 
     return subscription;
 };
@@ -159,6 +160,10 @@ let notificationModule = database => {
                     // subscribe notifications
                     context.dispatch('_subscribeAction');
                 }
+            },
+            notificationFiring(context, payload) {
+                let notif = NotificationHelpers.moodNotifBuilder(payload);
+                console.log(notif);
             }
         }
     };

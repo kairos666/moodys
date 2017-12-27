@@ -75,7 +75,7 @@ const store = new Vuex.Store({
             firebaseHelpers.addMoodEntry(payload, state.auth.currentFirebaseUser.uid);
         },
         notify(state, payload) {
-            // generate notification
+            // generate notification (snack bar notification)
             let evt = new NotificationEvt(payload.subType, payload.options);
             EventBus.$emit(evt.type, evt);
         }
@@ -112,7 +112,7 @@ firebaseHelpers.onDayMoodsChange(update => {
         });
     } else if (moodToNotif.length === 1) { moodToNotif = moodToNotif[0] } else { moodToNotif = null }
 
-    // trigger notif if valid update
+    // trigger in-app notif if valid update (DB registered any user)
     if (moodToNotif) {
         let userData = store.getters.usersArray.find(item => (item.id === moodToNotif.uid));
         if (userData) {
@@ -126,6 +126,12 @@ firebaseHelpers.onDayMoodsChange(update => {
         } else {
             console.warn('Couldn\'t generate notification due to unknown UID:' + moodToNotif.uid);
         }
+    }
+
+    // trigger push notif if valid update (DB registered and update from currently connected user)
+    if (moodToNotif && moodToNotif.uid === store.state.auth.currentFirebaseUser.uid) {
+        // send data to web push store module for processing
+        store.dispatch('notifications/notificationFiring', moodToNotif);
     }
 });
 
