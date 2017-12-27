@@ -50,34 +50,55 @@
       }
   });
 
-  // push notifications click behavior
-  self.addEventListener('notificationclick', function(evt) {
-    let notification = evt.notification;
-    let action = evt.action;
-    let uid = notification.data.uid;
+  // push notifications handler (generate actual notification when application is not into focus)
+  self.addEventListener('push', function(event) {
+    if (event.data) {
+      const notifData = event.data.json();
+      console.log(notifData);
   
-    if (action === 'close') {
-      notification.close();
-    } else {
-      clients.openWindow('https://moodies-1ad4f.firebaseapp.com/');
-      notification.close();
+      let pushResponsePromise = clients.matchAll().then(function(clis) {
+        let focusedClient = clis.find(function(c) {
+          return c.focused;
+        });
+  
+        if (focusedClient === undefined) {
+          // Show notification
+          return self.registration.showNotification(notifData.title, notifData.options);
+        } else {
+          // Send a message to the page
+          console.info('push prevented, application is already focused', notifData);
+          return Promise.resolve();
+        }
+      })
+  
+      event.waitUntil(pushResponsePromise);
     }
   });
-
-  // push notifications handler (generate actual notification)
-  self.addEventListener('push', function(evt) {
-    let options = {
-      body: 'feels OK',
-      icon: 'static/img/icons/notification-icon.png',
-      badge: 'static/img/icons/notification-icon.png',
-      requireInteraction: false,
-      data: {
-          dateOfArrival: Date.now(),
-          uid: 'DKfEtM746JacxLFM7O8K8M2iqN23'
-      }
+  
+  // push notifications click behavior
+  self.addEventListener('notificationclick', function(event) {
+    event.notification.close();
+  
+    let clickResponsePromise = Promise.resolve();
+    if (event.notification.data && event.notification.data.url) {
+      clickResponsePromise = clients.matchAll().then(function(clis) {
+        if (event.notification.data && event.notification.data.url) {
+          let visibleClient = clis.find(function(c) {
+            return c.visibilityState === 'visible';
+          });
+          if (visibleClient !== undefined) {
+            // display the page in the visible client
+            visibleClient.navigate(event.notification.data.url);
+            return visibleClient.focus();
+          } else {
+            // there are no visible windows. Open one.
+            return clients.openWindow(event.notification.data.url);
+          }
+        }
+        event.notification.close();
+      });
     };
-    evt.waitUntil(
-      self.registration.showNotification('David Maggi', options)
-    );
+  
+    event.waitUntil(clickResponsePromise);
   });
 })();
