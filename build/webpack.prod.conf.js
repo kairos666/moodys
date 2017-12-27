@@ -118,6 +118,10 @@ var webpackConfig = merge(baseWebpackConfig, {
       {
         urlPattern: /^https:\/\/api\.adorable\.io\//,
         handler: 'cacheFirst'
+      },
+      {
+        urlPattern: /^https:\/\/www\.gravatar\.com\//,
+        handler: 'cacheFirst'
       }]
     })
   ]
