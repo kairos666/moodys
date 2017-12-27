@@ -163,7 +163,11 @@ let notificationModule = database => {
             },
             notificationFiring(context, payload) {
                 let notif = NotificationHelpers.moodNotifBuilder(payload);
-                console.log(notif);
+                NotificationHelpers.pFireNotif(notif).then(resp => {
+                    console.info('Mood push notification was sent', resp);
+                }).catch(err => {
+                    console.info('Mood push notification encountered problems', err);
+                });
             }
         }
     };
