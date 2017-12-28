@@ -11,6 +11,7 @@ import offlineModule from '@/store-modules/offline-module';
 import notificationModule from '@/store-modules/notification-module';
 import firebase from 'firebase';
 import { EventBus, NotificationEvt } from '@/utils/events-bus';
+import Fingerprint2 from 'fingerprintjs2';
 
 Vue.use(Vuex);
 
@@ -35,7 +36,8 @@ const store = new Vuex.Store({
         users: (localyStored.users) ? localyStored.users : {},
         moods: (localyStored.moods) ? localyStored.moods : {},
         daysmoods: (localyStored.dayMoods) ? localyStored.dayMoods : {},
-        weekmoods: (localyStored.weekMoods) ? localyStored.weekMoods : {}
+        weekmoods: (localyStored.weekMoods) ? localyStored.weekMoods : {},
+        browserFingerPrint: null
     },
     getters: {
         currentUserMood(state) {
@@ -67,6 +69,9 @@ const store = new Vuex.Store({
         updateWeekMoods(state, payload) {
             state.weekmoods = payload;
             LSHelpers.setWeekMoods(payload);
+        },
+        fingerprint(state, payload) {
+            state.browserFingerPrint = payload;
         }
     },
     actions: {
@@ -74,10 +79,22 @@ const store = new Vuex.Store({
             // action with no commit --> firebase update
             firebaseHelpers.addMoodEntry(payload, state.auth.currentFirebaseUser.uid);
         },
-        notify(state, payload) {
+        notify(context, payload) {
             // generate notification (snack bar notification)
             let evt = new NotificationEvt(payload.subType, payload.options);
             EventBus.$emit(evt.type, evt);
+        },
+        fingerprint(context) {
+            let options = {
+                excludeCanvas: true,
+                excludeWebGL: true,
+                excludeAdBlock: true,
+                excludeJsFonts: true,
+                excludeFlashFonts: true
+            };
+            new Fingerprint2(options).get(function(result) {
+                context.commit('fingerprint', result);
+            });
         }
     }
 });
@@ -91,6 +108,9 @@ auth.onAuthStateChanged(resp => {
 db.ref('.info/connected').on('value', snap => {
     store.dispatch('offline/updateDBConnectionStatus', (snap.val() === true));
 });
+
+// evaluate browser fingerprint
+store.dispatch('fingerprint');
 
 // generate notifications (in-app) each mood input
 firebaseHelpers.onDayMoodsChange(update => {

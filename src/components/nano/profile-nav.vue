@@ -96,6 +96,5 @@
     .profile-button { border:none; background:none; padding:0; outline:none; cursor:pointer;
         .avatar { border-radius:25%; width:45px; height:45px; }
     }
-    /* TODO remove display:none when feature is ready */
     .notif-switch { margin-right:$gutter-base*2; }
 </style>
