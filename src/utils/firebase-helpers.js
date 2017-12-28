@@ -167,15 +167,15 @@ let formatUsersToArray = function(usersObj, currentUserID, moods) {
     return resultArray;
 };
 
-/* NOTIFICATIONS ENDPOINTS (no need to store this in local storage - only works if online) */
+/* NOTIFICATIONS ENDPOINTS (no need to store this in local storage - only works if online) add fingerprinting in addition to uid because a user can have multiple subscriptions (browsers and devices) */
 /**
  * set PushSubscription data related to user (will completely overwrite eventual previous node)
  * @param {String} userID
  * @param {PushSubscription} subscriptionData
  * @return {Promise}
  */
-let setNotificationsSubscriptionEntry = function(userID, subscriptionData) {
-    return firebaseDB.ref(`notifsSubscriptionEntries/${userID}`).set(subscriptionData);
+let setNotificationsSubscriptionEntry = function(userID, fingerPrint, subscriptionData) {
+    return firebaseDB.ref(`notifsSubscriptionEntries/${userID}/${fingerPrint}`).set(subscriptionData);
 };
 
 /**
@@ -183,8 +183,8 @@ let setNotificationsSubscriptionEntry = function(userID, subscriptionData) {
  * @param {String} userID
  * @return {Promise}
  */
-let removeNotificationsSubscriptionEntry = function(userID) {
-    return firebaseDB.ref(`notifsSubscriptionEntries/${userID}`).remove();
+let removeNotificationsSubscriptionEntry = function(userID, fingerPrint) {
+    return firebaseDB.ref(`notifsSubscriptionEntries/${userID}/${fingerPrint}`).remove();
 };
 
 export default {
