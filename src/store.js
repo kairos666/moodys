@@ -11,6 +11,7 @@ import offlineModule from '@/store-modules/offline-module';
 import notificationModule from '@/store-modules/notification-module';
 import firebase from 'firebase';
 import { EventBus, NotificationEvt } from '@/utils/events-bus';
+import Fingerprint2 from 'fingerprintjs2';
 
 Vue.use(Vuex);
 
@@ -35,7 +36,8 @@ const store = new Vuex.Store({
         users: (localyStored.users) ? localyStored.users : {},
         moods: (localyStored.moods) ? localyStored.moods : {},
         daysmoods: (localyStored.dayMoods) ? localyStored.dayMoods : {},
-        weekmoods: (localyStored.weekMoods) ? localyStored.weekMoods : {}
+        weekmoods: (localyStored.weekMoods) ? localyStored.weekMoods : {},
+        browserFingerPrint: null
     },
     getters: {
         currentUserMood(state) {
@@ -67,6 +69,9 @@ const store = new Vuex.Store({
         updateWeekMoods(state, payload) {
             state.weekmoods = payload;
             LSHelpers.setWeekMoods(payload);
+        },
+        fingerprint(state, payload) {
+            state.browserFingerPrint = payload;
         }
     },
     actions: {
@@ -74,10 +79,22 @@ const store = new Vuex.Store({
             // action with no commit --> firebase update
             firebaseHelpers.addMoodEntry(payload, state.auth.currentFirebaseUser.uid);
         },
-        notify(state, payload) {
-            // generate notification
+        notify(context, payload) {
+            // generate notification (snack bar notification)
             let evt = new NotificationEvt(payload.subType, payload.options);
             EventBus.$emit(evt.type, evt);
+        },
+        fingerprint(context) {
+            let options = {
+                excludeCanvas: true,
+                excludeWebGL: true,
+                excludeAdBlock: true,
+                excludeJsFonts: true,
+                excludeFlashFonts: true
+            };
+            new Fingerprint2(options).get(function(result) {
+                context.commit('fingerprint', result);
+            });
         }
     }
 });
@@ -92,7 +109,10 @@ db.ref('.info/connected').on('value', snap => {
     store.dispatch('offline/updateDBConnectionStatus', (snap.val() === true));
 });
 
-// generate notifications each mood input
+// evaluate browser fingerprint
+store.dispatch('fingerprint');
+
+// generate notifications (in-app) each mood input
 firebaseHelpers.onDayMoodsChange(update => {
     /**
      * heuristic 1 - consider only values that are less than 1 minute old
@@ -101,19 +121,18 @@ firebaseHelpers.onDayMoodsChange(update => {
     // convert to array and apply heuristics 1
     let thresholdTimestamp = moment().subtract(1, 'minutes').unix() * 1000;
     let newDayMoods = update.val();
-    let moodToNotif = Object.keys(newDayMoods).map(uid => newDayMoods[uid])
-        .filter(dayMoods => (dayMoods.timestamp > thresholdTimestamp));
+    let moodToNotif = (newDayMoods) ? Object.keys(newDayMoods).map(uid => newDayMoods[uid])
+        .filter(dayMoods => (dayMoods.timestamp > thresholdTimestamp)) : [];
 
     // apply heuristic 2
     if (moodToNotif.length >= 2) {
-        console.log(moodToNotif);
         // reduce if 2 entries or more
         moodToNotif = moodToNotif.reduce((a, b) => {
             return (a.timestamp > b.timestamp) ? a : b;
         });
     } else if (moodToNotif.length === 1) { moodToNotif = moodToNotif[0] } else { moodToNotif = null }
 
-    // trigger notif if valid update
+    // trigger in-app notif if valid update (DB registered any user)
     if (moodToNotif) {
         let userData = store.getters.usersArray.find(item => (item.id === moodToNotif.uid));
         if (userData) {
@@ -127,6 +146,12 @@ firebaseHelpers.onDayMoodsChange(update => {
         } else {
             console.warn('Couldn\'t generate notification due to unknown UID:' + moodToNotif.uid);
         }
+    }
+
+    // trigger push notif if valid update (DB registered and update from currently connected user)
+    if (moodToNotif && moodToNotif.uid === store.state.auth.currentFirebaseUser.uid) {
+        // send data to web push store module for processing
+        store.dispatch('notifications/notificationFiring', moodToNotif);
     }
 });
 

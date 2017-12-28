@@ -3,10 +3,10 @@
         <router-link v-if="!isAuthenticated" class="mdl-button" to="/sign-up"><i class="material-icons">person_add</i>Sign up</router-link>
         <router-link v-if="!isAuthenticated" class="mdl-button mdl-button--raised" to="/authenticate"><i class="material-icons">fingerprint</i>Sign in</router-link>
         <switch-toggle 
-            v-if="isAuthenticated && $store.state.notifications.isBrowserSupportOk && $store.state.notifications.isSWRegistered && $store.state.notifications.hasBeenInitialized && $store.state.offline.isDBOnline" 
+            v-if="isAuthenticated && $store.getters['notifications/notifEnabled'] && $store.state.offline.isDBOnline" 
             class="notif-switch" 
             label="notifications"
-            :checked="$store.getters['notifications/notifEnabled']"
+            :checked="$store.state.notifications.subscriptionStatus"
             @toggle="$store.dispatch('notifications/notificationActivationToggle')"
         ><i class="material-icons">sms</i></switch-toggle>
         <button class="profile-button" v-if="currentUser" @click.prevent="toggleVisibility">
@@ -96,6 +96,5 @@
     .profile-button { border:none; background:none; padding:0; outline:none; cursor:pointer;
         .avatar { border-radius:25%; width:45px; height:45px; }
     }
-    /* TODO remove display:none when feature is ready */
-    .notif-switch { margin-right:$gutter-base*2; display:none; }
+    .notif-switch { margin-right:$gutter-base*2; }
 </style>
