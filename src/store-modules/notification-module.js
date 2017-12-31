@@ -117,16 +117,16 @@ let notificationModule = database => {
                             if (subscription) {
                                 // have a subscription
                                 context.commit('subscriptionStatusUpdate', subscription);
-                                FirebaseHelpers.setNotificationsSubscriptionEntry(context.rootState.auth.currentFirebaseUser.uid, subscription.toJSON());
+                                FirebaseHelpers.setNotificationsSubscriptionEntry(context.rootState.auth.currentFirebaseUser.uid, context.rootState.browserFingerPrint, subscription.toJSON());
                             } else {
                                 // don't have a subscription
-                                FirebaseHelpers.removeNotificationsSubscriptionEntry(context.rootState.auth.currentFirebaseUser.uid);
+                                FirebaseHelpers.removeNotificationsSubscriptionEntry(context.rootState.auth.currentFirebaseUser.uid, context.rootState.browserFingerPrint);
                             }
                             context.commit('initializeNotifStatus');
                         });
                     } else {
                         // remove subscription
-                        FirebaseHelpers.removeNotificationsSubscriptionEntry(context.rootState.auth.currentFirebaseUser.uid);
+                        FirebaseHelpers.removeNotificationsSubscriptionEntry(context.rootState.auth.currentFirebaseUser.uid, context.rootState.browserFingerPrint);
                         context.commit('initializeNotifStatus');
                     }
                 }).catch(() => {
@@ -140,7 +140,7 @@ let notificationModule = database => {
                         // update status
                         context.commit('subscriptionStatusUpdate', false);
                         // update DB
-                        FirebaseHelpers.removeNotificationsSubscriptionEntry(context.rootState.auth.currentFirebaseUser.uid);
+                        FirebaseHelpers.removeNotificationsSubscriptionEntry(context.rootState.auth.currentFirebaseUser.uid, context.rootState.browserFingerPrint);
                     }
                 });
             },
@@ -149,7 +149,7 @@ let notificationModule = database => {
                     // update status
                     context.commit('subscriptionStatusUpdate', subscription);
                     // update DB
-                    FirebaseHelpers.setNotificationsSubscriptionEntry(context.rootState.auth.currentFirebaseUser.uid, subscription.toJSON());
+                    FirebaseHelpers.setNotificationsSubscriptionEntry(context.rootState.auth.currentFirebaseUser.uid, context.rootState.browserFingerPrint, subscription.toJSON());
                 });
             },
             notificationActivationToggle(context) {
