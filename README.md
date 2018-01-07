@@ -2,6 +2,20 @@
 the mood notation agency. Mood boards to enable users & teams to keep track of morale trends
 
 ## changelog
+### alpha-v4.4
+- bug fixes
+- added about page
+
+### alpha-v4.0 to 4.3
+- enables push notifications for mood updates
+- subscriptions toggler (DB saving)
+- connected to moodys backend
+
+### alpha-v3.2
+- home link
+- few styles changes
+- profile menu has avatar picture
+
 ### alpha-v3.1
 - improved charts
 - mood notification (in-app)
