@@ -2,7 +2,7 @@
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
         <header class="mdl-layout__header">
             <div class="mdl-layout__header-row">
-                <span class="mdl-layout-title"><router-link class="mdl-navigation__link" to="/" @click.native="hideMenu"><img src="/static/img/icons/favicon-32x32.png" />Moodys <small>[alpha V4.3]</small></router-link></span>
+                <span class="mdl-layout-title"><router-link class="mdl-navigation__link" to="/" @click.native="hideMenu"><img src="/static/img/icons/favicon-32x32.png" />Moodys</router-link></span>
                 <div class="mdl-layout-spacer"></div>
                 <profile-nav></profile-nav>
             </div>
@@ -13,6 +13,8 @@
                 <router-link class="mdl-navigation__link" to="/" @click.native="hideMenu"><i class="material-icons">home</i>Home</router-link>
                 <router-link class="mdl-navigation__link" to="/users" @click.native="hideMenu"><i class="material-icons">group</i>All users</router-link>
                 <router-link class="mdl-navigation__link" to="/time-travel" @click.native="hideMenu"><i class="material-icons">alarm</i>Time travel</router-link>
+                <div class="separator"></div>
+                <router-link class="mdl-navigation__link" to="/about" @click.native="hideMenu"><i class="material-icons">help_outline</i>About</router-link>
             </nav>
         </div>
         <main class="mdl-layout__content">
