@@ -125,7 +125,7 @@ var webpackConfig = merge(baseWebpackConfig, {
       },
       {
         urlPattern: /^https:\/\/www\.gravatar\.com\//,
-        handler: 'cacheFirst'
+        handler: 'networkFirst'
       }]
     })
   ]
