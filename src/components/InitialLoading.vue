@@ -5,7 +5,25 @@
 </template>
 
 <script>
-    export default {};
+    export default {
+        data() {
+            return {
+                redirectTimeout: undefined
+            };
+        },
+        mounted() {
+            // automatically leave loading screen after a period of time
+            this.$nextTick(function() {
+                this.redirectTimeout = setTimeout(() => {
+                    this.$router.push({ name: 'home' });
+                }, 5000);
+            });
+        },
+        beforeDestroy() {
+            // clear redirect timeout
+            clearTimeout(this.redirectTimeout);
+        }
+    };
 </script>
 
 <style scoped lang="scss">
