@@ -38,3 +38,13 @@
 *   TIME TRAVEL CARDS
 **/
 .home-card__time-box { min-height:0; }
+
+/**
+*   ABOUT CARDS
+**/
+.home-card__project { width:auto; min-height:0; background-size:cover; background-repeat:no-repeat;
+    background-image:linear-gradient(to right, rgba($project-overlay-color, .75), rgba($project-overlay-color, .75)), url('/static/img/dashboard-bg.jpg');
+    .mdl-card__title, 
+    .mdl-card__supporting-text,
+    .mdl-card__actions .mdl-button:not(.mdl-button--colored) { color:white; }
+}

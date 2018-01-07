@@ -49,3 +49,6 @@ a .material-icons { margin-right:$gutter-base; }
     figcaption { margin-right:0; margin-left:$gutter-base; }
   }
 }
+
+/* separators */
+.separator { width:auto; height:1px; background-color:darken($grey, 10%); }

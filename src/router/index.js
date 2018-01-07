@@ -12,6 +12,7 @@ const Profile = () => import('@/components/Profile');
 const PageNotFound = () => import('@/components/PageNotFound');
 const InitialLoading = () => import('@/components/InitialLoading');
 const TimeTravelView = () => import('@/components/TimeTravelView');
+const AboutView = () => import('@/components/AboutView');
 
 Vue.use(Router);
 
@@ -77,6 +78,11 @@ const VueRouter = new Router({
             path: '/time-travel',
             name: 'time-travel',
             component: TimeTravelView
+        },
+        {
+            path: '/about',
+            name: 'about',
+            component: AboutView
         },
         {
             path: '*',
