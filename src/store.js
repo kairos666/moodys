@@ -1,9 +1,9 @@
 import Vuex from 'vuex';
 import Vue from 'vue';
-import moment from 'moment';
 import firebaseConfig from '@/config/firebase';
 import firebaseHelpers from '@/utils/firebase-helpers';
 import LSHelpers from '@/utils/local-storage-helpers';
+import NotifHelpers from '@/utils/notification-helpers';
 import asyncFeedback from '@/store-modules/async-state-module';
 import authModule from '@/store-modules/authentication-state-module';
 import statsModule from '@/store-modules/statistics-module';
@@ -112,25 +112,14 @@ db.ref('.info/connected').on('value', snap => {
 // evaluate browser fingerprint
 store.dispatch('fingerprint');
 
-// generate notifications (in-app) each mood input
+/**
+ * generate notifications (in-app) each mood input
+ *
+ * only DB registered mood updates are triggering notifs that way it is more reliable and network is online
+ **/
 firebaseHelpers.onDayMoodsChange(update => {
-    /**
-     * heuristic 1 - consider only values that are less than 1 minute old
-     * heuristic 2 - consider only newest value
-     */
-    // convert to array and apply heuristics 1
-    let thresholdTimestamp = moment().subtract(1, 'minutes').unix() * 1000;
-    let newDayMoods = update.val();
-    let moodToNotif = (newDayMoods) ? Object.keys(newDayMoods).map(uid => newDayMoods[uid])
-        .filter(dayMoods => (dayMoods.timestamp > thresholdTimestamp)) : [];
-
-    // apply heuristic 2
-    if (moodToNotif.length >= 2) {
-        // reduce if 2 entries or more
-        moodToNotif = moodToNotif.reduce((a, b) => {
-            return (a.timestamp > b.timestamp) ? a : b;
-        });
-    } else if (moodToNotif.length === 1) { moodToNotif = moodToNotif[0] } else { moodToNotif = null }
+    // select only one eligible notif (or none if all are older than 1 minute)
+    let moodToNotif = NotifHelpers.filterEligibleDyaMoodsChangesForNotification(update.val());
 
     // trigger in-app notif if valid update (DB registered any user)
     if (moodToNotif) {
