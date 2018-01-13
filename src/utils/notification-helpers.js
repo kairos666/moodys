@@ -1,5 +1,6 @@
 import EmojiHelpers from '@/utils/emoji-helpers';
 import WebPushConfig from '@/config/web-push';
+import moment from 'moment';
 import Axios from 'axios';
 
 /**
@@ -46,7 +47,38 @@ let pFireNotif = function(requestBody) {
     );
 };
 
+/**
+ * Filter daymoods to select the ONE that is eligible for notification (in-app and push notification)
+ * filter heuristic 1 - consider only values that are less than 1 minute old
+ * filter heuristic 2 - consider only newest value
+ * @param {Mood[]} newDayMoods
+ * @return {Mood|null}
+ */
+let filterEligibleDyaMoodsChangesForNotification = function(newDayMoods) {
+    const thresholdTimestamp = moment().subtract(1, 'minutes').unix() * 1000;
+
+    // apply heuristics 1 - filter out too old day moods updates
+    let moodToNotif = (newDayMoods) ? Object.keys(newDayMoods).map(uid => newDayMoods[uid]).filter(dayMoods => (dayMoods.timestamp > thresholdTimestamp)) : [];
+
+    // apply heuristic 2 - keep only one value (several updates would each trigger an update event anyway)
+    if (moodToNotif.length >= 2) {
+        // reduce if 2 entries or more
+        moodToNotif = moodToNotif.reduce((a, b) => {
+            return (a.timestamp > b.timestamp) ? a : b;
+        });
+    } else if (moodToNotif.length === 1) {
+        // only one entry case
+        moodToNotif = moodToNotif[0];
+    } else {
+        // no valid entry case
+        moodToNotif = null;
+    }
+
+    return moodToNotif;
+};
+
 export default {
     moodNotifBuilder: moodNotifBuilder,
-    pFireNotif: pFireNotif
+    pFireNotif: pFireNotif,
+    filterEligibleDyaMoodsChangesForNotification: filterEligibleDyaMoodsChangesForNotification
 };
