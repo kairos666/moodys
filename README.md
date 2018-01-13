@@ -2,6 +2,11 @@
 the mood notation agency. Mood boards to enable users & teams to keep track of morale trends
 
 ## changelog
+
+### alpha-v4.5
+- bug fixes
+- travis CI integration
+
 ### alpha-v4.4
 - bug fixes
 - added about page
