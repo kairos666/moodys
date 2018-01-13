@@ -1,4 +1,4 @@
-# moodys
+# moodys [![Build Status](https://travis-ci.org/kairos666/moodys.svg?branch=master)](https://travis-ci.org/kairos666/moodys)
 the mood notation agency. Mood boards to enable users & teams to keep track of morale trends
 
 ## changelog
