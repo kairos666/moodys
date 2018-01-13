@@ -1,6 +1,6 @@
 <template>
     <div class="page-view page-about">
-        <h1><i class="material-icons">help_outline</i>About <small>version alpha 4.4</small></h1>
+        <h1><i class="material-icons">help_outline</i>About <small>version alpha 4.5</small></h1>
         <p>
             Moodys is a PWA web application. Initially the aim was to create a simplistic demo app to try out PWA features.<br>
             Given the number of current features it has now grown into a real application for tracking people moods over time.
@@ -34,6 +34,7 @@
                                 <li>noSQL database (auto-synchronization over websocket)</li>
                                 <li>account management (security, forgot password, change password, ...)</li>
                             </ul>
+                            <a class="moodys-link" href="https://travis-ci.org/" target="_blank" title="travis CI website">Travis CI</a> for continuous integration
                         </p>
                     </span>
                     <span slot="actions">
