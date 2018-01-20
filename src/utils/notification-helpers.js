@@ -17,7 +17,7 @@ let moodNotifBuilder = function(moodToNotif) {
             icon: `static/img/smileys/${emoji.image.replace('.svg', '.png')}`,
             badge: WebPushConfig.badgeIcon,
             image: moodToNotif.avatar.replace('?s=60&', '?'),
-            tag: 'mood',
+            tag: `mood-update-${moodToNotif.uid}`,
             data: {
                 url: WebPushConfig.notifClickedURL,
                 uid: moodToNotif.uid
