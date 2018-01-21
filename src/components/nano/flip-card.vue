@@ -20,11 +20,14 @@
     @import '../../styles/_include-media.scss';
     @import '../../styles/_variables.scss';
 
-    .flipper { perspective:1000px; width:320px; height:480px;
+    .flipper { perspective:1000px; width:100%; height:100%;
         &:hover .flipper__inner-container, &.hover .flipper__inner-container { transform: rotateY(180deg); }
         .flipper__inner-container { transition:0.6s; transform-style:preserve-3d; position:relative; width:100%; height:100%; }
-        .flipper__inner-container__front, .flipper__inner-container__back { width:100%; height:100%; box-shadow: 0px 10px 20px 0px rgba(0,0,0,0.75); border-radius:2px; backface-visibility:hidden; position:absolute; top:0; left:0; }
-        .flipper__inner-container__front { z-index:2; transform:rotateY(0deg); background:blue; } 
-        .flipper__inner-container__back { transform:rotateY(180deg); background:green; }
+        .flipper__inner-container__front, .flipper__inner-container__back { width:100%; height:100%; box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75); border-radius:2px; background-size:cover; background-repeat:no-repeat; background-image:linear-gradient(to right, rgba($project-overlay-color, .75), rgba($project-overlay-color, .75)), url('/static/img/dashboard-bg.jpg'); backface-visibility:hidden; position:absolute; top:0; left:0; }
+        .flipper__inner-container__front { z-index:2; transform:rotateY(0deg); } 
+        .flipper__inner-container__back { transform:rotateY(180deg); }
+
+        /* content placement */
+        .flipper__inner-container__front, .flipper__inner-container__back { display:flex; flex-direction:column; justify-content:center; align-items:center; }
     }
 </style>
