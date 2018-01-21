@@ -27,7 +27,8 @@
     @import '../../styles/_include-media.scss';
     @import '../../styles/_variables.scss';
 
-    .badge-card-side { color:#fff; padding:$gutter-base*2; 
-        h3 { margin:0 0 $gutter-base; text-align:center; }
+    .badge-card-side { color:#fff; padding:35px; 
+        h3 { font-size:1.8em; margin:0 0 $gutter-base; text-align:center; }
+        p { font-size:1.2em; text-align:center; }
     }
 </style>

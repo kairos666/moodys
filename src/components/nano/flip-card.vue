@@ -27,6 +27,9 @@
         .flipper__inner-container__front { z-index:2; transform:rotateY(0deg); } 
         .flipper__inner-container__back { transform:rotateY(180deg); }
 
+        /* ornament border */
+        .flipper__inner-container__front:before, .flipper__inner-container__back:before { content:''; border:20px solid transparent; display:block; position:absolute; top:5px; left:5px; right:5px; bottom:5px; border-image-slice: 20 20 20 20; border-image-width: 25px 25px 25px 25px; border-image-outset: 0px 0px 0px 0px; border-image-repeat: round round; border-image-source: url("/static/img/badges/badge-card-border.svg"); }
+
         /* content placement */
         .flipper__inner-container__front, .flipper__inner-container__back { display:flex; flex-direction:column; justify-content:center; align-items:center; }
     }
