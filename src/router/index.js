@@ -13,6 +13,7 @@ const PageNotFound = () => import('@/components/PageNotFound');
 const InitialLoading = () => import('@/components/InitialLoading');
 const TimeTravelView = () => import('@/components/TimeTravelView');
 const AboutView = () => import('@/components/AboutView');
+const BadgesView = () => import('@/components/BadgesView');
 
 Vue.use(Router);
 
@@ -83,6 +84,11 @@ const VueRouter = new Router({
             path: '/about',
             name: 'about',
             component: AboutView
+        },
+        {
+            path: '/badges',
+            name: 'badges',
+            component: BadgesView
         },
         {
             path: '*',

@@ -14,6 +14,7 @@
                 <router-link class="mdl-navigation__link" to="/users" @click.native="hideMenu"><i class="material-icons">group</i>All users</router-link>
                 <router-link class="mdl-navigation__link" to="/time-travel" @click.native="hideMenu"><i class="material-icons">alarm</i>Time travel</router-link>
                 <div class="separator"></div>
+                <router-link class="mdl-navigation__link" to="/badges" @click.native="hideMenu"><i class="material-icons">verified_user</i>My Badges</router-link>
                 <router-link class="mdl-navigation__link" to="/about" @click.native="hideMenu"><i class="material-icons">help_outline</i>About</router-link>
             </nav>
         </div>
