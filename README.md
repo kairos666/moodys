@@ -3,6 +3,9 @@ the mood notation agency. Mood boards to enable users & teams to keep track of m
 
 ## changelog
 
+### alpha-v4.6.1
+- modified push service URL
+
 ### alpha-v4.6
 - better notifications grouping
 
