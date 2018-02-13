@@ -61,6 +61,7 @@
                                 <li>HTTPS by default</li>
                             </ul>
                             <a class="moodys-link" href="https://push-moodysbackend.wedeploy.io/docs/" target="_blank" title="push notification service documentation">push notification service documentation</a>
+                            next is achievments service... stay tuned!
                         </p>
                     </span>
                     <span slot="actions">
