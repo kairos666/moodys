@@ -1,6 +1,6 @@
 <template>
     <div class="page-view page-about">
-        <h1><i class="material-icons">help_outline</i>About <small>version alpha 4.6.1</small></h1>
+        <h1><i class="material-icons">help_outline</i>About <small>version alpha 4.6.2</small></h1>
         <p>
             Moodys is a PWA web application. Initially the aim was to create a simplistic demo app to try out PWA features.<br>
             Given the number of current features it has now grown into a real application for tracking people moods over time.
@@ -50,7 +50,7 @@
                     </span>
                     <span slot="description">
                         <p>Web push notification micro service. Middleware for sending sending push notifications with encrypted payloads to all subscribed Moodys users.</p>
-                        <p><b>Micro service - technical stack for the backend</b></p>
+                        <p><b>Micro services - technical stack for the backend</b></p>
                         <p>
                             Based on <a class="moodys-link" href="https://feathersjs.com/" target="_blank" title="FeathersJS documentation">Feathers</a> JS framework on top of Express specifically designed for APIs building (Node).<br>
                             <a class="moodys-link" href="https://github.com/web-push-libs/web-push" target="_blank" title="Web-push documentation">Web push library</a> to ease web push notifications (VAPID key generation, payload encoding, ...)<br>
@@ -60,6 +60,8 @@
                                 <li>hosting for the service</li>
                                 <li>HTTPS by default</li>
                             </ul>
+                            <a class="moodys-link" href="https://push-moodysbackend.wedeploy.io/docs/" target="_blank" title="push notification service documentation">push notification service documentation</a>
+                            next is achievments service... stay tuned!
                         </p>
                     </span>
                     <span slot="actions">
