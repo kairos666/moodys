@@ -1,4 +1,5 @@
 import BadgesConfig from '@/config/badges';
+import { EventBus } from '@/utils/events-bus';
 
 /**
  * For each possible badges, provides a boolean for achived or not
@@ -13,6 +14,11 @@ let processBadgesConfig = function(badgesArray) {
         return badgeConf;
     });
 };
+
+// listen to achievements events and react accordingly
+EventBus.$on('achievements', (evt) => {
+    console.log('captured achievement event', evt.subType, evt.payload);
+});
 
 let AchievementsModule = database => {
     return {
