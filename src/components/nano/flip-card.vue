@@ -1,5 +1,5 @@
 <template>
-    <article class="flipper">
+    <article class="flipper" :class="{ 'is-blocked': noFlip }">
         <div class="flipper__inner-container">
             <section class="flipper__inner-container__front">
                 <slot name="front"></slot>
@@ -12,7 +12,11 @@
 </template>
 
 <script>
-    export default {};
+    export default {
+        props: {
+            noFlip: Boolean
+        }
+    };
 </script>
 
 <style scoped lang="scss">
@@ -21,7 +25,7 @@
     @import '../../styles/_variables.scss';
 
     .flipper { perspective:1000px; width:100%; height:100%;
-        &:hover .flipper__inner-container, &.hover .flipper__inner-container { transform: rotateY(180deg); }
+        &:not(.is-blocked):hover .flipper__inner-container, &:not(.is-blocked).hover .flipper__inner-container { transform: rotateY(180deg); }
         .flipper__inner-container { transition:0.6s; transform-style:preserve-3d; position:relative; width:100%; height:100%; }
         .flipper__inner-container__front, .flipper__inner-container__back { width:100%; height:100%; box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75); border-radius:2px; background-size:cover; background-repeat:no-repeat; background-image:linear-gradient(to right, rgba($project-overlay-color, .75), rgba($project-overlay-color, .75)), url('/static/img/dashboard-bg.jpg'); backface-visibility:hidden; position:absolute; top:0; left:0; }
         .flipper__inner-container__front { z-index:2; transform:rotateY(0deg); } 

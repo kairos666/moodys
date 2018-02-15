@@ -2,7 +2,7 @@
     <div>
         <h1><i class="material-icons">verified_user</i>My Badges</h1>
         <ul class="mdl-list">
-            <li class="mdl-list__item" v-for="badge in badges">
+            <li class="mdl-list__item" v-for="badge in $store.state.achievements">
                 <badge-card :info="badge"></badge-card>
             </li>
         </ul>
@@ -11,14 +11,8 @@
 
 <script>
     import BadgeCard from '@/components/nano/badge-card';
-    import BadgeConfig from '@/config/badges';
 
     export default {
-        data() {
-            return {
-                badges: BadgeConfig.badgesArray
-            };
-        },
         components: {
             BadgeCard
         }

@@ -9,6 +9,7 @@ import authModule from '@/store-modules/authentication-state-module';
 import statsModule from '@/store-modules/statistics-module';
 import offlineModule from '@/store-modules/offline-module';
 import notificationModule from '@/store-modules/notification-module';
+import AchievementsModule from '@/store-modules/achievements-module';
 import firebase from 'firebase';
 import { EventBus, NotificationEvt } from '@/utils/events-bus';
 import Fingerprint2 from 'fingerprintjs2';
@@ -30,7 +31,8 @@ const store = new Vuex.Store({
         auth: authModule.authStore(auth),
         stats: statsModule,
         offline: offlineModule.offlineStore(db),
-        notifications: notificationModule.notificationStore(db)
+        notifications: notificationModule.notificationStore(db),
+        achievements: AchievementsModule.achievementsStore(db)
     },
     state: {
         users: (localyStored.users) ? localyStored.users : {},
