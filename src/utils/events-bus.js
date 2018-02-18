@@ -12,11 +12,3 @@ export class NotificationEvt {
         this.content = snackBarMessages[subType](options);
     }
 };
-
-export class AchievementEvt {
-    constructor(subType, payload) {
-        this.type = 'achievements';
-        this.subType = subType;
-        this.payload = payload;
-    }
-};

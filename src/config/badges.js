@@ -1,6 +1,52 @@
+class AchievementEvt {
+    constructor(subType, payload) {
+        this.type = 'achievements';
+        this.subType = subType;
+        this.payload = payload;
+    }
+};
+
+/**
+ * generate PageVisitEvt
+ * @param {string}
+ * @returns {AchievementEvt}
+ */
+class PageVisitEvt extends AchievementEvt {
+    constructor(pageName) {
+        super('page-visited', pageName);
+    }
+};
+
+/**
+ * generate ForgotPasswordEvt
+ * @returns {AchievementEvt}
+ */
+class ForgotPasswordEvt extends AchievementEvt {
+    constructor() {
+        super('forgot-password');
+    }
+};
+
+/**
+ * generate TimeTravelEvt
+ * @param {int} timestamp
+ * @returns {AchievementEvt}
+ */
+class TimeTravelEvt extends AchievementEvt {
+    constructor(targetTimeStamp) {
+        super('time-travel', targetTimeStamp);
+    }
+};
+
+// check custom avatar from related browser cache - after authentication
+// notification subscriptions - DB sync service calculation
+// clickedOnNotification from SW - just after action
+// nudge TODO - service calculation
+// mood updates - just after receiving DB sync, service calculation
+
 const badgesConfig = {
     badgesArray: [
-        { title: 'adventurer', description: 'visited all pages', badge: 'adventurer' },
+        { title: 'adventurer', description: 'visited all pages in one session', badge: 'adventurer' },
         { title: 'lost in translation', description: 'went to 404 page', badge: 'lost-in-translation' },
         { title: 'no more faceless', description: 'got a custom avatar', badge: 'no-more-faceless' },
         { title: 'goldfish', description: 'forgot password mechanism activated X1', badge: 'goldfish' },
@@ -29,7 +75,12 @@ const badgesConfig = {
         { title: 'mood swing', description: 'from positive to negative mood', badge: '004-loss' },
         { title: 'stairway to heaven', description: 'mood increased 5 scores at once', badge: '015-paper-plane' },
         { title: 'nuclear disaster', description: 'mood decreased 5 scores at once', badge: '007-bomb-detonation' }
-    ]
+    ],
+    AchievementsEvts: {
+        PageVisitEvt: PageVisitEvt,
+        ForgotPasswordEvt: ForgotPasswordEvt,
+        TimeTravelEvt: TimeTravelEvt
+    }
 };
 
 export default badgesConfig;
