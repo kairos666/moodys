@@ -29,12 +29,12 @@ export class ForgotPasswordEvt extends AchievementEvt {
 
 /**
  * generate TimeTravelEvt
- * @param {int} timestamp
+ * @param {Object} targetRange
  * @returns {AchievementEvt}
  */
 export class TimeTravelEvt extends AchievementEvt {
-    constructor(targetTimeStamp) {
-        super('time-travel', targetTimeStamp);
+    constructor(targetRange) {
+        super('time-travel', targetRange);
     }
 };
 

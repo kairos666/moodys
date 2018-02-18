@@ -54,6 +54,8 @@
     import TimeTravel from '@/components/time-travel/time-travel';
     import WeeklyChart from '@/components/dashboard/weekly-chart';
     import MonthlyChart from '@/components/time-travel/monthly-chart';
+    import { TimeTravelEvt } from '@/config/badges';
+    import { EventBus } from '@/utils/events-bus';
 
     // return array with only moods corresponding to range
     let filteredMoodsPerRange = function(moods, range) {
@@ -126,7 +128,13 @@
             }
         },
         methods: {
-            onTimeRangeChange(newValue) { this.timeRange = newValue },
+            onTimeRangeChange(newValue) {
+                this.timeRange = newValue;
+
+                // achievement - time travel related
+                let achievementEvt = new TimeTravelEvt(newValue.range);
+                EventBus.$emit(achievementEvt.type, achievementEvt);
+            },
             dayDataSetBuilder(range) {
                 // provide corresponding week mood data
                 let users = this.$store.getters.usersArray;
