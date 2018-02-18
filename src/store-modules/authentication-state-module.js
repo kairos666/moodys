@@ -2,6 +2,8 @@ import router from '@/router/index';
 import firebaseHelpers from '@/utils/firebase-helpers';
 import LSHelpers from '@/utils/local-storage-helpers';
 import asyncFeedback from '@/store-modules/async-state-module';
+import { ForgotPasswordEvt } from '@/config/badges';
+import { EventBus } from '@/utils/events-bus';
 
 let authStore = auth => {
     // return store module
@@ -44,6 +46,10 @@ let authStore = auth => {
                 context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('reset', 'await - reset password action result'));
                 auth.sendPasswordResetEmail(payload.email).then(function(resp) {
                     context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('reset', `reset password email sent in your inbox: ${payload.email}`, true, true));
+
+                    // achievement - forgot password
+                    let achievementEvt = new ForgotPasswordEvt();
+                    EventBus.$emit(achievementEvt.type, achievementEvt);
 
                     return resp;
                 }).catch(function(err) {
