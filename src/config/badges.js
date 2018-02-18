@@ -11,7 +11,7 @@ class AchievementEvt {
  * @param {string}
  * @returns {AchievementEvt}
  */
-class PageVisitEvt extends AchievementEvt {
+export class PageVisitEvt extends AchievementEvt {
     constructor(pageName) {
         super('page-visited', pageName);
     }
@@ -21,7 +21,7 @@ class PageVisitEvt extends AchievementEvt {
  * generate ForgotPasswordEvt
  * @returns {AchievementEvt}
  */
-class ForgotPasswordEvt extends AchievementEvt {
+export class ForgotPasswordEvt extends AchievementEvt {
     constructor() {
         super('forgot-password');
     }
@@ -32,7 +32,7 @@ class ForgotPasswordEvt extends AchievementEvt {
  * @param {int} timestamp
  * @returns {AchievementEvt}
  */
-class TimeTravelEvt extends AchievementEvt {
+export class TimeTravelEvt extends AchievementEvt {
     constructor(targetTimeStamp) {
         super('time-travel', targetTimeStamp);
     }
@@ -80,6 +80,10 @@ const badgesConfig = {
         PageVisitEvt: PageVisitEvt,
         ForgotPasswordEvt: ForgotPasswordEvt,
         TimeTravelEvt: TimeTravelEvt
+    },
+    technical: {
+        adventurerPageList: ['home', 'profile', 'users', 'mood-input', 'time-travel', 'about', 'badges'],
+        lostInTranslationPageList: ['404']
     }
 };
 

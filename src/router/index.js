@@ -3,6 +3,8 @@ import Router from 'vue-router';
 import store from '@/store';
 import accessRules from '@/config/access';
 import HomeView from '@/components/HomeView';
+import { PageVisitEvt } from '@/config/badges';
+import { EventBus } from '@/utils/events-bus';
 const UsersView = () => import('@/components/UsersView');
 const InputUserView = () => import('@/components/InputUserView');
 const SignInView = () => import('@/components/SignInView');
@@ -108,6 +110,7 @@ let delayFirstNavigation = (to, router, storeInstance) => {
     );
 };
 
+// prevent some routes from being accessed by unauthenticated users
 VueRouter.beforeEach((to, from, next) => {
     if (!store.state.auth.isInitalAuthDone && to.name !== 'initial-loading') {
         delayFirstNavigation(to, VueRouter, store);
@@ -143,6 +146,12 @@ VueRouter.beforeEach((to, from, next) => {
     if (routeRuleFinder(to.name) && !store.getters.isAuthenticated) {
         next('/authenticate');
     }
+});
+
+// global after navigation hook
+VueRouter.afterEach((to, from) => {
+    let achievementEvt = new PageVisitEvt(to.name);
+    EventBus.$emit(achievementEvt.type, achievementEvt);
 });
 
 export default VueRouter;
