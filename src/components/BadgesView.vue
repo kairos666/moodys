@@ -2,7 +2,7 @@
     <div>
         <h1><i class="material-icons">verified_user</i>My Badges</h1>
         <ul class="mdl-list">
-            <li class="mdl-list__item" v-for="badge in $store.state.achievements">
+            <li class="mdl-list__item" v-for="badge in $store.state.achievements.userAchievements">
                 <badge-card :info="badge"></badge-card>
             </li>
         </ul>

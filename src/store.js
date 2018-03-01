@@ -114,6 +114,16 @@ db.ref('.info/connected').on('value', snap => {
 // evaluate browser fingerprint
 store.dispatch('fingerprint');
 
+// listen to achievements events and react accordingly
+EventBus.$on('achievements', (evt) => {
+    console.log('captured achievement event', evt.subType, evt.payload);
+    switch (evt.subType) {
+    case 'page-visited':
+        store.dispatch('achievements/updatePageVisit', evt.payload);
+        break;
+    }
+});
+
 /**
  * generate notifications (in-app) each mood input
  *
