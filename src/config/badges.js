@@ -85,7 +85,9 @@ const badgesConfig = {
         adventurerPageList: ['home', 'profile', 'users', 'mood-input', 'time-travel', 'about', 'badges'],
         adventurerID: 'adventurer',
         lostInTranslationPageList: ['404'],
-        lostInTranslationID: 'lost in translation'
+        lostInTranslationID: 'lost in translation',
+        backToTheFutureID: 'back to the future',
+        fortunetellerID: 'fortuneteller'
     }
 };
 

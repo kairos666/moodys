@@ -1,4 +1,5 @@
 import BadgesConfig from '@/config/badges';
+import moment from 'moment';
 
 /**
  * For each possible badges, provides a boolean for achived or not
@@ -31,9 +32,11 @@ let AchievementsModule = database => {
         state: {
             userAchievements: processBadgesConfig(BadgesConfig.badgesArray),
             sessionAllPagesVisit: processPageVisitInitialConfig(BadgesConfig.technical.adventurerPageList),
-            isPagesVisitAchievementServiceCalled: false,
             page404Visit: processPageVisitInitialConfig(BadgesConfig.technical.lostInTranslationPageList),
-            isPage404AchievementServiceCalled: false
+            isPagesVisitAchievementServiceCalled: false,
+            isPage404AchievementServiceCalled: false,
+            isBackToTheFutureAchievementServiceCalled: false,
+            isFortunetellerAchievementServiceCalled: false
         },
         mutations: {
             updatePageVisit(state, pageName) {
@@ -45,11 +48,8 @@ let AchievementsModule = database => {
                 let relevant404PageVisit = state.page404Visit.find(item => (pageName === item.pageName));
                 if (relevant404PageVisit) relevant404PageVisit.isVisited = true;
             },
-            pagesVisitAchievementServiceCalled(state) {
-                state.isPagesVisitAchievementServiceCalled = true;
-            },
-            page404AchievementServiceCalled(state) {
-                state.isPage404AchievementServiceCalled = true;
+            achievementServiceCalled(state, payload) {
+                state[payload] = true;
             }
         },
         actions: {
@@ -60,11 +60,29 @@ let AchievementsModule = database => {
                 // trigger achievements update if eligible (call to backend micro-service)
                 if (!context.state.isPagesVisitAchievementServiceCalled && context.state.sessionAllPagesVisit.every(pageVisitItem => pageVisitItem.isVisited)) {
                     context.dispatch('updateAchievements', BadgesConfig.technical.adventurerID);
-                    context.commit('pagesVisitAchievementServiceCalled');
+                    context.commit('achievementServiceCalled', 'isPagesVisitAchievementServiceCalled');
                 }
                 if (!context.state.isPage404AchievementServiceCalled && context.state.page404Visit.every(pageVisitItem => pageVisitItem.isVisited)) {
                     context.dispatch('updateAchievements', BadgesConfig.technical.lostInTranslationID);
-                    context.commit('page404AchievementServiceCalled');
+                    context.commit('achievementServiceCalled', 'isPage404AchievementServiceCalled');
+                }
+            },
+            updateTimeTravel(context, payload) {
+                const inOneMonth = moment().add(1, 'months');
+                const oneMonthAgo = moment().subtract(1, 'months');
+                const isFarInTheFuture = moment(payload[1]).isAfter(inOneMonth);
+                const isFarInThePast = moment(payload[0]).isBefore(oneMonthAgo);
+
+                // has traveled more than one month in the past
+                if (!context.state.isBackToTheFutureAchievementServiceCalled && isFarInThePast) {
+                    context.dispatch('updateAchievements', BadgesConfig.technical.backToTheFutureID);
+                    context.commit('achievementServiceCalled', 'isBackToTheFutureAchievementServiceCalled');
+                }
+
+                // has traveled more than one month in the future
+                if (!context.state.isFortunetellerAchievementServiceCalled && isFarInTheFuture) {
+                    context.dispatch('updateAchievements', BadgesConfig.technical.fortunetellerID);
+                    context.commit('achievementServiceCalled', 'isFortunetellerAchievementServiceCalled');
                 }
             },
             updateAchievements(context, payload) {

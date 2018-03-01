@@ -121,6 +121,9 @@ EventBus.$on('achievements', (evt) => {
     case 'page-visited':
         store.dispatch('achievements/updatePageVisit', evt.payload);
         break;
+    case 'time-travel':
+        store.dispatch('achievements/updateTimeTravel', evt.payload);
+        break;
     }
 });
 
