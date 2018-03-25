@@ -14,7 +14,7 @@
         props: ['datasets', 'full-week'],
         data() {
             return {
-                labels: (this.fullWeek) ? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'saturday', 'sunday'] : ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+                labels: (this.fullWeek) ? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] : ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
                 lineChartOptions: {
                     responsive: true,
                     maintainAspectRatio: false,
