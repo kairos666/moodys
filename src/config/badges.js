@@ -39,9 +39,8 @@ export class TimeTravelEvt extends AchievementEvt {
 };
 
 // TODO
-// notification subscriptions - DB sync service calculation
-// clickedOnNotification from SW - just after action
-// nudge - counter
+// notification subscriptions - DB sync service calculation [mood alert, mood monitor]
+// clickedOnNotification from SW - just after action [fast hand, tchin tchin, chain reaction]
 
 const badgesConfig = {
     badgesArray: [
