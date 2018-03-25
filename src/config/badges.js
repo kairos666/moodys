@@ -39,7 +39,6 @@ export class TimeTravelEvt extends AchievementEvt {
 };
 
 // TODO
-// check custom avatar from related browser cache - after authentication
 // notification subscriptions - DB sync service calculation
 // clickedOnNotification from SW - just after action
 // nudge - counter
@@ -82,13 +81,15 @@ const badgesConfig = {
         TimeTravelEvt: TimeTravelEvt
     },
     technical: {
+        gravatarImagesCacheName: '$$$toolbox-cache$$$https://moodies-1ad4f.firebaseapp.com/$$$',
         adventurerPageList: ['home', 'profile', 'users', 'mood-input', 'time-travel', 'about', 'badges'],
         adventurerID: 'adventurer',
         lostInTranslationPageList: ['404'],
         lostInTranslationID: 'lost in translation',
         backToTheFutureID: 'back to the future',
         fortunetellerID: 'fortuneteller',
-        alzeihmerGoldfishID: 'forgot-password'
+        alzeihmerGoldfishID: 'goldfish|alzeihmer',
+        duckFaceID: 'duck face'
     }
 };
 

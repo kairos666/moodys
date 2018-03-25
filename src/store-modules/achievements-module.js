@@ -113,6 +113,34 @@ let AchievementsModule = database => {
                     console.warn('achievements update failed');
                 });
             },
+            updateCustomAvatarAchievement(context) {
+                // check for custom avatar in cache storage
+                if (CacheStorage && caches) {
+                    const currentUser = context.rootGetters.usersArray.filter(user => user.isCurrentUser);
+                    const avatarURL = (currentUser !== undefined && currentUser.length === 1) ? currentUser[0].avatar : undefined;
+                    const pGetCacheFunc = function() { return caches.open(BadgesConfig.technical.gravatarImagesCacheName) };
+                    const pGetMatchingAvatar = function(cache) { return cache.match(avatarURL) };
+                    const pMatchCheck = function(matchingReq) {
+                        if (matchingReq !== undefined) {
+                            return Promise.resolve();
+                        } else {
+                            return Promise.reject();
+                        }
+                    };
+
+                    // check if there is a matching cache entry
+                    if (avatarURL) {
+                        pGetCacheFunc().then(pGetMatchingAvatar).then(pMatchCheck).then(() => {
+                            // custom avatar match found
+                            pFireAchievements({ achievementID: BadgesConfig.technical.duckFaceID, updateType: 'behavior', originUID: context.rootState.auth.currentFirebaseUser.uid }).catch(() => {
+                                console.warn('achievements update failed');
+                            });
+                        }).catch(() => {
+                            // no custom avatar found (nothing to do)
+                        });
+                    }
+                }
+            },
             updateAchievements(context, payload) {
                 pFireAchievements({ achievementID: payload, updateType: 'behavior', originUID: context.rootState.auth.currentFirebaseUser.uid }).catch(() => {
                     console.warn('achievements update failed');

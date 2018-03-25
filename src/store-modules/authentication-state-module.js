@@ -167,6 +167,9 @@ let authStore = auth => {
                     router.push('/');
                 }
                 context.commit('updateAuthUser', payload);
+
+                // trigger cutom avatar achievement check
+                context.dispatch('achievements/updateCustomAvatarAchievement');
             },
             initialAuthDone(context) {
                 context.commit('initialAuthDone');
