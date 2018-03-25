@@ -87,7 +87,8 @@ const badgesConfig = {
         lostInTranslationPageList: ['404'],
         lostInTranslationID: 'lost in translation',
         backToTheFutureID: 'back to the future',
-        fortunetellerID: 'fortuneteller'
+        fortunetellerID: 'fortuneteller',
+        alzeihmerGoldfishID: 'forgot-password'
     }
 };
 
