@@ -124,6 +124,8 @@ EventBus.$on('achievements', (evt) => {
     case 'time-travel':
         store.dispatch('achievements/updateTimeTravel', evt.payload);
         break;
+    case 'forgot-password':
+        store.dispatch('achievements/updateForgotPassword');
     }
 });
 

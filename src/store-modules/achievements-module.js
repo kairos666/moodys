@@ -1,5 +1,28 @@
 import BadgesConfig from '@/config/badges';
+import AchievementsServiceConfig from '@/config/achievements-service';
+import Axios from 'axios';
 import moment from 'moment';
+
+/**
+ * Execute Xhr request for achievements to moodys backend achievements service
+ * @param {NotifObject} requestBody
+ * @return {Promise}
+ */
+let pFireAchievements = function(requestBody) {
+    let requestConfig = {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    };
+    requestConfig.headers[AchievementsServiceConfig.apiServerKeyHeaderName] = AchievementsServiceConfig.apiServerKey;
+
+    return Axios.post(
+        AchievementsServiceConfig.serverURL,
+        requestBody,
+        requestConfig
+    );
+};
 
 /**
  * For each possible badges, provides a boolean for achived or not
@@ -85,8 +108,15 @@ let AchievementsModule = database => {
                     context.commit('achievementServiceCalled', 'isFortunetellerAchievementServiceCalled');
                 }
             },
+            updateForgotPassword(context) {
+                pFireAchievements({ achievementID: 'forgot-password', updateType: 'counter', originUID: context.rootState.auth.currentFirebaseUser.uid }).catch(() => {
+                    console.warn('achievements update failed');
+                });
+            },
             updateAchievements(context, payload) {
-                console.log('TODO, ajax call to achievements service with: ' + payload);
+                pFireAchievements({ achievementID: payload, updateType: 'behavior', originUID: context.rootState.auth.currentFirebaseUser.uid }).catch(() => {
+                    console.warn('achievements update failed');
+                });
             }
         }
     };

@@ -38,17 +38,17 @@ export class TimeTravelEvt extends AchievementEvt {
     }
 };
 
+// TODO
 // check custom avatar from related browser cache - after authentication
 // notification subscriptions - DB sync service calculation
 // clickedOnNotification from SW - just after action
-// nudge TODO - service calculation
-// mood updates - just after receiving DB sync, service calculation
+// nudge - counter
 
 const badgesConfig = {
     badgesArray: [
         { title: 'adventurer', description: 'visited all pages in one session', badge: 'adventurer' },
         { title: 'lost in translation', description: 'went to 404 page', badge: 'lost-in-translation' },
-        { title: 'no more faceless', description: 'got a custom avatar', badge: 'no-more-faceless' },
+        { title: 'duck face', description: 'got a custom avatar', badge: 'no-more-faceless' },
         { title: 'goldfish', description: 'forgot password mechanism activated X1', badge: 'goldfish' },
         { title: 'alzeihmer', description: 'forgot password mechanism activated X3', badge: '019-grandfather' },
         { title: 'mood alert', description: 'subscribed for notifications', badge: '003-smartphone' },
