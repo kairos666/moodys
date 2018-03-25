@@ -59,7 +59,8 @@ let AchievementsModule = database => {
             isPagesVisitAchievementServiceCalled: false,
             isPage404AchievementServiceCalled: false,
             isBackToTheFutureAchievementServiceCalled: false,
-            isFortunetellerAchievementServiceCalled: false
+            isFortunetellerAchievementServiceCalled: false,
+            isDuckFaceAchievementServiceCalled: false
         },
         mutations: {
             updatePageVisit(state, pageName) {
@@ -83,11 +84,9 @@ let AchievementsModule = database => {
                 // trigger achievements update if eligible (call to backend micro-service)
                 if (!context.state.isPagesVisitAchievementServiceCalled && context.state.sessionAllPagesVisit.every(pageVisitItem => pageVisitItem.isVisited)) {
                     context.dispatch('updateAchievements', BadgesConfig.technical.adventurerID);
-                    context.commit('achievementServiceCalled', 'isPagesVisitAchievementServiceCalled');
                 }
                 if (!context.state.isPage404AchievementServiceCalled && context.state.page404Visit.every(pageVisitItem => pageVisitItem.isVisited)) {
                     context.dispatch('updateAchievements', BadgesConfig.technical.lostInTranslationID);
-                    context.commit('achievementServiceCalled', 'isPage404AchievementServiceCalled');
                 }
             },
             updateTimeTravel(context, payload) {
@@ -99,13 +98,11 @@ let AchievementsModule = database => {
                 // has traveled more than one month in the past
                 if (!context.state.isBackToTheFutureAchievementServiceCalled && isFarInThePast) {
                     context.dispatch('updateAchievements', BadgesConfig.technical.backToTheFutureID);
-                    context.commit('achievementServiceCalled', 'isBackToTheFutureAchievementServiceCalled');
                 }
 
                 // has traveled more than one month in the future
                 if (!context.state.isFortunetellerAchievementServiceCalled && isFarInTheFuture) {
                     context.dispatch('updateAchievements', BadgesConfig.technical.fortunetellerID);
-                    context.commit('achievementServiceCalled', 'isFortunetellerAchievementServiceCalled');
                 }
             },
             updateForgotPassword(context) {
@@ -115,7 +112,7 @@ let AchievementsModule = database => {
             },
             updateCustomAvatarAchievement(context) {
                 // check for custom avatar in cache storage
-                if (CacheStorage && caches) {
+                if (CacheStorage && caches && !context.state.isDuckFaceAchievementServiceCalled) {
                     const currentUser = context.rootGetters.usersArray.filter(user => user.isCurrentUser);
                     const avatarURL = (currentUser !== undefined && currentUser.length === 1) ? currentUser[0].avatar : undefined;
                     const pGetCacheFunc = function() { return caches.open(BadgesConfig.technical.gravatarImagesCacheName) };
@@ -132,7 +129,9 @@ let AchievementsModule = database => {
                     if (avatarURL) {
                         pGetCacheFunc().then(pGetMatchingAvatar).then(pMatchCheck).then(() => {
                             // custom avatar match found
-                            pFireAchievements({ achievementID: BadgesConfig.technical.duckFaceID, updateType: 'behavior', originUID: context.rootState.auth.currentFirebaseUser.uid }).catch(() => {
+                            pFireAchievements({ achievementID: BadgesConfig.technical.duckFaceID, updateType: 'behavior', originUID: context.rootState.auth.currentFirebaseUser.uid }).then(() => {
+                                context.commit('achievementServiceCalled', 'isDuckFaceAchievementServiceCalled');
+                            }).catch(() => {
                                 console.warn('achievements update failed');
                             });
                         }).catch(() => {
@@ -142,7 +141,17 @@ let AchievementsModule = database => {
                 }
             },
             updateAchievements(context, payload) {
-                pFireAchievements({ achievementID: payload, updateType: 'behavior', originUID: context.rootState.auth.currentFirebaseUser.uid }).catch(() => {
+                pFireAchievements({ achievementID: payload, updateType: 'behavior', originUID: context.rootState.auth.currentFirebaseUser.uid }).then(() => {
+                    // register achievement call
+                    let serviceCallProperty;
+                    switch (payload) {
+                    case BadgesConfig.technical.backToTheFutureID: serviceCallProperty = 'isBackToTheFutureAchievementServiceCalled'; break;
+                    case BadgesConfig.technical.fortunetellerID: serviceCallProperty = 'isFortunetellerAchievementServiceCalled'; break;
+                    case BadgesConfig.technical.lostInTranslationID: serviceCallProperty = 'isPage404AchievementServiceCalled'; break;
+                    case BadgesConfig.technical.adventurerID: serviceCallProperty = 'isPagesVisitAchievementServiceCalled'; break;
+                    }
+                    if (serviceCallProperty) context.commit('achievementServiceCalled', serviceCallProperty);
+                }).catch(() => {
                     console.warn('achievements update failed');
                 });
             }
