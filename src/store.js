@@ -11,6 +11,7 @@ import offlineModule from '@/store-modules/offline-module';
 import notificationModule from '@/store-modules/notification-module';
 import AchievementsModule from '@/store-modules/achievements-module';
 import firebase from 'firebase';
+import { MoodRegisteredEvt } from '@/config/badges';
 import { EventBus, NotificationEvt } from '@/utils/events-bus';
 import Fingerprint2 from 'fingerprintjs2';
 
@@ -126,6 +127,9 @@ EventBus.$on('achievements', (evt) => {
         break;
     case 'forgot-password':
         store.dispatch('achievements/updateForgotPassword');
+        break;
+    case 'mood-registered':
+        store.dispatch('achievements/updatedMood');
     }
 });
 
@@ -158,6 +162,10 @@ firebaseHelpers.onDayMoodsChange(update => {
     if (moodToNotif && moodToNotif.uid === store.state.auth.currentFirebaseUser.uid) {
         // send data to web push store module for processing
         store.dispatch('notifications/notificationFiring', moodToNotif);
+
+        // update achievements for newly registered mood
+        let achievementEvt = new MoodRegisteredEvt();
+        EventBus.$emit(achievementEvt.type, achievementEvt);
     }
 });
 

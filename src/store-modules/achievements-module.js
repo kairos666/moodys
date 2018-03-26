@@ -110,6 +110,11 @@ let AchievementsModule = database => {
                     console.warn('achievements update failed');
                 });
             },
+            updatedMood(context) {
+                pFireAchievements({ achievementID: BadgesConfig.technical.moodsRelatedAchievementsSpecialEvt, updateType: 'calculation', originUID: context.rootState.auth.currentFirebaseUser.uid }).catch(() => {
+                    console.warn('achievements update failed');
+                });
+            },
             updateCustomAvatarAchievement(context) {
                 // check for custom avatar in cache storage
                 if (CacheStorage && caches && !context.state.isDuckFaceAchievementServiceCalled) {

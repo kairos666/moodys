@@ -28,6 +28,16 @@ export class ForgotPasswordEvt extends AchievementEvt {
 };
 
 /**
+ * generate ForgotPasswordEvt
+ * @returns {AchievementEvt}
+ */
+export class MoodRegisteredEvt extends AchievementEvt {
+    constructor() {
+        super('mood-registered');
+    }
+};
+
+/**
  * generate TimeTravelEvt
  * @param {Object} targetRange
  * @returns {AchievementEvt}
@@ -39,8 +49,8 @@ export class TimeTravelEvt extends AchievementEvt {
 };
 
 // TODO
-// notification subscriptions - DB sync service calculation [mood alert, mood monitor]
 // clickedOnNotification from SW - just after action [fast hand, tchin tchin, chain reaction]
+// receive and display achievements status
 
 const badgesConfig = {
     badgesArray: [
@@ -77,7 +87,8 @@ const badgesConfig = {
     AchievementsEvts: {
         PageVisitEvt: PageVisitEvt,
         ForgotPasswordEvt: ForgotPasswordEvt,
-        TimeTravelEvt: TimeTravelEvt
+        TimeTravelEvt: TimeTravelEvt,
+        MoodRegisteredEvt: MoodRegisteredEvt
     },
     technical: {
         gravatarImagesCacheName: '$$$toolbox-cache$$$https://moodies-1ad4f.firebaseapp.com/$$$',
@@ -88,7 +99,8 @@ const badgesConfig = {
         backToTheFutureID: 'back to the future',
         fortunetellerID: 'fortuneteller',
         alzeihmerGoldfishID: 'goldfish|alzeihmer',
-        duckFaceID: 'duck face'
+        duckFaceID: 'duck face',
+        moodsRelatedAchievementsSpecialEvt: 'all-moods-related-achievements'
     }
 };
 
