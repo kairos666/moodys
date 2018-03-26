@@ -98,7 +98,7 @@ const badgesConfig = {
         lostInTranslationID: 'lost in translation',
         backToTheFutureID: 'back to the future',
         fortunetellerID: 'fortuneteller',
-        alzeihmerGoldfishID: 'goldfish|alzeihmer',
+        alzeihmerGoldfishID: 'forgotPasswordCounter',
         duckFaceID: 'duck face',
         moodsRelatedAchievementsSpecialEvt: 'all-moods-related-achievements'
     }
