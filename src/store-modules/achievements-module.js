@@ -25,20 +25,6 @@ let pFireAchievements = function(requestBody) {
 };
 
 /**
- * For each possible badges, provides a boolean for achived or not
- * @param {Array} badgesArray
- * @return {Array} badgesStatuses
- */
-let processBadgesConfig = function(badgesArray) {
-    return badgesArray.map(badgeConf => {
-        // random achievements - TODO retrieve real value from db, default to false
-        badgeConf.achieved = Math.random() >= 0.5;
-
-        return badgeConf;
-    });
-};
-
-/**
  * For each possible page to visit a boolean for visited or not during this session
  * @param {Array} PageList
  * @return {Array}
@@ -53,7 +39,6 @@ let AchievementsModule = database => {
     return {
         namespaced: true,
         state: {
-            userAchievements: processBadgesConfig(BadgesConfig.badgesArray),
             sessionAllPagesVisit: processPageVisitInitialConfig(BadgesConfig.technical.adventurerPageList),
             page404Visit: processPageVisitInitialConfig(BadgesConfig.technical.lostInTranslationPageList),
             isPagesVisitAchievementServiceCalled: false,

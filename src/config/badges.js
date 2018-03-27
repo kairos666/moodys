@@ -50,7 +50,8 @@ export class TimeTravelEvt extends AchievementEvt {
 
 // TODO
 // clickedOnNotification from SW - just after action [fast hand, tchin tchin, chain reaction]
-// receive and display achievements status
+// ensure all ui event are processed
+// snackbar for achievements + animation
 
 const badgesConfig = {
     badgesArray: [

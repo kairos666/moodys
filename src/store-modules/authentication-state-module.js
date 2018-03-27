@@ -173,7 +173,7 @@ let authStore = auth => {
                 context.commit('updateAuthUser', payload);
 
                 // trigger cutom avatar achievement check
-                context.dispatch('achievements/updateCustomAvatarAchievement');
+                context.dispatch('achievementsUtils/updateCustomAvatarAchievement');
             },
             initialAuthDone(context) {
                 context.commit('initialAuthDone');

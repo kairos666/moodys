@@ -11,7 +11,7 @@ import offlineModule from '@/store-modules/offline-module';
 import notificationModule from '@/store-modules/notification-module';
 import AchievementsModule from '@/store-modules/achievements-module';
 import firebase from 'firebase';
-import { MoodRegisteredEvt } from '@/config/badges';
+import BadgesConfig, { MoodRegisteredEvt } from '@/config/badges';
 import { EventBus, NotificationEvt } from '@/utils/events-bus';
 import Fingerprint2 from 'fingerprintjs2';
 
@@ -33,7 +33,7 @@ const store = new Vuex.Store({
         stats: statsModule,
         offline: offlineModule.offlineStore(db),
         notifications: notificationModule.notificationStore(db),
-        achievements: AchievementsModule.achievementsStore(db)
+        achievementsUtils: AchievementsModule.achievementsStore(db)
     },
     state: {
         users: (localyStored.users) ? localyStored.users : {},
@@ -55,6 +55,23 @@ const store = new Vuex.Store({
             if (!state.auth.currentFirebaseUser) return [];
             // authenticated case
             return firebaseHelpers.formatUsersToArray(state.users, state.auth.currentFirebaseUser.uid, state.daysmoods);
+        },
+        userBadges(state) {
+            // no authenticated user case (no data mood case)
+            if (!state.auth.currentFirebaseUser) return [];
+            // authenticated case
+            let badgesArray = BadgesConfig.badgesArray.map(badgeData => {
+                if (!state.achievementsStatus) {
+                    // no achievements data = false
+                    badgeData.achieved = false;
+                } else {
+                    // achieved status elicited (undefined achievements are set to false)
+                    badgeData.achieved = state.achievementsStatus[badgeData.title];
+                }
+                return badgeData;
+            });
+
+            return badgesArray;
         }
     },
     mutations: {
@@ -125,16 +142,16 @@ EventBus.$on('achievements', (evt) => {
     console.log('captured achievement event', evt.subType, evt.payload);
     switch (evt.subType) {
     case 'page-visited':
-        store.dispatch('achievements/updatePageVisit', evt.payload);
+        store.dispatch('achievementsUtils/updatePageVisit', evt.payload);
         break;
     case 'time-travel':
-        store.dispatch('achievements/updateTimeTravel', evt.payload);
+        store.dispatch('achievementsUtils/updateTimeTravel', evt.payload);
         break;
     case 'forgot-password':
-        store.dispatch('achievements/updateForgotPassword');
+        store.dispatch('achievementsUtils/updateForgotPassword');
         break;
     case 'mood-registered':
-        store.dispatch('achievements/updatedMood');
+        store.dispatch('achievementsUtils/updatedMood');
     }
 });
 
