@@ -40,6 +40,7 @@ const store = new Vuex.Store({
         moods: (localyStored.moods) ? localyStored.moods : {},
         daysmoods: (localyStored.dayMoods) ? localyStored.dayMoods : {},
         weekmoods: (localyStored.weekMoods) ? localyStored.weekMoods : {},
+        achievementsStatus: (localyStored.achievements) ? localyStored.achievements : {},
         browserFingerPrint: null
     },
     getters: {
@@ -72,6 +73,10 @@ const store = new Vuex.Store({
         updateWeekMoods(state, payload) {
             state.weekmoods = payload;
             LSHelpers.setWeekMoods(payload);
+        },
+        updateAchievements(state, payload) {
+            state.achievementsStatus = payload;
+            LSHelpers.setAchievements(payload);
         },
         fingerprint(state, payload) {
             state.browserFingerPrint = payload;
