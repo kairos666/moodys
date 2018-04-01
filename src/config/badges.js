@@ -19,11 +19,12 @@ export class PageVisitEvt extends AchievementEvt {
 
 /**
  * generate ForgotPasswordEvt
+ * @param {String} targetEmail
  * @returns {AchievementEvt}
  */
 export class ForgotPasswordEvt extends AchievementEvt {
-    constructor() {
-        super('forgot-password');
+    constructor(targetEmail) {
+        super('forgot-password', targetEmail);
     }
 };
 
@@ -50,7 +51,7 @@ export class TimeTravelEvt extends AchievementEvt {
 
 // TODO
 // clickedOnNotification from SW - just after action [fast hand, tchin tchin, chain reaction]
-// ensure all ui event are processed
+// ensure all ui event are processed - OK [mood entry, page visits, past, future] await TEST [duck face] KO [forgot password - missing uid]
 // snackbar for achievements + animation
 
 const badgesConfig = {

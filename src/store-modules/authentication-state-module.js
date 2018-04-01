@@ -48,7 +48,7 @@ let authStore = auth => {
                     context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('reset', `reset password email sent in your inbox: ${payload.email}`, true, true));
 
                     // achievement - forgot password
-                    let achievementEvt = new ForgotPasswordEvt();
+                    let achievementEvt = new ForgotPasswordEvt(payload.email);
                     EventBus.$emit(achievementEvt.type, achievementEvt);
 
                     return resp;

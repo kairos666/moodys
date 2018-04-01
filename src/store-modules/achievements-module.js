@@ -90,8 +90,8 @@ let AchievementsModule = database => {
                     context.dispatch('updateAchievements', BadgesConfig.technical.fortunetellerID);
                 }
             },
-            updateForgotPassword(context) {
-                pFireAchievements({ achievementID: BadgesConfig.technical.alzeihmerGoldfishID, updateType: 'counter', originUID: context.rootState.auth.currentFirebaseUser.uid }).catch(() => {
+            updateForgotPassword(context, payload) {
+                pFireAchievements({ achievementID: BadgesConfig.technical.alzeihmerGoldfishID, updateType: 'counter', originUID: payload }).catch(() => {
                     console.warn('achievements update failed');
                 });
             },

@@ -148,7 +148,7 @@ EventBus.$on('achievements', (evt) => {
         store.dispatch('achievementsUtils/updateTimeTravel', evt.payload);
         break;
     case 'forgot-password':
-        store.dispatch('achievementsUtils/updateForgotPassword');
+        store.dispatch('achievementsUtils/updateForgotPassword', evt.payload);
         break;
     case 'mood-registered':
         store.dispatch('achievementsUtils/updatedMood');
