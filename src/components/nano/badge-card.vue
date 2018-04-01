@@ -1,6 +1,6 @@
 <template>
-    <flip-card :no-flip="!info.achieved">
-        <div class="badge-card-side badge-card-side--front" :class="{ 'is-achieved': info.achieved }" slot="front">
+    <flip-card :no-flip="!isAchieved">
+        <div class="badge-card-side badge-card-side--front" :class="{ 'is-achieved': isAchieved }" slot="front">
             <h3>{{info.title}}</h3>
             <img :alt="`badge icon - ${info.badge.replace('-', ' ')}`" :src="`static/img/badges/${info.badge}.svg`" />
         </div>
@@ -16,7 +16,8 @@
 
     export default {
         props: {
-            info: { type: Object, required: true }
+            info: { type: Object, required: true },
+            isAchieved: { type: Boolean, required: true }
         },
         components: {
             FlipCard
