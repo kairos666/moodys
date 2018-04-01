@@ -18,7 +18,7 @@ let pFireAchievements = function(requestBody) {
     requestConfig.headers[AchievementsServiceConfig.apiServerKeyHeaderName] = AchievementsServiceConfig.apiServerKey;
 
     return Axios.post(
-        AchievementsServiceConfig.serverURL,
+        AchievementsServiceConfig.serverURL + AchievementsServiceConfig.specialEventsEndpoint,
         requestBody,
         requestConfig
     );
