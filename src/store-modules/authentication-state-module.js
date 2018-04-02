@@ -4,7 +4,6 @@ import LSHelpers from '@/utils/local-storage-helpers';
 import asyncFeedback from '@/store-modules/async-state-module';
 import { ForgotPasswordEvt } from '@/config/badges';
 import { EventBus } from '@/utils/events-bus';
-import { BadgesDifferer } from '@/utils/achievements-helpers';
 
 let authStore = auth => {
     // return store module
@@ -136,12 +135,7 @@ let authStore = auth => {
                 };
                 let achievementsUpdateCallback = function(snapshot) {
                     let achievementsUpdate = snapshot.val();
-                    if (achievementsUpdate !== null) {
-                        let newlyAchievedBadges = BadgesDifferer(context.getters.userBadges, achievementsUpdate);
-                        console.log('new badges: ', newlyAchievedBadges);
-                        context.commit('updateAchievements', achievementsUpdate);
-                        context.dispatch('notify', { subType: 'offlineDB' }, { root: true });
-                    }
+                    if (achievementsUpdate !== null) context.dispatch('achievementsUtils/updateAchievementsInUI', achievementsUpdate);
                 };
 
                 let tempUID = (payload && payload.uid)

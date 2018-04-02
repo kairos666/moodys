@@ -2,6 +2,15 @@ import BadgesConfig from '@/config/badges';
 import AchievementsServiceConfig from '@/config/achievements-service';
 import Axios from 'axios';
 import moment from 'moment';
+import LSHelpers from '@/utils/local-storage-helpers';
+import { cleanupBadgesObject, BadgesDifferer } from '@/utils/achievements-helpers';
+
+// local storage achievements & basic badge data
+let localyStoredAchievements = LSHelpers.getAchievements();
+let defaultAchievements = {};
+BadgesConfig.badgesArray.forEach(badgeData => {
+    defaultAchievements[badgeData.title] = false;
+});
 
 /**
  * Execute Xhr request for achievements to moodys backend achievements service
@@ -45,7 +54,21 @@ let AchievementsModule = database => {
             isPage404AchievementServiceCalled: false,
             isBackToTheFutureAchievementServiceCalled: false,
             isFortunetellerAchievementServiceCalled: false,
-            isDuckFaceAchievementServiceCalled: false
+            isDuckFaceAchievementServiceCalled: false,
+            badgesStatus: Object.assign(defaultAchievements, localyStoredAchievements)
+        },
+        getters: {
+            userBadges(state, getters, rootState) {
+                // no authenticated user case (no data mood case)
+                if (!rootState.auth.currentFirebaseUser) return [];
+                // authenticated case
+                let fullBadgesArray = BadgesConfig.badgesArray.map(badgeData => {
+                    badgeData.achieved = state.badgesStatus[badgeData.title];
+                    return badgeData;
+                });
+
+                return fullBadgesArray;
+            }
         },
         mutations: {
             updatePageVisit(state, pageName) {
@@ -59,6 +82,12 @@ let AchievementsModule = database => {
             },
             achievementServiceCalled(state, payload) {
                 state[payload] = true;
+            },
+            updateAchievements(state, payload) {
+                // cleanup counters before commiting
+                let cleanPayload = cleanupBadgesObject(payload);
+                state.badgesStatus = cleanPayload;
+                LSHelpers.setAchievements(cleanPayload);
             }
         },
         actions: {
@@ -131,6 +160,7 @@ let AchievementsModule = database => {
                 }
             },
             updateAchievements(context, payload) {
+                // update achievements from UI to backend
                 pFireAchievements({ achievementID: payload, updateType: 'behavior', originUID: context.rootState.auth.currentFirebaseUser.uid }).then(() => {
                     // register achievement call
                     let serviceCallProperty;
@@ -144,6 +174,15 @@ let AchievementsModule = database => {
                 }).catch(() => {
                     console.warn('achievements update failed');
                 });
+            },
+            updateAchievementsInUI(context, payload) {
+                // update achievements from backend to UI
+                // 1. find newly achieved badges to notify
+                let newlyAchievedBadges = BadgesDifferer(context.state.badgesStatus, payload);
+                console.log('notify badges', newlyAchievedBadges);
+                context.dispatch('notify', { subType: 'offlineDB' }, { root: true });
+                // 2. update model
+                context.commit('updateAchievements', payload);
             }
         }
     };

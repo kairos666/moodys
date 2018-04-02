@@ -11,7 +11,7 @@ import offlineModule from '@/store-modules/offline-module';
 import notificationModule from '@/store-modules/notification-module';
 import AchievementsModule from '@/store-modules/achievements-module';
 import firebase from 'firebase';
-import BadgesConfig, { MoodRegisteredEvt } from '@/config/badges';
+import { MoodRegisteredEvt } from '@/config/badges';
 import { EventBus, NotificationEvt } from '@/utils/events-bus';
 import Fingerprint2 from 'fingerprintjs2';
 
@@ -40,7 +40,6 @@ const store = new Vuex.Store({
         moods: (localyStored.moods) ? localyStored.moods : {},
         daysmoods: (localyStored.dayMoods) ? localyStored.dayMoods : {},
         weekmoods: (localyStored.weekMoods) ? localyStored.weekMoods : {},
-        achievementsStatus: (localyStored.achievements) ? localyStored.achievements : {},
         browserFingerPrint: null
     },
     getters: {
@@ -55,24 +54,6 @@ const store = new Vuex.Store({
             if (!state.auth.currentFirebaseUser) return [];
             // authenticated case
             return firebaseHelpers.formatUsersToArray(state.users, state.auth.currentFirebaseUser.uid, state.daysmoods);
-        },
-        userBadges(state) {
-            // no authenticated user case (no data mood case)
-            if (!state.auth.currentFirebaseUser) return [];
-            // authenticated case
-            let badgesArray = BadgesConfig.badgesArray.map(badgeData => {
-                if (!state.achievementsStatus || !state.achievementsStatus[badgeData.title]) {
-                    // no achievements data = false
-                    badgeData.achieved = false;
-                } else {
-                    // achieved status elicited (undefined achievements are set to false)
-                    badgeData.achieved = state.achievementsStatus[badgeData.title];
-                }
-
-                return badgeData;
-            });
-
-            return badgesArray;
         }
     },
     mutations: {
@@ -91,10 +72,6 @@ const store = new Vuex.Store({
         updateWeekMoods(state, payload) {
             state.weekmoods = payload;
             LSHelpers.setWeekMoods(payload);
-        },
-        updateAchievements(state, payload) {
-            state.achievementsStatus = payload;
-            LSHelpers.setAchievements(payload);
         },
         fingerprint(state, payload) {
             state.browserFingerPrint = payload;
