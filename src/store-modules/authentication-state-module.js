@@ -2,6 +2,8 @@ import router from '@/router/index';
 import firebaseHelpers from '@/utils/firebase-helpers';
 import LSHelpers from '@/utils/local-storage-helpers';
 import asyncFeedback from '@/store-modules/async-state-module';
+import { ForgotPasswordEvt } from '@/config/badges';
+import { EventBus } from '@/utils/events-bus';
 
 let authStore = auth => {
     // return store module
@@ -44,6 +46,10 @@ let authStore = auth => {
                 context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('reset', 'await - reset password action result'));
                 auth.sendPasswordResetEmail(payload.email).then(function(resp) {
                     context.commit('updateAsyncTransaction', new asyncFeedback.AsyncState('reset', `reset password email sent in your inbox: ${payload.email}`, true, true));
+
+                    // achievement - forgot password
+                    let achievementEvt = new ForgotPasswordEvt(payload.email);
+                    EventBus.$emit(achievementEvt.type, achievementEvt);
 
                     return resp;
                 }).catch(function(err) {
@@ -121,18 +127,22 @@ let authStore = auth => {
                         context.dispatch('initialAuthDone');
                     }
                 };
-                let moodsUpdateCallback = function(snapshot) {
-                    let moodsUpdate = snapshot.val();
-                    if (moodsUpdate !== null) context.commit('updateMoods', moodsUpdate);
+                let dbSnapshotUpdateCallbackBuilder = mutationName => {
+                    return function(snapshot) {
+                        let dbUpdate = snapshot.val();
+                        if (dbUpdate !== null) context.commit(mutationName, dbUpdate);
+                    };
                 };
-                let daysMoodsUpdateCallback = function(snapshot) {
-                    let daysMoodsUpdate = snapshot.val();
-                    if (daysMoodsUpdate !== null) context.commit('updateDaysMoods', daysMoodsUpdate);
+                let achievementsUpdateCallback = function(snapshot) {
+                    let achievementsUpdate = snapshot.val();
+                    if (achievementsUpdate !== null) context.dispatch('achievementsUtils/updateAchievementsInUI', achievementsUpdate);
                 };
-                let weekMoodsUpdateCallback = function(snapshot) {
-                    let weekMoodsUpdate = snapshot.val();
-                    if (weekMoodsUpdate !== null) context.commit('updateWeekMoods', weekMoodsUpdate);
-                };
+
+                let tempUID = (payload && payload.uid)
+                    ? payload.uid
+                    : (context.state.currentFirebaseUser && context.state.currentFirebaseUser.uid)
+                    ? context.state.currentFirebaseUser.uid
+                    : null;
 
                 if (payload !== null) {
                     // console.info('user connected: ', payload);
@@ -142,17 +152,21 @@ let authStore = auth => {
 
                     // setup updates listeners
                     firebaseHelpers.onAllUsersChange(usersUpdateCallback);
-                    firebaseHelpers.onAllMoodsChange(moodsUpdateCallback);
-                    firebaseHelpers.onDayMoodsChange(daysMoodsUpdateCallback);
-                    firebaseHelpers.onWeekMoodsChange(weekMoodsUpdateCallback);
+                    firebaseHelpers.onAllMoodsChange(dbSnapshotUpdateCallbackBuilder('updateMoods'));
+                    firebaseHelpers.onDayMoodsChange(dbSnapshotUpdateCallbackBuilder('updateDaysMoods'));
+                    firebaseHelpers.onWeekMoodsChange(dbSnapshotUpdateCallbackBuilder('updateWeekMoods'));
+                    // use new uid from payload or old from model, if not present skip this listener --> temp uid
+                    if (tempUID) firebaseHelpers.onAchievementsChange(achievementsUpdateCallback, tempUID);
                 } else {
-                    // console.info('user disconnected');
+                    // console.info('user disconnected: ', payload);
 
                     // close updates listeners
                     firebaseHelpers.onAllUsersChange(usersUpdateCallback, true);
-                    firebaseHelpers.onAllMoodsChange(moodsUpdateCallback, true);
-                    firebaseHelpers.onDayMoodsChange(daysMoodsUpdateCallback, true);
-                    firebaseHelpers.onWeekMoodsChange(weekMoodsUpdateCallback, true);
+                    firebaseHelpers.onAllMoodsChange(dbSnapshotUpdateCallbackBuilder('updateMoods'), true);
+                    firebaseHelpers.onDayMoodsChange(dbSnapshotUpdateCallbackBuilder('updateDaysMoods'), true);
+                    firebaseHelpers.onWeekMoodsChange(dbSnapshotUpdateCallbackBuilder('updateWeekMoods'), true);
+                    // use new uid from payload or old from model, if not present skip this listener --> temp uid
+                    if (tempUID) firebaseHelpers.onAchievementsChange(achievementsUpdateCallback, tempUID, true);
 
                     // clean local storage
                     LSHelpers.removeLocalyStoredData();
@@ -161,6 +175,9 @@ let authStore = auth => {
                     router.push('/');
                 }
                 context.commit('updateAuthUser', payload);
+
+                // trigger cutom avatar achievement check
+                context.dispatch('achievementsUtils/updateCustomAvatarAchievement');
             },
             initialAuthDone(context) {
                 context.commit('initialAuthDone');

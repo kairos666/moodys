@@ -167,6 +167,20 @@ let formatUsersToArray = function(usersObj, currentUserID, moods) {
     return resultArray;
 };
 
+/**
+ * get notified on user achievements updates
+ * @param {function(FirebaseSnapshot)} cb
+ * @param {string} uid
+ * @param {Boolean} isToBeShutDown
+ */
+let onAchievementsChange = function(cb, uid, isToBeShutDown) {
+    if (!isToBeShutDown) {
+        firebaseDB.ref(`achievements/${uid}`).on('value', cb);
+    } else {
+        firebaseDB.ref(`achievements/${uid}`).off('value', cb);
+    }
+};
+
 /* NOTIFICATIONS ENDPOINTS (no need to store this in local storage - only works if online) add fingerprinting in addition to uid because a user can have multiple subscriptions (browsers and devices) */
 /**
  * set PushSubscription data related to user (will completely overwrite eventual previous node)
@@ -196,6 +210,7 @@ export default {
     onAllUsersChange: onAllUsersChange,
     onDayMoodsChange: onDayMoodsChange,
     onWeekMoodsChange: onWeekMoodsChange,
+    onAchievementsChange: onAchievementsChange,
     addMoodEntry: addMoodEntry,
     setUserEntry: setUserEntry,
     updateUserEmailDBEntry: updateUserEmailDBEntry,

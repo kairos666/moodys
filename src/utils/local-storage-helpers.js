@@ -59,7 +59,8 @@ const storageKeys = {
     users: 'users',
     moods: 'moods',
     dayMoods: 'day-moods',
-    weekMoods: 'week-moods'
+    weekMoods: 'week-moods',
+    achievements: 'user-achievements'
 };
 const isLocalStorageAvailable = isLocalStorageAvailableFinder();
 
@@ -96,32 +97,40 @@ let getWeekMoods = () => getLS(storageKeys.weekMoods);
 let setWeekMoods = (dataObj) => setLS(storageKeys.weekMoods, dataObj);
 let removeWeekMoods = () => removeLS(storageKeys.weekMoods);
 
+/* ACHIEVEMENTS */
+let getAchievements = () => getLS(storageKeys.achievements);
+let setAchievements = (dataObj) => setLS(storageKeys.achievements, dataObj);
+let removeAchievements = () => removeLS(storageKeys.achievements);
+
 /* GENERAL */
 let getAll = () => {
     let result = {
         users: getAllUsers(),
         moods: getAllMoods(),
         dayMoods: getDayMoods(),
-        weekMoods: getWeekMoods()
+        weekMoods: getWeekMoods(),
+        achievements: getAchievements()
     };
 
     return result;
 };
-let setAll = (usersData, moodsData, dayMoodsData, weekMoodsData) => {
+let setAll = (usersData, moodsData, dayMoodsData, weekMoodsData, achievementsData) => {
     let resultUsers = setAllUsers(usersData);
     let resultMoods = setAllMoods(moodsData);
     let resultDayMoods = setDayMoods(dayMoodsData);
     let resultWeekMoods = setWeekMoods(weekMoodsData);
+    let resultAchievements = setAchievements(achievementsData);
 
-    return (resultUsers && resultMoods && resultDayMoods && resultWeekMoods);
+    return (resultUsers && resultMoods && resultDayMoods && resultWeekMoods && resultAchievements);
 };
 let removeLocalyStoredData = () => {
     let resultUsers = removeAllUsers();
     let resultMoods = removeAllMoods();
     let resultDayMoods = removeDayMoods();
     let resultWeekMoods = removeWeekMoods();
+    let resultAchievements = removeAchievements();
 
-    return (resultUsers && resultMoods && resultDayMoods && resultWeekMoods);
+    return (resultUsers && resultMoods && resultDayMoods && resultWeekMoods && resultAchievements);
 };
 
 export default {
@@ -133,6 +142,9 @@ export default {
     setDayMoods: setDayMoods,
     getWeekMoods: getWeekMoods,
     setWeekMoods: setWeekMoods,
+    getAchievements: getAchievements,
+    setAchievements: setAchievements,
+    removeAchievements: removeAchievements,
     getAll: getAll,
     setAll: setAll,
     removeLocalyStoredData: removeLocalyStoredData

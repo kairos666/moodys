@@ -11,4 +11,4 @@ export class NotificationEvt {
         this.options = options;
         this.content = snackBarMessages[subType](options);
     }
-}
+};

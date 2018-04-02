@@ -16,6 +16,9 @@ const snackBarMessages = {
         }
 
         return result;
+    },
+    badgeUpdate: (options) => {
+        return `<img class="badge-icon" src="static/img/badges/${options.badge}.svg" alt=""/> You achieved ${options.title.toUpperCase()}`;
     }
 };
 

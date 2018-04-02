@@ -9,7 +9,9 @@ import authModule from '@/store-modules/authentication-state-module';
 import statsModule from '@/store-modules/statistics-module';
 import offlineModule from '@/store-modules/offline-module';
 import notificationModule from '@/store-modules/notification-module';
+import AchievementsModule from '@/store-modules/achievements-module';
 import firebase from 'firebase';
+import { MoodRegisteredEvt } from '@/config/badges';
 import { EventBus, NotificationEvt } from '@/utils/events-bus';
 import Fingerprint2 from 'fingerprintjs2';
 
@@ -30,7 +32,8 @@ const store = new Vuex.Store({
         auth: authModule.authStore(auth),
         stats: statsModule,
         offline: offlineModule.offlineStore(db),
-        notifications: notificationModule.notificationStore(db)
+        notifications: notificationModule.notificationStore(db),
+        achievementsUtils: AchievementsModule.achievementsStore(db)
     },
     state: {
         users: (localyStored.users) ? localyStored.users : {},
@@ -112,6 +115,24 @@ db.ref('.info/connected').on('value', snap => {
 // evaluate browser fingerprint
 store.dispatch('fingerprint');
 
+// listen to achievements events and react accordingly
+EventBus.$on('achievements', (evt) => {
+    console.log('captured achievement event', evt.subType, evt.payload);
+    switch (evt.subType) {
+    case 'page-visited':
+        store.dispatch('achievementsUtils/updatePageVisit', evt.payload);
+        break;
+    case 'time-travel':
+        store.dispatch('achievementsUtils/updateTimeTravel', evt.payload);
+        break;
+    case 'forgot-password':
+        store.dispatch('achievementsUtils/updateForgotPassword', evt.payload);
+        break;
+    case 'mood-registered':
+        store.dispatch('achievementsUtils/updatedMood');
+    }
+});
+
 /**
  * generate notifications (in-app) each mood input
  *
@@ -141,6 +162,10 @@ firebaseHelpers.onDayMoodsChange(update => {
     if (moodToNotif && moodToNotif.uid === store.state.auth.currentFirebaseUser.uid) {
         // send data to web push store module for processing
         store.dispatch('notifications/notificationFiring', moodToNotif);
+
+        // update achievements for newly registered mood
+        let achievementEvt = new MoodRegisteredEvt();
+        EventBus.$emit(achievementEvt.type, achievementEvt);
     }
 });
 
