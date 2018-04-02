@@ -4,6 +4,7 @@ import LSHelpers from '@/utils/local-storage-helpers';
 import asyncFeedback from '@/store-modules/async-state-module';
 import { ForgotPasswordEvt } from '@/config/badges';
 import { EventBus } from '@/utils/events-bus';
+import { BadgesDifferer } from '@/utils/achievements-helpers';
 
 let authStore = auth => {
     // return store module
@@ -133,6 +134,15 @@ let authStore = auth => {
                         if (dbUpdate !== null) context.commit(mutationName, dbUpdate);
                     };
                 };
+                let achievementsUpdateCallback = function(snapshot) {
+                    let achievementsUpdate = snapshot.val();
+                    if (achievementsUpdate !== null) {
+                        let newlyAchievedBadges = BadgesDifferer(context.getters.userBadges, achievementsUpdate);
+                        console.log('new badges: ', newlyAchievedBadges);
+                        context.commit('updateAchievements', achievementsUpdate);
+                        context.dispatch('notify', { subType: 'offlineDB' }, { root: true });
+                    }
+                };
 
                 let tempUID = (payload && payload.uid)
                     ? payload.uid
@@ -152,7 +162,7 @@ let authStore = auth => {
                     firebaseHelpers.onDayMoodsChange(dbSnapshotUpdateCallbackBuilder('updateDaysMoods'));
                     firebaseHelpers.onWeekMoodsChange(dbSnapshotUpdateCallbackBuilder('updateWeekMoods'));
                     // use new uid from payload or old from model, if not present skip this listener --> temp uid
-                    if (tempUID) firebaseHelpers.onAchievementsChange(dbSnapshotUpdateCallbackBuilder('updateAchievements'), tempUID);
+                    if (tempUID) firebaseHelpers.onAchievementsChange(achievementsUpdateCallback, tempUID);
                 } else {
                     // console.info('user disconnected: ', payload);
 
@@ -162,7 +172,7 @@ let authStore = auth => {
                     firebaseHelpers.onDayMoodsChange(dbSnapshotUpdateCallbackBuilder('updateDaysMoods'), true);
                     firebaseHelpers.onWeekMoodsChange(dbSnapshotUpdateCallbackBuilder('updateWeekMoods'), true);
                     // use new uid from payload or old from model, if not present skip this listener --> temp uid
-                    if (tempUID) firebaseHelpers.onAchievementsChange(dbSnapshotUpdateCallbackBuilder('updateAchievements'), tempUID, true);
+                    if (tempUID) firebaseHelpers.onAchievementsChange(achievementsUpdateCallback, tempUID, true);
 
                     // clean local storage
                     LSHelpers.removeLocalyStoredData();

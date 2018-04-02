@@ -61,13 +61,14 @@ const store = new Vuex.Store({
             if (!state.auth.currentFirebaseUser) return [];
             // authenticated case
             let badgesArray = BadgesConfig.badgesArray.map(badgeData => {
-                if (!state.achievementsStatus) {
+                if (!state.achievementsStatus || !state.achievementsStatus[badgeData.title]) {
                     // no achievements data = false
                     badgeData.achieved = false;
                 } else {
                     // achieved status elicited (undefined achievements are set to false)
                     badgeData.achieved = state.achievementsStatus[badgeData.title];
                 }
+
                 return badgeData;
             });
 
