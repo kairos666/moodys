@@ -1,3 +1,5 @@
+import BadgesConfig from '@/config/badges';
+
 /**
  * a function that provides an array of new achievements titles by comparing previous/next achievements list
  * @param {Object} oldBadgesObject
@@ -30,7 +32,19 @@ let cleanupBadgesObject = function(originalBadgesData) {
     return clone;
 };
 
+/**
+ * snackbar notification builder
+ * @param {Array}
+ * @return {Array}
+ */
+let formatBadgeSnackbarNotifications = function(achievementsToNotify) {
+    let relevantBadges = BadgesConfig.badgesArray.filter(badgeData => achievementsToNotify.includes(badgeData.title));
+
+    return relevantBadges;
+};
+
 export {
     BadgesDifferer,
-    cleanupBadgesObject
+    cleanupBadgesObject,
+    formatBadgeSnackbarNotifications
 };

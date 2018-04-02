@@ -3,7 +3,7 @@ import AchievementsServiceConfig from '@/config/achievements-service';
 import Axios from 'axios';
 import moment from 'moment';
 import LSHelpers from '@/utils/local-storage-helpers';
-import { cleanupBadgesObject, BadgesDifferer } from '@/utils/achievements-helpers';
+import { cleanupBadgesObject, BadgesDifferer, formatBadgeSnackbarNotifications } from '@/utils/achievements-helpers';
 
 // local storage achievements & basic badge data
 let localyStoredAchievements = LSHelpers.getAchievements();
@@ -178,9 +178,10 @@ let AchievementsModule = database => {
             updateAchievementsInUI(context, payload) {
                 // update achievements from backend to UI
                 // 1. find newly achieved badges to notify
-                let newlyAchievedBadges = BadgesDifferer(context.state.badgesStatus, payload);
-                console.log('notify badges', newlyAchievedBadges);
-                context.dispatch('notify', { subType: 'offlineDB' }, { root: true });
+                let newlyAchievedBadges = formatBadgeSnackbarNotifications(BadgesDifferer(context.state.badgesStatus, payload));
+                newlyAchievedBadges.forEach(newBadgeData => {
+                    context.dispatch('notify', { subType: 'badgeUpdate', options: newBadgeData }, { root: true });
+                });
                 // 2. update model
                 context.commit('updateAchievements', payload);
             }
