@@ -1,6 +1,6 @@
 <template>
     <div class="page-view page-about">
-        <h1><i class="material-icons">help_outline</i>About <small>version alpha 4.6.2</small></h1>
+        <h1><i class="material-icons">help_outline</i>About <small>version alpha 4.7.0</small></h1>
         <p>
             Moodys is a PWA web application. Initially the aim was to create a simplistic demo app to try out PWA features.<br>
             Given the number of current features it has now grown into a real application for tracking people moods over time.
@@ -46,27 +46,30 @@
             <li>
                 <card class="home-card__project">
                     <span slot="header">
-                        Moodys backend
+                        Moodys backend - push & achievements
                     </span>
                     <span slot="description">
-                        <p>Web push notification micro service. Middleware for sending sending push notifications with encrypted payloads to all subscribed Moodys users.</p>
+                        <p><b>Web push notification micro service</b>. Middleware for sending sending push notifications with encrypted payloads to all subscribed Moodys users.</p>
+                        <p><b>Achievements and statistics micro service</b>. Service for calculating mood related stats and achievements from users.</p>
                         <p><b>Micro services - technical stack for the backend</b></p>
                         <p>
                             Based on <a class="moodys-link" href="https://feathersjs.com/" target="_blank" title="FeathersJS documentation">Feathers</a> JS framework on top of Express specifically designed for APIs building (Node).<br>
                             <a class="moodys-link" href="https://github.com/web-push-libs/web-push" target="_blank" title="Web-push documentation">Web push library</a> to ease web push notifications (VAPID key generation, payload encoding, ...)<br>
                             <a class="moodys-link" href="https://web-push-book.gauntface.com/" target="_blank" title="web push cookbook">Web Push Book</a> for useful information on web push notifications.<br>
+                            <a class="moodys-link" href="http://caolan.github.io/async/" target="_blank" title="async array and object manipulations documentation">documentation for async array and object manipulations</a> Avoid doing heavy calculations in a blocking manner<br>
                             <a class="moodys-link" href="https://wedeploy.com/" target="_blank" title="WeDeploy website">WeDeploy</a> Free tier account provides:
                             <ul>
                                 <li>hosting for the service</li>
                                 <li>HTTPS by default</li>
                             </ul>
                             <a class="moodys-link" href="https://push-moodysbackend.wedeploy.io/docs/" target="_blank" title="push notification service documentation">push notification service documentation</a>
-                            next is achievments service... stay tuned!
                         </p>
                     </span>
                     <span slot="actions">
-                        <a class="mdl-button mdl-button--colored" href="https://github.com/kairos666/moodys-backend" target="_blank" title="go to moodys backend github repo">github</a>
-                        <a class="mdl-button mdl-button--raised mdl-button--colored" href="https://github.com/kairos666/moodys-backend/issues/new" target="_blank" title="go to moodys backend issues">raise issue</a>
+                        <a class="mdl-button mdl-button--colored" href="https://github.com/kairos666/moodys-backend" target="_blank" title="go to moodys backend push service github repo">github - push</a>
+                        <a class="mdl-button mdl-button--raised mdl-button--colored" href="https://github.com/kairos666/moodys-backend/issues/new" target="_blank" title="go to moodys push service backend issues">raise issue - push</a><br>
+                        <a class="mdl-button mdl-button--colored" href="https://github.com/kairos666/moodys-backend-achievements" target="_blank" title="go to moodys backend achievements service github repo">github - achievements</a>
+                        <a class="mdl-button mdl-button--raised mdl-button--colored" href="https://github.com/kairos666/moodys-backend-achievements/issues/new" target="_blank" title="go to moodys backend achievements service issues">raise issue - achievements</a>
                     </span>
                 </card>
             </li>
@@ -97,4 +100,6 @@
             > li { flex-grow:0; flex-basis:50%; }
         }
     }
+    .mdl-card__actions > span { margin-top:-$gutter-base; }
+    .mdl-button { margin-top:$gutter-base; }
 </style>

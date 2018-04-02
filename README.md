@@ -3,6 +3,12 @@ the mood notation agency. Mood boards to enable users & teams to keep track of m
 
 ## changelog
 
+### alpha-v4.7.0
+- achievements feature (notifications clicking related badges are not implemented yet)
+
+### alpha-v4.6.2
+- added swagger UI link for push service
+
 ### alpha-v4.6.1
 - modified push service URL
 
