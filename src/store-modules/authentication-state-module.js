@@ -116,9 +116,6 @@ let authStore = auth => {
                 });
             },
             updateAuthUser(context, payload) {
-                // first time = initial auto login resolution is a success
-                if (!context.isInitalAuthDone) context.dispatch('initialAuthDone');
-
                 // prepare callbacks
                 let usersUpdateCallback = function(snapshot) {
                     let usersUpdate = snapshot.val();
@@ -176,11 +173,14 @@ let authStore = auth => {
                 }
                 context.commit('updateAuthUser', payload);
 
-                // trigger cutom avatar achievement check
-                context.dispatch('achievementsUtils/updateCustomAvatarAchievement');
+                // first time = initial auto login resolution is a success
+                if (!context.isInitalAuthDone) context.dispatch('initialAuthDone');
             },
             initialAuthDone(context) {
                 context.commit('initialAuthDone');
+
+                // trigger cutom avatar achievement check
+                context.dispatch('achievementsUtils/updateCustomAvatarAchievement');
 
                 // at first authentication initialize notification check for subscription
                 context.dispatch('notifications/initialSubscriptionCheck');
