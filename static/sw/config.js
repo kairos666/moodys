@@ -10,8 +10,8 @@ let _config = {
             'Content-Type': 'application/json',
             'x-api-key': 'XUocZ8HVQAsqz8273aEEmW75QPs7gjHIV9oKW36b'
         },
-        bodyBuilder: function(achievementID, updateDtype, fromUID, toUID) {
-            return JSON.stringify({ achievementID: achievementID, updateType: updateDtype, originUID: fromUID, targetUID: toUID });
+        bodyBuilder: function(achievementID, updateDtype, fromUID, toUID, timestamp) {
+            return JSON.stringify({ achievementID: achievementID, updateType: updateDtype, originUID: fromUID, targetUID: toUID, pushTimestamp: timestamp });
         }
     }
 };

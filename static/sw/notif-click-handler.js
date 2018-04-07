@@ -28,7 +28,7 @@ self.addEventListener('notificationclick', function(event) {
         mode: 'cors',
         method: 'post',
         headers: ajaxConfig.baseHeaders,
-        body: ajaxConfig.bodyBuilder('notification-click', 'notif-action', event.notification.data.uid, event.notification.data.toUid)
+        body: ajaxConfig.bodyBuilder('notification-click', 'notif-action', event.notification.data.uid, event.notification.data.toUid, event.notification.data.pushTimestamp)
     }).then(function(resp) {
         if (resp.ok) {
             console.log('ajax to achievements success');
