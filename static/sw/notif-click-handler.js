@@ -22,5 +22,27 @@ self.addEventListener('notificationclick', function(event) {
         });
     };
 
-    event.waitUntil(clickResponsePromise);
+    // ajax call to backend special events
+    let ajaxConfig = self._config.achievementsbackend;
+    let pajax = fetch(`${ajaxConfig.baseURL}/${ajaxConfig.endPoints.specialEvts}`, {
+        mode: 'cors',
+        method: 'post',
+        headers: ajaxConfig.baseHeaders,
+        body: ajaxConfig.bodyBuilder('notification-click', 'notif-action', event.notification.data.uid, event.notification.data.toUid)
+    }).then(function(resp) {
+        if (resp.ok) {
+            console.log('ajax to achievements success');
+        } else {
+            console.warn('ajax to achievements partial fail: ', resp.text());
+        }
+    }).catch(function(err) {
+        console.warn('ajax to achievements failed: ', err);
+    });
+
+    event.waitUntil(
+        Promise.all([
+            clickResponsePromise,
+            pajax
+        ])
+    );
 });
