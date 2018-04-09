@@ -1,6 +1,6 @@
 <template>
     <div class="page-view page-about">
-        <h1><i class="material-icons">help_outline</i>About <small>version alpha 4.7.2</small></h1>
+        <h1><i class="material-icons">help_outline</i>About <small>version alpha 4.7.3</small></h1>
         <p>
             Moodys is a PWA web application. Initially the aim was to create a simplistic demo app to try out PWA features.<br>
             Given the number of current features it has now grown into a real application for tracking people moods over time.
