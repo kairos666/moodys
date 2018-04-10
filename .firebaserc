@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "moodies-1ad4f"
+    "default": "moodies-1ad4f",
+    "production": "moodies-1ad4f",
+    "pprod": "moodies-pprod"
   }
 }
