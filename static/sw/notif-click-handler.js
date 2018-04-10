@@ -23,18 +23,19 @@ self.addEventListener('notificationclick', function(event) {
     };
 
     // ajax call to backend special events
-    let ajaxConfig = self._config.achievementsbackend;
-    let pajax = fetch(`${ajaxConfig.baseURL}/${ajaxConfig.endPoints.specialEvts}`, {
-        mode: 'cors',
-        method: 'post',
-        headers: ajaxConfig.baseHeaders,
-        body: ajaxConfig.bodyBuilder('notification-click', 'notif-action', event.notification.data.uid, event.notification.data.toUid, event.notification.data.pushTimestamp)
-    });
+    // let ajaxConfig = self._config.achievementsbackend;
+    // let pajax = fetch(`${ajaxConfig.baseURL}/${ajaxConfig.endPoints.specialEvts}`, {
+    //     mode: 'cors',
+    //     method: 'post',
+    //     headers: ajaxConfig.baseHeaders,
+    //     body: ajaxConfig.bodyBuilder('notification-click', 'notif-action', event.notification.data.uid, event.notification.data.toUid, event.notification.data.pushTimestamp)
+    // });
 
-    event.waitUntil(
-        Promise.all([
-            clickResponsePromise,
-            pajax
-        ])
-    );
+    // event.waitUntil(
+    //     Promise.all([
+    //         clickResponsePromise,
+    //         pajax
+    //     ])
+    // );
+    event.waitUntil(clickResponsePromise); 
 });

@@ -102,7 +102,7 @@ var webpackConfig = merge(baseWebpackConfig, {
       staticFileGlobs: ['dist/**/*.{js,html,css,svg,eot,ttf,woff,png,jpg,jpeg}'],
       minify: true,
       importScripts: [
-        './static/sw/config.js',
+        /* './static/sw/config.js', */
         './static/sw/push-handler.js',
         './static/sw/notif-click-handler.js'
       ],
