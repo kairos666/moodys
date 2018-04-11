@@ -24,11 +24,9 @@ var webpackConfig = merge(baseWebpackConfig, {
         test: /\.(js|vue|json)$/,
         exclude: /node_modules/,
         options: {
-          multiple: [
-            { search: 'moodysbackend.wedeploy.io', replace: 'moodysbackendpprod.wedeploy.io', flags: 'g' },
-            { search: 'moodies-1ad4f', replace: 'moodies-pprod', flags: 'g' },
-            { search: 'AIzaSyD9XdghOe4dGAeA4tiJ83Bu0CnUpnO5UMw', replace: 'AIzaSyBSXAzQ-vm5swmpO2jES0rciHDIweAIerA', flags: 'g' }
-          ]
+          multiple: config.pprodbuild.replaceOccurrences.map(replaceItem => {
+            return { search: replaceItem.from, replace: replaceItem.to, flags: 'g' }
+          })
         }
       }
     ])
@@ -107,9 +105,16 @@ var webpackConfig = merge(baseWebpackConfig, {
         to: config.pprodbuild.assetsSubDirectory,
         ignore: ['.*'],
         transform(content, path) {
-          return content.toString().replace(/moodysbackend.wedeploy.io/g, 'moodysbackendpprod.wedeploy.io')
-                                   .replace(/moodies-1ad4f/g, 'moodies-pprod')
-                                   .replace(/AIzaSyD9XdghOe4dGAeA4tiJ83Bu0CnUpnO5UMw/g, 'AIzaSyBSXAzQ-vm5swmpO2jES0rciHDIweAIerA');
+          // early exit if file to be copied is not js or json
+          if (!path.match(/\.(js|json)$/)) return content;
+
+          let stringContent = content.toString();
+
+          config.pprodbuild.replaceOccurrences.forEach(replaceItem => {
+            stringContent = stringContent.replace(new RegExp(replaceItem.from, 'g'), replaceItem.to);
+          });
+
+          return stringContent;
         }
       }
     ]),

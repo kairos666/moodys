@@ -28,6 +28,11 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     productionSourceMap: true,
+    replaceOccurrences: [
+      { from: 'moodysbackend.wedeploy.io', to: 'moodysbackendpprod.wedeploy.io' },
+      { from: 'moodies-1ad4f', to: 'moodies-pprod' },
+      { from: 'AIzaSyD9XdghOe4dGAeA4tiJ83Bu0CnUpnO5UMw', to: 'AIzaSyBSXAzQ-vm5swmpO2jES0rciHDIweAIerA' }
+    ],
     // Gzip off by default as many popular static hosts such as
     // Surge or Netlify already gzip all static assets for you.
     // Before setting to `true`, make sure to:
