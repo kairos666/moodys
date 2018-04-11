@@ -105,7 +105,12 @@ var webpackConfig = merge(baseWebpackConfig, {
       {
         from: path.resolve(__dirname, '../static'),
         to: config.pprodbuild.assetsSubDirectory,
-        ignore: ['.*']
+        ignore: ['.*'],
+        transform(content, path) {
+          return content.toString().replace(/moodysbackend.wedeploy.io/g, 'moodysbackendpprod.wedeploy.io')
+                                   .replace(/moodies-1ad4f/g, 'moodies-pprod')
+                                   .replace(/AIzaSyD9XdghOe4dGAeA4tiJ83Bu0CnUpnO5UMw/g, 'AIzaSyBSXAzQ-vm5swmpO2jES0rciHDIweAIerA');
+        }
       }
     ]),
     // service worker caching
