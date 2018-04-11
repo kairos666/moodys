@@ -18,7 +18,20 @@ var webpackConfig = merge(baseWebpackConfig, {
     rules: utils.styleLoaders({
       sourceMap: config.pprodbuild.productionSourceMap,
       extract: true
-    })
+    }).concat([
+      {
+        loader: 'string-replace-loader',
+        test: /\.(js|vue|json)$/,
+        exclude: /node_modules/,
+        options: {
+          multiple: [
+            { search: 'moodysbackend.wedeploy.io', replace: 'moodysbackendpprod.wedeploy.io', flags: 'g' },
+            { search: 'moodies-1ad4f', replace: 'moodies-pprod', flags: 'g' },
+            { search: 'AIzaSyD9XdghOe4dGAeA4tiJ83Bu0CnUpnO5UMw', replace: 'AIzaSyBSXAzQ-vm5swmpO2jES0rciHDIweAIerA', flags: 'g' }
+          ]
+        }
+      }
+    ])
   },
   devtool: config.pprodbuild.productionSourceMap ? '#source-map' : false,
   output: {
