@@ -1,6 +1,6 @@
 require('./check-versions')()
 
-process.env.NODE_ENV = 'production'
+process.env.NODE_ENV = 'pprod'
 
 var ora = require('ora')
 var rm = require('rimraf')
@@ -8,9 +8,9 @@ var path = require('path')
 var chalk = require('chalk')
 var webpack = require('webpack')
 var config = require('../config')
-var webpackConfig = require('./webpack.prod.conf')
+var webpackConfig = require('./webpack.pprod.conf')
 
-var spinner = ora('building for production...')
+var spinner = ora('building for pre-production...')
 spinner.start()
 
 rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
@@ -26,7 +26,7 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
       chunkModules: false
     }) + '\n\n')
 
-    console.log(chalk.cyan('  PROD - Build complete.\n'))
+    console.log(chalk.cyan('  PRE-PROD - Build complete.\n'))
     console.log(chalk.yellow(
       '  Tip: built files are meant to be served over an HTTP server.\n' +
       '  Opening index.html over file:// won\'t work.\n'
