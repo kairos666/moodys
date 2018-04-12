@@ -19,6 +19,8 @@ before_script:
 
 script:
    - npm run build
+   - if [ "$TRAVIS_BRANCH" == "master" ]; then npm run build; fi
+   - if [ "$TRAVIS_BRANCH" == "develop" ]; then npm run pprod-build; fi
 
 after_success:
    - if [ "$TRAVIS_BRANCH" == "master" ]; then firebase deploy --token $FIREBASE_TOKEN --project production; fi
