@@ -18,7 +18,6 @@ before_script:
    - npm install -g firebase-tools
 
 script:
-   - npm run build
    - if [ "$TRAVIS_BRANCH" == "master" ]; then npm run build; fi
    - if [ "$TRAVIS_BRANCH" == "develop" ]; then npm run pprod-build; fi
 
