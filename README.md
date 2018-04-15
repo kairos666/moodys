@@ -75,6 +75,12 @@ npm run build
 
 # build for production and view the bundle analyzer report
 npm run build --report
+
+# build for pre-production with minification
+npm run pprod-build
+
+# build for pre-production and view the bundle analyzer report
+npm run pprod-build --report
 ```
 
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
