@@ -2,7 +2,8 @@
     <figure ref="stageContainer" class="tank-container">
         <v-stage :config="stageConfig">
             <v-layer>
-                <v-circle :config="configCircle"></v-circle>
+                <v-line :config="backWaterLineConfig"></v-line>
+                <v-line :config="frontWaterLineConfig"></v-line>
             </v-layer>
         </v-stage>
     </figure>
@@ -30,13 +31,15 @@
                 backWaterLineDuration: 1.8,
                 frontWaterColor: '#2c7fbe',
                 backWaterColor: '#32bafa',
-                configCircle: {
-                    x: 100,
-                    y: 100,
-                    radius: 70,
-                    fill: 'red',
-                    stroke: 'black',
-                    strokeWidth: 4
+                tweenersCollection: [],
+                animationsCollection: [],
+                waterLineBaseOptions: {
+                    points: [],
+                    fill: '#ffffff',
+                    bezier: true,
+                    tension: 0.35,
+                    closed: true,
+                    name: 'waterline'
                 }
             };
         },
@@ -46,12 +49,51 @@
                     width: this.stageWidth,
                     height: this.stageHeight
                 };
+            },
+            backWaterLineConfig() {
+                return Object.assign({}, this.waterLineBaseOptions, {
+                    fill: this.backWaterColor,
+                    points: this.waterLineBuilder(0, 0, 2 * this.stageWidth, 15, 2, 0)
+                });
+            },
+            frontWaterLineConfig() {
+                return Object.assign({}, this.waterLineBaseOptions, {
+                    fill: this.frontWaterColor,
+                    points: this.waterLineBuilder(-1 * this.stageWidth, 0, 2 * this.stageWidth, 15, 2, Math.PI)
+                });
             }
         },
         methods: {
             resizeStage() {
                 this.stageWidth = this.$refs.stageContainer.offsetWidth;
                 this.stageHeight = this.$refs.stageContainer.offsetHeight;
+            },
+            waterLineBuilder(x, y, width, amplitude, Hz, offsetRad) {
+                let offset = offsetRad;
+                if (!offset) offset = 0;
+                let result = [];
+
+                // point bottom left of tank to first wave point
+                result.push(x);
+                result.push(this.stageHeight * 2);
+                result.push(x);
+                result.push(y);
+
+                for (let i = 0; i < Hz; i++) {
+                    // each hz is comprised of 5 points
+                    for (let j = 0; j < 5; j++) {
+                        result.push(x + 0.25 * j * width / Hz + i * width / Hz);
+                        result.push(y + amplitude * Math.sin(j * Math.PI / 2 + offset));
+                    }
+                }
+
+                // point last wave point to bottom of tank
+                result.push(x + width);
+                result.push(y);
+                result.push(x + width);
+                result.push(this.stageHeight * 2);
+
+                return result;
             }
         },
         mounted() {
@@ -62,6 +104,14 @@
         beforeDestroy() {
             // remove resize listener
             window.removeEventListener('resize', this.resizeStage);
+            // destroy all tweeners
+            this.tweenersCollection.forEach(tweener => {
+                tweener.destroy();
+            });
+            // destroy all animations
+            this.animationsCollection.forEach(animation => {
+                animation.stop();
+            });
         }
     };
 </script>
