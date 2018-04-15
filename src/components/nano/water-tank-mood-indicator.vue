@@ -1,9 +1,11 @@
 <template>
     <figure ref="stageContainer" class="tank-container">
         <v-stage :config="stageConfig">
-            <v-layer>
-                <v-line :config="backWaterLineConfig"></v-line>
-                <v-line :config="frontWaterLineConfig"></v-line>
+            <v-layer ref="waterLayer">
+                <v-group ref="waterTank" :config="waterLevelConfig">
+                    <v-line :config="frontWaterLineConfig"></v-line>
+                    <v-line :config="backWaterLineConfig"></v-line>
+                </v-group>
             </v-layer>
         </v-stage>
     </figure>
@@ -13,6 +15,7 @@
     // setup vue-konva plugin
     import Vue from 'vue';
     import VueKonva from 'vue-konva';
+    import Konva from 'konva';
     Vue.use(VueKonva);
 
     export default {
@@ -50,6 +53,11 @@
                     height: this.stageHeight
                 };
             },
+            waterLevelConfig() {
+                return {
+                    y: this.percentToStageHeightConverter(this.model.waterLevel)
+                };
+            },
             backWaterLineConfig() {
                 return Object.assign({}, this.waterLineBaseOptions, {
                     fill: this.backWaterColor,
@@ -64,10 +72,6 @@
             }
         },
         methods: {
-            resizeStage() {
-                this.stageWidth = this.$refs.stageContainer.offsetWidth;
-                this.stageHeight = this.$refs.stageContainer.offsetHeight;
-            },
             waterLineBuilder(x, y, width, amplitude, Hz, offsetRad) {
                 let offset = offsetRad;
                 if (!offset) offset = 0;
@@ -94,9 +98,57 @@
                 result.push(this.stageHeight * 2);
 
                 return result;
+            },
+            percentToStageHeightConverter(percent) {
+                // convert percentage to real stage height (taking vertical margins into account)
+                return this.verticalStageOffset + (1 - percent) * (this.stageHeight - 2 * this.verticalStageOffset);
+            },
+            waterLineTween(node, duration, direction) {
+                return new Konva.Tween({
+                    node: node,
+                    duration: duration,
+                    offsetX: direction * this.stageWidth,
+                    onFinish: function() { this.reset() },
+                    onReset: function() { this.play() }
+                });
+            },
+            setupFixedAnimations() {
+                /** water lines waves **/
+                const waterTank = this.$refs.waterTank.getStage();
+                const waterLines = waterTank.find('.waterline');
+                // reset properties
+                waterLines[1].setAttrs(Object.assign(this.backWaterLineConfig, { offsetX: 0 }));
+                waterLines[0].setAttrs(Object.assign(this.frontWaterLineConfig, { offsetX: 0 }));
+                // tweens
+                this.tweenersCollection.push(
+                    this.waterLineTween(waterLines[1], this.backWaterLineDuration, 1).play(),
+                    this.waterLineTween(waterLines[0], this.frontWaterLineDuration, -1).play()
+                );
+            },
+            destroyAnimations() {
+                // when component is destroyed or resized
+                // destroy all tweeners
+                this.tweenersCollection.forEach(tweener => {
+                    tweener.destroy();
+                });
+                // destroy all animations
+                this.animationsCollection.forEach(animation => {
+                    animation.stop();
+                });
+            },
+            resizeStage() {
+                this.stageWidth = this.$refs.stageContainer.offsetWidth;
+                this.stageHeight = this.$refs.stageContainer.offsetHeight;
+                this.destroyAnimations();
+                this.$nextTick(() => {
+                    this.setupFixedAnimations();
+                });
             }
         },
         mounted() {
+            // fine tuning for performances
+            this.$refs.waterLayer.getStage().hitGraphEnabled(false);
+
             // setup resize behavior
             window.addEventListener('resize', this.resizeStage);
             this.resizeStage();
@@ -104,18 +156,11 @@
         beforeDestroy() {
             // remove resize listener
             window.removeEventListener('resize', this.resizeStage);
-            // destroy all tweeners
-            this.tweenersCollection.forEach(tweener => {
-                tweener.destroy();
-            });
-            // destroy all animations
-            this.animationsCollection.forEach(animation => {
-                animation.stop();
-            });
+            this.destroyAnimations();
         }
     };
 </script>
 
 <style scoped lang="scss">
-    .tank-container { margin:0; min-height:500px; }
+    .tank-container { margin:0; min-height:500px; overflow:hidden; }
 </style>
