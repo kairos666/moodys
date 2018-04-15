@@ -2,7 +2,7 @@
     <figure ref="stageContainer" class="tank-container">
         <v-stage ref="stage" :config="stageConfig">
             <v-layer ref="waterLayer">
-                <v-group ref="waterTank" :config="waterLevelConfig">
+                <v-group ref="waterTank">
                     <v-line :config="frontWaterLineConfig"></v-line>
                     <v-line :config="backWaterLineConfig"></v-line>
                 </v-group>
@@ -24,7 +24,7 @@
         data() {
             return {
                 model: {
-                    waterLevel: 0.5,
+                    waterLevel: 0,
                     moodLevel: 0.5
                 },
                 stageWidth: 0,
@@ -55,11 +55,6 @@
                     height: this.stageHeight
                 };
             },
-            waterLevelConfig() {
-                return {
-                    y: this.percentToStageHeightConverter(this.model.waterLevel)
-                };
-            },
             backWaterLineConfig() {
                 return Object.assign({}, this.waterLineBaseOptions, {
                     fill: this.backWaterColor,
@@ -76,8 +71,21 @@
         watch: {
             weekMood: {
                 handler: function(val) {
-                    console.log('here: ', val, this.propToPercentConverter(val));
+                    // keep final state change
                     this.model.waterLevel = this.propToPercentConverter(val);
+
+                    // animate water level change (when mounted)
+                    const waterTankRef = this.$refs.waterTank;
+                    if (waterTankRef) {
+                        const tweenTank = new Konva.Tween({
+                            node: waterTankRef.getStage(),
+                            duration: this.verticalLevelUpdateDuration,
+                            easing: Konva.Easings.ElasticEaseInOut,
+                            y: this.percentToStageHeightConverter(this.model.waterLevel), // diff only
+                            onFinish: function() { this.destroy() }
+                        }).play();
+                        this.tweenersCollection.push(tweenTank);
+                    }
                 },
                 immediate: true
             }
@@ -168,7 +176,9 @@
             },
             setupCanva() {
                 /** water lines waves **/
+                // reset water level
                 const waterTank = this.$refs.waterTank.getStage();
+                waterTank.setY(this.percentToStageHeightConverter(this.model.waterLevel));
                 const waterLines = waterTank.find('.waterline');
                 // reset properties
                 waterLines[1].setAttrs(Object.assign(this.backWaterLineConfig, { offsetX: 0 }));
