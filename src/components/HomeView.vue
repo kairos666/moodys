@@ -73,6 +73,16 @@
                             </div>
                         </home-card>
                     </li>
+                    <li>
+                        <home-card class="home-card__mood-box home-card__mood-box-allusers">
+                            <div slot="description">
+                                <water-tank-mood-indicator
+                                    :today-mood="$store.getters.currentUserMood" 
+                                    :week-mood="$store.getters.currentUserWeekMoods.weekAverage"
+                                ></water-tank-mood-indicator>
+                            </div>
+                        </home-card>
+                    </li>
                     <li class="weekly-chart-container">
                         <home-card class="home-card__weekly-chart">
                             <span slot="header">weekly mood chart</span>
@@ -108,6 +118,7 @@
     import DoubleMoodBox from '@/components/dashboard/double-mood-box';
     import CompletionRate from '@/components/dashboard/completion-rate';
     import WeeklyChart from '@/components/dashboard/weekly-chart';
+    import WaterTankMoodIndicator from '@/components/nano/water-tank-mood-indicator';
     import timeHelpers from '@/utils/time-helpers';
 
     export default {
@@ -145,7 +156,8 @@
             'profile-box': ProfileBox,
             'double-mood-box': DoubleMoodBox,
             'completion-rate': CompletionRate,
-            'weekly-chart': WeeklyChart
+            'weekly-chart': WeeklyChart,
+            'water-tank-mood-indicator': WaterTankMoodIndicator
         }
     };
 </script>
