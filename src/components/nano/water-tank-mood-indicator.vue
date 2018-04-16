@@ -44,6 +44,7 @@
                 bubblesPeriod: 2000,
                 bubblesAmplitude: 1 / 6,
                 bubblesCollection: [],
+                moodIndicatorAmplitude: 18,
                 moodEmojisCollection: [],
                 tweenersCollection: [],
                 animationsCollection: [],
@@ -56,7 +57,7 @@
                     width: 100,
                     height: 100,
                     x: -50,
-                    y: -45
+                    y: -55
                 }
             };
         },
@@ -227,6 +228,14 @@
                 anim.start();
                 this.animationsCollection.push(anim);
             },
+            moodIndicatorSwayAnimation(moodIndicator, layer) {
+                const anim = new Konva.Animation(frame => {
+                    moodIndicator.rotation(this.moodIndicatorAmplitude * Math.sin(frame.time * Math.PI / (this.frontWaterLineDuration * 1000 / 4)));
+                }, layer);
+
+                anim.start();
+                this.animationsCollection.push(anim);
+            },
             setupCanva() {
                 /** water lines waves **/
                 // reset water level
@@ -254,6 +263,8 @@
                 // reset properties
                 const moodEmojiIndicator = this.$refs.moodEmojiIndicator.getStage();
                 moodEmojiIndicator.setAttrs({ x: this.stageWidth / 2, y: this.percentToStageHeightConverter(this.model.moodLevel) });
+                // animation (sway)
+                this.moodIndicatorSwayAnimation(moodEmojiIndicator, this.$refs.moodLayer.getStage());
             },
             destroyAnimations() {
                 // when component is destroyed or resized
