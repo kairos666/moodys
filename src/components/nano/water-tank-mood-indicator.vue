@@ -45,7 +45,9 @@
                 bubblesAmplitude: 1 / 6,
                 bubblesCollection: [],
                 moodIndicatorAmplitude: 18,
+                moodIndicatorSwayThreshold: 1,
                 moodEmojisCollection: [],
+                moodEmojisWingURL: '/static/img/svg/wings.svg',
                 tweenersCollection: [],
                 animationsCollection: [],
                 waterLineBaseOptions: { points: [], fill: '#ffffff', bezier: true, tension: 0.35, closed: true, name: 'waterline' },
@@ -58,6 +60,13 @@
                     height: 100,
                     x: -50,
                     y: -55
+                },
+                moodEmojiWingsBaseOptions: {
+                    id: 'emojiWings',
+                    width: 300,
+                    height: 100,
+                    x: -150,
+                    y: -75
                 }
             };
         },
@@ -79,6 +88,21 @@
                     fill: this.frontWaterColor,
                     points: this.waterLineBuilder(-1 * this.stageWidth, 0, 2 * this.stageWidth, 15, 2, Math.PI)
                 });
+            },
+            moodState() {
+                let result;
+                if (this.model.waterLevel === this.model.moodLevel) {
+                    result = 'float';
+                    this.moodIndicatorFadeWings(false);
+                } else if (this.model.waterLevel < this.model.moodLevel) {
+                    result = 'fly';
+                    this.moodIndicatorFadeWings(true);
+                } else if (this.model.waterLevel > this.model.moodLevel) {
+                    result = 'underwater';
+                    this.moodIndicatorFadeWings(false);
+                }
+
+                return result;
             }
         },
         watch: {
@@ -107,9 +131,20 @@
                     // keep final state change
                     this.model.moodLevel = this.propToPercentConverter(val);
                     this.model.moodEmojiIndex = this.propToEmojiIndexConverter(val);
+                    this.moodIndicatorFadeMoods(this.model.moodEmojiIndex);
 
                     // animate mood level change (when mounted)
-                    console.log('TODO mood animation');
+                    const moodEmojiIndicator = this.$refs.moodEmojiIndicator;
+                    if (moodEmojiIndicator) {
+                        const tweenMoodIndicator = new Konva.Tween({
+                            node: moodEmojiIndicator.getStage(),
+                            duration: this.verticalLevelUpdateDuration,
+                            easing: Konva.Easings.ElasticEaseInOut,
+                            y: this.percentToStageHeightConverter(this.model.waterLevel), // diff only
+                            onFinish: function() { this.destroy() }
+                        }).play();
+                        this.tweenersCollection.push(tweenMoodIndicator);
+                    }
                 },
                 immediate: true
             }
@@ -151,6 +186,14 @@
                 return bubble;
             },
             moodEmojiIndicatorBuilder(groupHolder) {
+                // generate wings
+                const pWings = new Promise(resolve => {
+                    const emojiWingsImage = new Image();
+                    emojiWingsImage.onload = () => resolve({ path: this.moodEmojisWingURL, status: 'ok', image: emojiWingsImage });
+                    emojiWingsImage.onerror = () => resolve({ path: this.moodEmojisWingURL, status: 'fail', image: emojiWingsImage });
+                    emojiWingsImage.src = this.moodEmojisWingURL;
+                });
+
                 // generate emoji image collection (only matching index is visible)
                 const pImagesArray = EmojiHelpers.emojiDataArray
                     .map(emojiData => `/static/img/smileys/${emojiData.image}`)
@@ -163,18 +206,27 @@
                         });
                     });
 
-                // handle when all images have been loaded
-                Promise.all(pImagesArray).then(responses => {
-                    // assign images to collection
-                    this.moodEmojisCollection = responses.map((resp, index) => {
-                        return new Konva.Image(Object.assign({}, this.moodEmojiBaseOptions, {
-                            visible: (this.model.moodEmojiIndex === index),
-                            image: resp.image
-                        }));
+                // handle when all images have been loaded (wings then emojis)
+                pWings.then(wingImageResp => {
+                    // wings
+                    groupHolder.add(new Konva.Image(Object.assign({}, this.moodEmojiWingsBaseOptions, {
+                        visible: false,
+                        image: wingImageResp.image
+                    })));
+
+                    // emojis
+                    Promise.all(pImagesArray).then(responses => {
+                        // assign images to collection
+                        this.moodEmojisCollection = responses.map((resp, index) => {
+                            return new Konva.Image(Object.assign({}, this.moodEmojiBaseOptions, {
+                                visible: (this.model.moodEmojiIndex === index),
+                                image: resp.image
+                            }));
+                        });
+                        // add images to group then add to layer ... then redraw to make them appear
+                        groupHolder.add(...this.moodEmojisCollection);
+                        this.$refs.stage.getStage().draw();
                     });
-                    // add images to group then add to layer ... then redraw to make them appear
-                    groupHolder.add(...this.moodEmojisCollection);
-                    this.$refs.stage.getStage().draw();
                 });
             },
             propToEmojiIndexConverter(moodScore) {
@@ -228,13 +280,31 @@
                 anim.start();
                 this.animationsCollection.push(anim);
             },
-            moodIndicatorSwayAnimation(moodIndicator, layer) {
+            moodIndicatorSwayAnimationBuilder(moodIndicator, layer) {
+                // this animation is always running to react to any update in state
                 const anim = new Konva.Animation(frame => {
-                    moodIndicator.rotation(this.moodIndicatorAmplitude * Math.sin(frame.time * Math.PI / (this.frontWaterLineDuration * 1000 / 4)));
+                    const currentRotation = moodIndicator.rotation();
+
+                    // is animation stuck ? first test if underwater, then if flying, otherwise float (animate)
+                    let isStuck = false;
+                    if (this.moodState === 'underwater' && (Math.abs(currentRotation - this.moodIndicatorAmplitude) <= this.moodIndicatorSwayThreshold || Math.abs(currentRotation + this.moodIndicatorAmplitude) <= this.moodIndicatorSwayThreshold)) isStuck = true;
+                    if (this.moodState === 'fly' && Math.abs(currentRotation) <= this.moodIndicatorSwayThreshold) isStuck = true;
+
+                    // calculus
+                    if (!isStuck) {
+                        const newRotationValue = this.moodIndicatorAmplitude * Math.sin(frame.time * Math.PI / (this.frontWaterLineDuration * 1000 / 4));
+                        moodIndicator.rotation(newRotationValue);
+                    }
                 }, layer);
 
                 anim.start();
                 this.animationsCollection.push(anim);
+            },
+            moodIndicatorFadeWings(isFlying) {
+                console.log('TODO fade wings with cancel if not needed');
+            },
+            moodIndicatorFadeMoods(emojiTargetIndex) {
+                console.log('TODO fade emojis with cancel if not needed');
             },
             setupCanva() {
                 /** water lines waves **/
@@ -264,7 +334,7 @@
                 const moodEmojiIndicator = this.$refs.moodEmojiIndicator.getStage();
                 moodEmojiIndicator.setAttrs({ x: this.stageWidth / 2, y: this.percentToStageHeightConverter(this.model.moodLevel) });
                 // animation (sway)
-                this.moodIndicatorSwayAnimation(moodEmojiIndicator, this.$refs.moodLayer.getStage());
+                this.moodIndicatorSwayAnimationBuilder(moodEmojiIndicator, this.$refs.moodLayer.getStage());
             },
             destroyAnimations() {
                 // when component is destroyed or resized
