@@ -118,8 +118,105 @@ class WaterTank {
     }
 }
 
+class BubblesFountain {
+    constructor(options) {
+        this._options = Object.assign({
+            stageWidth: undefined,
+            stageHeight: undefined,
+            bubblesCount: 4,
+            bubblesPeriod: 2000,
+            bubblesAmplitude: 1 / 6,
+            bubbleBaseOptions: {
+                bubbleOuter: { x: -50, y: -50, fill: '#ffffff', visible: 'inherit', data: 'M50,0C22.386,0,0,22.386,0,50s22.386,50,50,50s50-22.386,50-50S77.614,0,50,0z M50,97.5 C23.767,97.5,2.5,76.233,2.5,50S23.767,2.5,50,2.5S97.5,23.767,97.5,50S76.233,97.5,50,97.5z' },
+                bubbleInner: { x: -50, y: -50, fill: '#ffffff', visible: 'inherit', data: 'M72.846,10.525C62.055,4.126,51.13,3.281,47.973,8.603c-2.775,4.68-0.039,6.486,13.441,11.258 c2.085,0.738,6.515,3.302,7.67,4.403c9.226,8.799,14.219,12.486,17.375,7.165S83.637,16.925,72.846,10.525z M83.979,29.958 c-2.36,3.979-7.678-5.271-16.764-10.66c-9.087-5.389-19.121-5.245-16.762-9.224c2.36-3.979,12.029-2.788,21.116,2.602 C80.656,18.065,86.339,25.979,83.979,29.958z' }
+            }
+        }, options);
+        this._bubblesCollection = [];
+        this._tweenersCollection = [];
+        this._animationsCollection = [];
+        this._bubblesFountain = undefined;
+        this._layer = undefined;
+
+        this._init();
+    }
+
+    _init() {}
+    _animate() {}
+
+    // public methods
+    destroy() {
+        // destroy all tweeners
+        this._tweenersCollection.forEach(tweener => {
+            tweener.destroy();
+        });
+        // destroy all animations
+        this._animationsCollection.forEach(animation => {
+            animation.stop();
+        });
+    }
+    launch() {
+        // call this function after instance has been attached to stage/layer
+        this._layer = this._bubblesFountain.getLayer();
+        this._animate();
+    }
+    get instance() { return this._bubblesFountain }
+}
+
+class MoodIndicator {
+    constructor(options) {
+        this._options = Object.assign({
+            stageWidth: undefined,
+            stageHeight: undefined,
+            moodIndicatorAmplitude: 18,
+            moodIndicatorSwayThreshold: 1,
+            moodEmojisWingURL: '/static/img/svg/wings.svg',
+            moodEmojiBaseOptions: {
+                width: 100,
+                height: 100,
+                x: -50,
+                y: -55
+            },
+            moodEmojiWingsBaseOptions: {
+                id: 'emojiWings',
+                width: 300,
+                height: 100,
+                x: -150,
+                y: -75
+            }
+        }, options);
+        this._moodEmojisCollection = [];
+        this._tweenersCollection = [];
+        this._animationsCollection = [];
+        this._moodIndicator = undefined;
+        this._layer = undefined;
+
+        this._init();
+    }
+
+    _init() {}
+    _animate() {}
+
+    // public methods
+    destroy() {
+        // destroy all tweeners
+        this._tweenersCollection.forEach(tweener => {
+            tweener.destroy();
+        });
+        // destroy all animations
+        this._animationsCollection.forEach(animation => {
+            animation.stop();
+        });
+    }
+    launch() {
+        // call this function after instance has been attached to stage/layer
+        this._layer = this._moodIndicator.getLayer();
+        this._animate();
+    }
+    get instance() { return this._moodIndicator }
+}
+
 export default {
     WaterTank: WaterTank,
-    BubblesFountain: {},
-    MoodIndicator: {}
+    BubblesFountain: BubblesFountain,
+    MoodIndicator: MoodIndicator
 };
