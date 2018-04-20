@@ -25,20 +25,13 @@
                 layerMg: undefined,
                 layerFg: undefined,
                 waterTank: undefined,
+                bubblesFountain: undefined,
                 verticalStageOffset: 80,
                 verticalLevelUpdateDuration: 2,
-                bubblesCount: 4,
-                bubblesPeriod: 2000,
-                bubblesAmplitude: 1 / 6,
-                bubblesCollection: [],
                 moodIndicatorAmplitude: 18,
                 moodIndicatorSwayThreshold: 1,
                 moodEmojisCollection: [],
                 moodEmojisWingURL: '/static/img/svg/wings.svg',
-                bubbleBaseOptions: {
-                    bubbleOuter: { x: -50, y: -50, fill: '#ffffff', visible: 'inherit', data: 'M50,0C22.386,0,0,22.386,0,50s22.386,50,50,50s50-22.386,50-50S77.614,0,50,0z M50,97.5 C23.767,97.5,2.5,76.233,2.5,50S23.767,2.5,50,2.5S97.5,23.767,97.5,50S76.233,97.5,50,97.5z' },
-                    bubbleInner: { x: -50, y: -50, fill: '#ffffff', visible: 'inherit', data: 'M72.846,10.525C62.055,4.126,51.13,3.281,47.973,8.603c-2.775,4.68-0.039,6.486,13.441,11.258 c2.085,0.738,6.515,3.302,7.67,4.403c9.226,8.799,14.219,12.486,17.375,7.165S83.637,16.925,72.846,10.525z M83.979,29.958 c-2.36,3.979-7.678-5.271-16.764-10.66c-9.087-5.389-19.121-5.245-16.762-9.224c2.36-3.979,12.029-2.788,21.116,2.602 C80.656,18.065,86.339,25.979,83.979,29.958z' }
-                },
                 moodEmojiBaseOptions: {
                     width: 100,
                     height: 100,
@@ -59,10 +52,14 @@
                 handler: function(val) {
                     // update model
                     this.model.waterLevel = this.propToPercentConverter(val);
+                    const yAxisWaterLevel = this.percentToStageHeightConverter(this.model.waterLevel);
 
                     // update Konva elements
                     if (this.waterTank) {
-                        this.waterTank.y = this.percentToStageHeightConverter(this.model.waterLevel);
+                        this.waterTank.y = yAxisWaterLevel;
+                    }
+                    if (this.bubblesFountain) {
+                        this.bubblesFountain.maxY = yAxisWaterLevel;
                     }
                 },
                 immediate: true
@@ -99,6 +96,10 @@
                 this.waterTank.launch();
 
                 // attach bubbles fountain
+                this.bubblesFountain = new WaterTankHelpers.BubblesFountain(this.percentToStageHeightConverter(this.model.waterLevel), { stageWidth: this.stageWidth, stageHeight: this.stageHeight });
+                this.layerMg.add(this.bubblesFountain.instance);
+                this.bubblesFountain.launch();
+
                 // attach mood indicator
             },
             resizeStage() {
@@ -119,6 +120,8 @@
                 // destroy individual elements
                 this.waterTank.destroy();
                 this.waterTank = undefined;
+                this.bubblesFountain.destroy();
+                this.bubblesFountain = undefined;
 
                 // destroy stage
                 this.stageInstance.destroy();

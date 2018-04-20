@@ -119,13 +119,15 @@ class WaterTank {
 }
 
 class BubblesFountain {
-    constructor(options) {
+    constructor(maxY, options) {
+        this._maxY = maxY;
         this._options = Object.assign({
             stageWidth: undefined,
             stageHeight: undefined,
             bubblesCount: 4,
             bubblesPeriod: 2000,
             bubblesAmplitude: 1 / 6,
+            bubblesInitialScale: 0.1,
             bubbleBaseOptions: {
                 bubbleOuter: { x: -50, y: -50, fill: '#ffffff', visible: 'inherit', data: 'M50,0C22.386,0,0,22.386,0,50s22.386,50,50,50s50-22.386,50-50S77.614,0,50,0z M50,97.5 C23.767,97.5,2.5,76.233,2.5,50S23.767,2.5,50,2.5S97.5,23.767,97.5,50S76.233,97.5,50,97.5z' },
                 bubbleInner: { x: -50, y: -50, fill: '#ffffff', visible: 'inherit', data: 'M72.846,10.525C62.055,4.126,51.13,3.281,47.973,8.603c-2.775,4.68-0.039,6.486,13.441,11.258 c2.085,0.738,6.515,3.302,7.67,4.403c9.226,8.799,14.219,12.486,17.375,7.165S83.637,16.925,72.846,10.525z M83.979,29.958 c-2.36,3.979-7.678-5.271-16.764-10.66c-9.087-5.389-19.121-5.245-16.762-9.224c2.36-3.979,12.029-2.788,21.116,2.602 C80.656,18.065,86.339,25.979,83.979,29.958z' }
@@ -140,8 +142,59 @@ class BubblesFountain {
         this._init();
     }
 
-    _init() {}
-    _animate() {}
+    _singleBubbleBuilder() {
+        const bubbleOuter = new Konva.Path(this._options.bubbleBaseOptions.bubbleOuter);
+        const bubbleInner = new Konva.Path(this._options.bubbleBaseOptions.bubbleInner);
+        const bubble = new Konva.Group();
+        bubble.add(bubbleOuter, bubbleInner);
+
+        return bubble;
+    }
+    _bubblesAnimation(bubbles, layer) {
+        const period = this._options.bubblesPeriod;
+        const stageHeight = this._options.stageHeight;
+        const xAmplitude = this._options.bubblesAmplitude * this._options.stageWidth;
+        const originalBubblesProperties = bubbles.map(bubble => {
+            return { x: bubble.x(), y: bubble.y(), scale: bubble.scaleX() };
+        });
+
+        const anim = new Konva.Animation(frame => {
+            bubbles.forEach((bubble, index) => {
+                // ondulate on X axis
+                bubble.setX(originalBubblesProperties[index].x + xAmplitude * Math.cos(frame.time * (1.5 + 0.4 * index) * Math.PI / period));
+                // regularly go up on Y axis (start over when reached slightly beneath the surface)
+                let newY = bubble.y() - (0.5 + 0.75 * index);
+                if (newY <= (this._maxY + 25)) newY = originalBubblesProperties[index].y;
+                bubble.setY(newY);
+                // scale is proportional to distance to surface
+                let newScale = originalBubblesProperties[index].scale + 0.3 * (1 - Math.abs(this._maxY - bubble.y()) / stageHeight);
+                bubble.scale({ x: newScale, y: newScale });
+                // opacity
+                bubble.opacity(0.4 + 0.6 * Math.abs(this._maxY - bubble.y()) / stageHeight);
+            });
+        }, this._layer);
+
+        anim.start();
+        this._animationsCollection.push(anim);
+    }
+    _init() {
+        // generate bubbles elements
+        for (let i = 0; i < this._options.bubblesCount; i++) {
+            this._bubblesCollection.push(this._singleBubbleBuilder());
+        }
+
+        // set initial properties
+        this._bubblesCollection.forEach(bubble => {
+            bubble.setAttrs({ y: this._options.stageHeight, scaleX: this._options.bubblesInitialScale, scaleY: this._options.bubblesInitialScale });
+        });
+
+        // generate bubbles fountain (group)
+        this._bubblesFountain = new Konva.Group({ x: this._options.stageWidth / 2, y: 0 });
+        this._bubblesFountain.add(...this._bubblesCollection);
+    }
+    _animate() {
+        this._bubblesAnimation(this._bubblesCollection, this._layer);
+    }
 
     // public methods
     destroy() {
@@ -160,6 +213,8 @@ class BubblesFountain {
         this._animate();
     }
     get instance() { return this._bubblesFountain }
+    get maxY() { return this._maxY }
+    set maxY(newMaxY) { this._maxY = newMaxY }
 }
 
 class MoodIndicator {
