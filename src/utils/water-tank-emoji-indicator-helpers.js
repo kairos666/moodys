@@ -1,4 +1,5 @@
 import Konva from 'konva';
+import EmojiHelpers from '@/utils/emoji-helpers';
 
 class WaterTank {
     constructor(yAxis, options) {
@@ -218,13 +219,17 @@ class BubblesFountain {
 }
 
 class MoodIndicator {
-    constructor(options) {
+    constructor(state, yAxis, options) {
+        this._state = state;
+        this._yAxis = yAxis;
         this._options = Object.assign({
             stageWidth: undefined,
             stageHeight: undefined,
             moodIndicatorAmplitude: 18,
             moodIndicatorSwayThreshold: 1,
+            moodTweenDuration: 0.5,
             moodEmojisWingURL: '/static/img/svg/wings.svg',
+            moodEmojisBaseURL: '/static/img/smileys/',
             moodEmojiBaseOptions: {
                 width: 100,
                 height: 100,
@@ -239,17 +244,80 @@ class MoodIndicator {
                 y: -75
             }
         }, options);
+        this._wings = undefined;
         this._moodEmojisCollection = [];
         this._tweenersCollection = [];
         this._animationsCollection = [];
         this._moodIndicator = undefined;
         this._layer = undefined;
+        this._allImagesLoadedPromise = undefined;
 
         this._init();
     }
 
-    _init() {}
-    _animate() {}
+    _propToEmojiIndexConverter(moodScore) {
+        return EmojiHelpers.emojiDataArray.findIndex(item => (item.index === moodScore));
+    }
+    _moodIndicatorSwayAnimationBuilder(moodIndicator, layer) {
+        console.log('TODO sway animation');
+    }
+    _moodIndicatorFadeMoods(emojiTargetIndex) {
+        console.log('TODO fade emojis with cancel if not needed');
+    }
+    _showWings() {
+        const showWingsTween = new Konva.Tween({
+            node: this._wings,
+            duration: this._options.moodTweenDuration * (1 - this._wings.opacity()),
+            easing: Konva.Easings.ElasticEaseIn,
+            opacity: 1,
+            onFinish: function() { this.destroy() }
+        }).play();
+        this._tweenersCollection.push(showWingsTween);
+    }
+    _hideWings() {
+        const hideWingsTween = new Konva.Tween({
+            node: this._wings,
+            duration: this._options.moodTweenDuration * this._wings.opacity(),
+            easing: Konva.Easings.ElasticEaseOut,
+            opacity: 0,
+            onFinish: function() { this.destroy() }
+        }).play();
+        this._tweenersCollection.push(hideWingsTween);
+    }
+    _pImageLoaderFunc = function(imgPath, konvaImage) {
+        // load as promise
+        const asyncImg = new Promise(resolve => {
+            const imgElement = new Image();
+            imgElement.onload = () => resolve({ path: imgPath, status: 'ok', image: imgElement });
+            imgElement.onerror = () => resolve({ path: imgPath, status: 'fail', image: imgElement });
+            imgElement.src = imgPath;
+        });
+
+        // when promise fulfill associate image
+        return asyncImg.then(resp => {
+            konvaImage.setImage(resp.image);
+            return konvaImage;
+        });
+    }
+    _init() {
+        // generate images (wings + all emojis)
+        this._wings = new Konva.Image(Object.assign({}, this._options.moodEmojiWingsBaseOptions, { visible: true }));
+        this._moodEmojisCollection = EmojiHelpers.emojiDataArray.map(() => {
+            return new Konva.Image(Object.assign({}, this._options.moodEmojiBaseOptions, { visible: true }));
+        });
+
+        // attach everything to the group
+        this._moodIndicator = new Konva.Group({ x: this._options.stageWidth / 2, y: this._yAxis });
+        this._moodIndicator.add(this._wings, ...this._moodEmojisCollection);
+
+        // start downloading images and attach to Konva Images when ready (wings + all emojis)
+        const pWings = this._pImageLoaderFunc(this._options.moodEmojisWingURL, this._wings);
+        const pEmojisArray = EmojiHelpers.emojiDataArray
+            .map(emojiData => `${this._options.moodEmojisBaseURL}${emojiData.image}`)
+            .map((emojiURL, index) => this._pImageLoaderFunc(emojiURL, this._moodEmojisCollection[index]));
+        this._allImagesLoadedPromise = Promise.all([pWings, ...pEmojisArray]);
+    }
+    _update() {}
 
     // public methods
     destroy() {
@@ -265,9 +333,34 @@ class MoodIndicator {
     launch() {
         // call this function after instance has been attached to stage/layer
         this._layer = this._moodIndicator.getLayer();
-        this._animate();
+
+        // redraw when all images are loaded (and layer is available)
+        this._allImagesLoadedPromise.then(() => { this._layer.draw() });
+
+        this._update();
     }
     get instance() { return this._moodIndicator }
+    get y() { return this._yAxis }
+    set y(newY) {
+        // update model
+        this._yAxis = newY;
+        // update indicator display
+        const tweenMoodLevel = new Konva.Tween({
+            node: this._moodIndicator,
+            duration: this._options.moodTweenDuration,
+            easing: Konva.Easings.ElasticEaseInOut,
+            y: this._yAxis,
+            onFinish: function() { this.destroy() }
+        }).play();
+        this._tweenersCollection.push(tweenMoodLevel);
+    }
+    get state() { return this._state }
+    set state(newState) {
+        // update model
+        this._state = newState;
+        // update indicator display
+        this._update();
+    }
 }
 
 export default {

@@ -7,7 +7,6 @@
 <script>
     import Konva from 'konva';
     import WaterTankHelpers from '@/utils/water-tank-emoji-indicator-helpers';
-    import EmojiHelpers from '@/utils/emoji-helpers';
 
     export default {
         props: ['todayMood', 'weekMood'],
@@ -15,8 +14,7 @@
             return {
                 model: {
                     waterLevel: 0,
-                    moodLevel: 0.5,
-                    moodEmojiIndex: EmojiHelpers.emojiDataArray.findIndex(item => (item.index === null))
+                    moodLevel: 0.5
                 },
                 stageInstance: undefined,
                 stageWidth: 0,
@@ -26,25 +24,9 @@
                 layerFg: undefined,
                 waterTank: undefined,
                 bubblesFountain: undefined,
+                moodIndicator: undefined,
                 verticalStageOffset: 80,
-                verticalLevelUpdateDuration: 2,
-                moodIndicatorAmplitude: 18,
-                moodIndicatorSwayThreshold: 1,
-                moodEmojisCollection: [],
-                moodEmojisWingURL: '/static/img/svg/wings.svg',
-                moodEmojiBaseOptions: {
-                    width: 100,
-                    height: 100,
-                    x: -50,
-                    y: -55
-                },
-                moodEmojiWingsBaseOptions: {
-                    id: 'emojiWings',
-                    width: 300,
-                    height: 100,
-                    x: -150,
-                    y: -75
-                }
+                verticalLevelUpdateDuration: 2
             };
         },
         watch: {
@@ -61,14 +43,27 @@
                     if (this.bubblesFountain) {
                         this.bubblesFountain.maxY = yAxisWaterLevel;
                     }
+                    if (this.moodIndicator) {
+                        console.log('todo update - mood level');
+                    }
+                },
+                immediate: true
+            },
+            todayMood: {
+                handler: function(val) {
+                    // update model
+                    this.model.moodLevel = this.propToPercentConverter(val);
+                    const yAxisMoodLevel = this.percentToStageHeightConverter(this.model.moodLevel);
+
+                    // update Konva elements
+                    if (this.moodIndicator) {
+                        this.moodIndicator.y = yAxisMoodLevel;
+                    }
                 },
                 immediate: true
             }
         },
         methods: {
-            propToEmojiIndexConverter(moodScore) {
-                return EmojiHelpers.emojiDataArray.findIndex(item => (item.index === moodScore));
-            },
             propToPercentConverter(moodScore) {
                 if (moodScore === null || moodScore === 'sick' || moodScore === 'holiday') {
                     return 0.5;
@@ -101,6 +96,9 @@
                 this.bubblesFountain.launch();
 
                 // attach mood indicator
+                this.moodIndicator = new WaterTankHelpers.MoodIndicator('float', this.percentToStageHeightConverter(this.model.moodLevel), { stageWidth: this.stageWidth, stageHeight: this.stageHeight });
+                this.layerFg.add(this.moodIndicator.instance);
+                this.moodIndicator.launch();
             },
             resizeStage() {
                 // destroy stage
@@ -122,6 +120,8 @@
                 this.waterTank = undefined;
                 this.bubblesFountain.destroy();
                 this.bubblesFountain = undefined;
+                this.moodIndicator.destroy();
+                this.moodIndicator = undefined;
 
                 // destroy stage
                 this.stageInstance.destroy();
