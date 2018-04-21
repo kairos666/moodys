@@ -44,7 +44,7 @@
                         this.bubblesFountain.maxY = yAxisWaterLevel;
                     }
                     if (this.moodIndicator) {
-                        console.log('todo update - mood level');
+                        this.moodIndicator.state = this.moodIndicatorStateCalculator();
                     }
                 },
                 immediate: true
@@ -59,6 +59,7 @@
                     if (this.moodIndicator) {
                         this.moodIndicator.y = yAxisMoodLevel;
                         this.moodIndicator.moodScore = val;
+                        this.moodIndicator.state = this.moodIndicatorStateCalculator();
                     }
                 },
                 immediate: true
@@ -75,6 +76,18 @@
             percentToStageHeightConverter(percent) {
                 // convert percentage to real stage height (taking vertical margins into account)
                 return this.verticalStageOffset + (1 - percent) * (this.stageHeight - 2 * this.verticalStageOffset);
+            },
+            moodIndicatorStateCalculator() {
+                let result;
+                if (Math.abs(this.model.waterLevel - this.model.moodLevel) < 0.2) {
+                    result = 'float';
+                } else if (this.model.waterLevel < this.model.moodLevel) {
+                    result = 'fly';
+                } else if (this.model.waterLevel > this.model.moodLevel) {
+                    result = 'sink';
+                }
+
+                return result;
             },
             buildStage() {
                 // stage scaffolding
@@ -97,7 +110,7 @@
                 this.bubblesFountain.launch();
 
                 // attach mood indicator
-                this.moodIndicator = new WaterTankHelpers.MoodIndicator('float', this.percentToStageHeightConverter(this.model.moodLevel), this.todayMood, { stageWidth: this.stageWidth, stageHeight: this.stageHeight });
+                this.moodIndicator = new WaterTankHelpers.MoodIndicator(this.moodIndicatorStateCalculator(), this.percentToStageHeightConverter(this.model.moodLevel), this.todayMood, { stageWidth: this.stageWidth, stageHeight: this.stageHeight });
                 this.layerFg.add(this.moodIndicator.instance);
                 this.moodIndicator.launch();
             },

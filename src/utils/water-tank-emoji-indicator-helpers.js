@@ -226,8 +226,8 @@ class MoodIndicator {
         this._options = Object.assign({
             stageWidth: undefined,
             stageHeight: undefined,
-            moodIndicatorAmplitude: 18,
-            moodIndicatorSwayThreshold: 1,
+            moodIndicatorFlyAmplitude: 9,
+            moodIndicatorFloatAmplitude: 18,
             moodTweenDuration: 0.5,
             moodEmojisWingURL: '/static/img/svg/wings.svg',
             moodEmojisBaseURL: '/static/img/smileys/',
@@ -252,6 +252,7 @@ class MoodIndicator {
         this._moodIndicator = undefined;
         this._layer = undefined;
         this._allImagesLoadedPromise = undefined;
+        this._stateAnimationOrTween = undefined;
 
         this._init();
     }
@@ -259,11 +260,39 @@ class MoodIndicator {
     _moodScoreToEmojiIndexConverter(moodScore) {
         return EmojiHelpers.emojiDataArray.findIndex(item => (item.index === moodScore));
     }
-    _moodIndicatorSwayAnimationBuilder(moodIndicator, layer) {
-        console.log('TODO sway animation');
+    _floatAnimation() {
+        const anim = new Konva.Animation(frame => {
+            const newRotationValue = this._options.moodIndicatorFloatAmplitude * Math.sin(frame.time * Math.PI / (2 * this._options.moodTweenDuration * 1000));
+            this._moodIndicator.rotation(newRotationValue);
+        }, this._layer);
+
+        anim.start();
+        this._animationsCollection.push(anim);
+        this._stateAnimationOrTween = anim;
+    }
+    _flyAnimation(moodIndicator, layer) {
+        const anim = new Konva.Animation(frame => {
+            const newRotationValue = this._options.moodIndicatorFlyAmplitude * Math.sin(frame.time * Math.PI / (6 * this._options.moodTweenDuration * 1000));
+            this._moodIndicator.rotation(newRotationValue);
+        }, this._layer);
+
+        anim.start();
+        this._animationsCollection.push(anim);
+        this._stateAnimationOrTween = anim;
+    }
+    _sinkTween(moodIndicator, layer) {
+        const direction = (this._moodIndicator.rotation() >= 0) ? 1 : -1;
+        const sinkTween = new Konva.Tween({
+            node: this._moodIndicator,
+            duration: this._options.moodTweenDuration,
+            easing: Konva.Easings.BounceEaseOut,
+            rotation: direction * this._options.moodIndicatorFloatAmplitude * 1.5,
+            onFinish: function() { this.destroy() }
+        }).play();
+        this._tweenersCollection.push(sinkTween);
+        this._stateAnimationOrTween = sinkTween;
     }
     _swapEmojis(newIndex, formerIndex) {
-        console.log(newIndex, formerIndex);
         const showNewEmojiTween = new Konva.Tween({
             node: this._moodEmojisCollection[newIndex],
             duration: 2 * this._options.moodTweenDuration * (1 - this._moodEmojisCollection[newIndex].opacity()),
@@ -284,7 +313,7 @@ class MoodIndicator {
         const showWingsTween = new Konva.Tween({
             node: this._wings,
             duration: this._options.moodTweenDuration * (1 - this._wings.opacity()),
-            easing: Konva.Easings.ElasticEaseIn,
+            easing: Konva.Easings.ElasticEaseOut,
             opacity: 1,
             onFinish: function() { this.destroy() }
         }).play();
@@ -294,7 +323,7 @@ class MoodIndicator {
         const hideWingsTween = new Konva.Tween({
             node: this._wings,
             duration: this._options.moodTweenDuration * this._wings.opacity(),
-            easing: Konva.Easings.ElasticEaseOut,
+            easing: Konva.Easings.ElasticEaseIn,
             opacity: 0,
             onFinish: function() { this.destroy() }
         }).play();
@@ -333,7 +362,34 @@ class MoodIndicator {
             .map((emojiURL, index) => this._pImageLoaderFunc(emojiURL, this._moodEmojisCollection[index]));
         this._allImagesLoadedPromise = Promise.all([pWings, ...pEmojisArray]);
     }
-    _animate() {}
+    _animate(newState, formerState) {
+        // transition to the new animation
+        /* stop former */
+        if (this._stateAnimationOrTween && formerState && this._stateAnimationOrTween.stop) {
+            // former state was animated
+            this._stateAnimationOrTween.stop();
+        } else if (this._stateAnimationOrTween && formerState && this._stateAnimationOrTween.destroy) {
+            // former state was tweened
+            this._stateAnimationOrTween.destroy();
+        }
+        this._stateAnimationOrTween = undefined;
+
+        /* start newer */
+        switch (newState) {
+        case 'float':
+            this._hideWings();
+            this._floatAnimation();
+            break;
+        case 'fly':
+            this._showWings();
+            this._flyAnimation();
+            break;
+        case 'sink':
+            this._hideWings();
+            this._sinkTween();
+            break;
+        }
+    }
 
     // public methods
     destroy() {
@@ -353,7 +409,7 @@ class MoodIndicator {
         // redraw when all images are loaded (and layer is available)
         this._allImagesLoadedPromise.then(() => { this._layer.draw() });
 
-        this._animate();
+        this._animate(this._state);
     }
     get instance() { return this._moodIndicator }
     get y() { return this._yAxis }
@@ -380,10 +436,11 @@ class MoodIndicator {
     }
     get state() { return this._state }
     set state(newState) {
+        const formerState = this._state;
         // update model
         this._state = newState;
-        // update indicator display
-        this._animate();
+        // update indicator display (if necessary)
+        if (newState !== formerState) this._animate(newState, formerState);
     }
 }
 
