@@ -34,7 +34,7 @@ class WaterTank {
         // background water line
         this._waterLineBg = new Konva.Line(Object.assign({}, this._options.waterLineBaseOptions, {
             fill: this._options.backWaterColor,
-            points: this._waterLineBuilder(0, 0, 2 * this._options.stageWidth, 15, 2, 0)
+            points: this._waterLineBuilder(0, 0, 2 * this._options.stageWidth, 7.5, 2, 0)
         }));
 
         // water tank instance
@@ -232,16 +232,16 @@ class MoodIndicator {
             moodEmojisWingURL: '/static/img/svg/wings.svg',
             moodEmojisBaseURL: '/static/img/smileys/',
             moodEmojiBaseOptions: {
-                width: 100,
-                height: 100,
-                x: -50,
-                y: -55
+                width: 80,
+                height: 80,
+                x: -40,
+                y: -53
             },
             moodEmojiWingsBaseOptions: {
                 id: 'emojiWings',
-                width: 300,
-                height: 100,
-                x: -150,
+                width: 240,
+                height: 80,
+                x: -120,
                 y: -75
             }
         }, options);
@@ -444,8 +444,93 @@ class MoodIndicator {
     }
 }
 
+class MoodWaterScale {
+    constructor(options) {
+        this._options = Object.assign({
+            stageWidth: undefined,
+            stageHeight: undefined,
+            verticalStageOffset: 0,
+            scaleMarkColor: '#fddcc1',
+            scaleOpacity: 0.4,
+            showIndexedIcons: ['-5', '0', '5']
+        }, options);
+        this._tweenersCollection = [];
+        this._animationsCollection = [];
+        this._scaleMarksArray = [];
+        this._moodWaterScale = undefined;
+
+        this._init();
+    }
+
+    _scaleMarkBuilder(y, textIcon) {
+        const scaleMarkLine = new Konva.Line({
+            points: [-15, 0, 0, 0],
+            stroke: this._options.scaleMarkColor,
+            strokeWidth: 2
+        });
+
+        // attach to scale group
+        const scaleMarkGroup = new Konva.Group({ y: y });
+        scaleMarkGroup.add(scaleMarkLine);
+
+        // attach mood icon (when defined)
+        if (textIcon) {
+            const scaleMarkIcon = new Konva.Text({
+                x: -20,
+                y: -12.5,
+                fontSize: 25,
+                fontFamily: 'icomoon',
+                text: textIcon,
+                fill: this._options.scaleMarkColor
+            });
+            // align right
+            scaleMarkIcon.offsetX(scaleMarkIcon.getWidth());
+            scaleMarkGroup.add(scaleMarkIcon);
+        }
+
+        return scaleMarkGroup;
+    }
+    _moodIconScaleCalculator(emojiData) {
+        // provide mood icon font only for certain values of the scale, otherwise output undefined
+        if (this._options.showIndexedIcons.indexOf(emojiData.index) === -1) return undefined;
+
+        return emojiData.iconFont;
+    }
+
+    _init() {
+        // generate scale marks
+        this._scaleMarksArray = EmojiHelpers.emojiDataArray
+            .filter(emoji => (emoji.index !== null && emoji.index !== 'holiday' && emoji.index !== 'sick'))
+            .map(emoji => {
+                const scaleMarkIcon = this._moodIconScaleCalculator(emoji);
+                const scaleMarkY = this._options.verticalStageOffset + (1 - (parseInt(emoji.index) * 0.1 + 0.5)) * (this._options.stageHeight - 2 * this._options.verticalStageOffset);
+                const konvaScaleMark = this._scaleMarkBuilder(scaleMarkY, scaleMarkIcon);
+                return { moodScore: emoji.index, konvaEl: konvaScaleMark };
+            });
+
+        // create instance group
+        this._moodWaterScale = new Konva.Group({ x: this._options.stageWidth, opacity: this._options.scaleOpacity });
+        const scaleMarkKonvaEltsArray = this._scaleMarksArray.map(item => item.konvaEl);
+        this._moodWaterScale.add(...scaleMarkKonvaEltsArray);
+    }
+
+    // public methods
+    destroy() {
+        // destroy all tweeners
+        this._tweenersCollection.forEach(tweener => {
+            tweener.destroy();
+        });
+        // destroy all animations
+        this._animationsCollection.forEach(animation => {
+            animation.stop();
+        });
+    }
+    get instance() { return this._moodWaterScale }
+}
+
 export default {
-    WaterTank: WaterTank,
-    BubblesFountain: BubblesFountain,
-    MoodIndicator: MoodIndicator
+    WaterTank,
+    BubblesFountain,
+    MoodIndicator,
+    MoodWaterScale
 };
