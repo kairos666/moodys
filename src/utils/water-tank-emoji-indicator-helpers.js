@@ -219,9 +219,10 @@ class BubblesFountain {
 }
 
 class MoodIndicator {
-    constructor(state, yAxis, options) {
+    constructor(state, yAxis, moodScore, options) {
         this._state = state;
         this._yAxis = yAxis;
+        this._moodEmojiIndex = this._moodScoreToEmojiIndexConverter(moodScore);
         this._options = Object.assign({
             stageWidth: undefined,
             stageHeight: undefined,
@@ -255,14 +256,29 @@ class MoodIndicator {
         this._init();
     }
 
-    _propToEmojiIndexConverter(moodScore) {
+    _moodScoreToEmojiIndexConverter(moodScore) {
         return EmojiHelpers.emojiDataArray.findIndex(item => (item.index === moodScore));
     }
     _moodIndicatorSwayAnimationBuilder(moodIndicator, layer) {
         console.log('TODO sway animation');
     }
-    _moodIndicatorFadeMoods(emojiTargetIndex) {
-        console.log('TODO fade emojis with cancel if not needed');
+    _swapEmojis(newIndex, formerIndex) {
+        console.log(newIndex, formerIndex);
+        const showNewEmojiTween = new Konva.Tween({
+            node: this._moodEmojisCollection[newIndex],
+            duration: 2 * this._options.moodTweenDuration * (1 - this._moodEmojisCollection[newIndex].opacity()),
+            easing: Konva.Easings.Linear,
+            opacity: 1,
+            onFinish: function() { this.destroy() }
+        }).play();
+        const hideFormerEmojiTween = new Konva.Tween({
+            node: this._moodEmojisCollection[formerIndex],
+            duration: 2 * this._options.moodTweenDuration * this._moodEmojisCollection[formerIndex].opacity(),
+            easing: Konva.Easings.Linear,
+            opacity: 0,
+            onFinish: function() { this.destroy() }
+        }).play();
+        this._tweenersCollection.push(showNewEmojiTween, hideFormerEmojiTween);
     }
     _showWings() {
         const showWingsTween = new Konva.Tween({
@@ -301,9 +317,9 @@ class MoodIndicator {
     }
     _init() {
         // generate images (wings + all emojis)
-        this._wings = new Konva.Image(Object.assign({}, this._options.moodEmojiWingsBaseOptions, { visible: true }));
-        this._moodEmojisCollection = EmojiHelpers.emojiDataArray.map(() => {
-            return new Konva.Image(Object.assign({}, this._options.moodEmojiBaseOptions, { visible: true }));
+        this._wings = new Konva.Image(Object.assign({}, this._options.moodEmojiWingsBaseOptions, { visible: true, opacity: 0 }));
+        this._moodEmojisCollection = EmojiHelpers.emojiDataArray.map((item, index) => {
+            return new Konva.Image(Object.assign({}, this._options.moodEmojiBaseOptions, { visible: true, opacity: (index === this._moodEmojiIndex) ? 1 : 0 }));
         });
 
         // attach everything to the group
@@ -317,7 +333,7 @@ class MoodIndicator {
             .map((emojiURL, index) => this._pImageLoaderFunc(emojiURL, this._moodEmojisCollection[index]));
         this._allImagesLoadedPromise = Promise.all([pWings, ...pEmojisArray]);
     }
-    _update() {}
+    _animate() {}
 
     // public methods
     destroy() {
@@ -337,7 +353,7 @@ class MoodIndicator {
         // redraw when all images are loaded (and layer is available)
         this._allImagesLoadedPromise.then(() => { this._layer.draw() });
 
-        this._update();
+        this._animate();
     }
     get instance() { return this._moodIndicator }
     get y() { return this._yAxis }
@@ -354,12 +370,20 @@ class MoodIndicator {
         }).play();
         this._tweenersCollection.push(tweenMoodLevel);
     }
+    set moodScore(moodScore) {
+        const formerIndex = this._moodEmojiIndex;
+        const newIndex = this._moodScoreToEmojiIndexConverter(moodScore);
+        // update model
+        this._moodEmojiIndex = newIndex;
+        // update indicator display (if necessary)
+        if (newIndex !== formerIndex) this._swapEmojis(newIndex, formerIndex);
+    }
     get state() { return this._state }
     set state(newState) {
         // update model
         this._state = newState;
         // update indicator display
-        this._update();
+        this._animate();
     }
 }
 

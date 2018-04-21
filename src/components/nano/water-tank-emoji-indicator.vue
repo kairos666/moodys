@@ -58,6 +58,7 @@
                     // update Konva elements
                     if (this.moodIndicator) {
                         this.moodIndicator.y = yAxisMoodLevel;
+                        this.moodIndicator.moodScore = val;
                     }
                 },
                 immediate: true
@@ -96,7 +97,7 @@
                 this.bubblesFountain.launch();
 
                 // attach mood indicator
-                this.moodIndicator = new WaterTankHelpers.MoodIndicator('float', this.percentToStageHeightConverter(this.model.moodLevel), { stageWidth: this.stageWidth, stageHeight: this.stageHeight });
+                this.moodIndicator = new WaterTankHelpers.MoodIndicator('float', this.percentToStageHeightConverter(this.model.moodLevel), this.todayMood, { stageWidth: this.stageWidth, stageHeight: this.stageHeight });
                 this.layerFg.add(this.moodIndicator.instance);
                 this.moodIndicator.launch();
             },
