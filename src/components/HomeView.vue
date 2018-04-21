@@ -76,17 +76,6 @@
                     <li>
                         <home-card class="home-card__mood-box home-card__mood-box-allusers">
                             <div slot="description">
-                                <!-- <water-tank-mood-indicator
-                                    :today-mood="$store.getters.currentUserMood" 
-                                    :week-mood="$store.getters.currentUserWeekMoods.weekAverage"
-                                ></water-tank-mood-indicator> -->
-                                <!-- <component-tester></component-tester> -->
-                            </div>
-                        </home-card>
-                    </li>
-                    <li>
-                        <home-card class="home-card__mood-box home-card__mood-box-allusers">
-                            <div slot="description">
                                 <component-tester-v2></component-tester-v2>
                             </div>
                         </home-card>
@@ -126,7 +115,6 @@
     import DoubleMoodBox from '@/components/dashboard/double-mood-box';
     import CompletionRate from '@/components/dashboard/completion-rate';
     import WeeklyChart from '@/components/dashboard/weekly-chart';
-    import ComponentTester from '@/components/nano/component-tester';
     import ComponentTesterV2 from '@/components/nano/component-tester-v2';
     import timeHelpers from '@/utils/time-helpers';
 
@@ -166,7 +154,6 @@
             'double-mood-box': DoubleMoodBox,
             'completion-rate': CompletionRate,
             'weekly-chart': WeeklyChart,
-            'component-tester': ComponentTester,
             'component-tester-v2': ComponentTesterV2
         }
     };
