@@ -160,5 +160,5 @@
 </script>
 
 <style scoped lang="scss">
-    .tank-container { margin:0; min-height:500px; overflow:hidden; }
+    .tank-container { margin:0; min-height:326px; overflow:hidden; }
 </style>
