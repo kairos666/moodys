@@ -25,7 +25,8 @@
                 waterTank: undefined,
                 bubblesFountain: undefined,
                 moodIndicator: undefined,
-                verticalStageOffset: 80,
+                moodScale: undefined,
+                verticalStageOffset: 50,
                 verticalLevelUpdateDuration: 2
             };
         },
@@ -100,9 +101,13 @@
                 this.stageInstance.add(this.layerBg, this.layerMg, this.layerFg);
 
                 // attach water lines
-                this.waterTank = new WaterTankHelpers.WaterTank(this.percentToStageHeightConverter(this.model.waterLevel), { stageWidth: this.stageWidth, stageHeight: this.stageHeight, layer: this.layerBg, verticalLevelUpdateDuration: this.verticalLevelUpdateDuration });
+                this.waterTank = new WaterTankHelpers.WaterTank(this.percentToStageHeightConverter(this.model.waterLevel), { stageWidth: this.stageWidth, stageHeight: this.stageHeight, verticalLevelUpdateDuration: this.verticalLevelUpdateDuration });
                 this.layerBg.add(this.waterTank.instance);
                 this.waterTank.launch();
+
+                // attach mood scale
+                this.moodScale = new WaterTankHelpers.MoodWaterScale({ stageWidth: this.stageWidth, stageHeight: this.stageHeight, verticalStageOffset: this.verticalStageOffset });
+                this.layerBg.add(this.moodScale.instance);
 
                 // attach bubbles fountain
                 this.bubblesFountain = new WaterTankHelpers.BubblesFountain(this.percentToStageHeightConverter(this.model.waterLevel), { stageWidth: this.stageWidth, stageHeight: this.stageHeight });
