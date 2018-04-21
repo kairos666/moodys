@@ -1,5 +1,6 @@
 export default {
     moodIndexes: ['-5', '-4', '-3', '-2', '-1', '0', '1', '2', '3', '4', '5', 'holiday', 'sick', null],
+    moodFontCharacter: ['', '', '', '', '', '', '', '', '', '', '', '', '', ''],
     moodLabels: ['apocalyptic', 'horrible', 'very bad', 'bad', 'meh', 'neutral', 'ok', 'good', 'very good', 'crazy good', 'ecstatic', 'away', 'sick', 'no data'],
     moodImages: [
         'Emoji_u1f62d.svg',
