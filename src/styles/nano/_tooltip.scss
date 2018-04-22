@@ -1,0 +1,17 @@
+/**
+*   TOOLTIPS (pure CSS)
+**/
+.tooltip { color:#fff; display:flex; flex-direction:column-reverse;
+    .tooltip__content { display:none; }
+    .tooltip__icon  { align-self:flex-start; }
+    .tooltip__icon:focus, .tooltip__icon:hover { opacity:1;
+        + .tooltip__content { display:block; }
+    }
+}
+.tooltip__icon { font-size: 2.5rem; opacity:0.5; cursor:pointer; transition:opacity $btn-tr-duration ease; outline:none; }
+.tooltip__content { padding:$gutter-base; background-color:#fff; color:$medium-color; border-radius:2px; }
+
+/* wtaer tank specific */
+.tooltip-water-tank { color:#fddcc1;
+    .tooltip__content { background-color:#fddcc1; }
+}
