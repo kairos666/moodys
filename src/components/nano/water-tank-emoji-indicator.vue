@@ -1,7 +1,11 @@
 <template>
-    <figure ref="stageContainer" class="tank-container">
-        
-    </figure>
+    <div class="tank-wrapper">
+        <figure ref="stageContainer" class="tank-container"></figure>
+        <div class="tooltip tooltip-water-tank">
+            <i tabindex="0" class="material-icons tooltip__icon">info_outline</i>
+            <p class="tooltip__content" v-html="toolTip"></p>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -9,7 +13,7 @@
     import WaterTankHelpers from '@/utils/water-tank-emoji-indicator-helpers';
 
     export default {
-        props: ['todayMood', 'weekMood'],
+        props: ['todayMood', 'weekMood', 'toolTip'],
         data() {
             return {
                 model: {
@@ -165,5 +169,10 @@
 </script>
 
 <style scoped lang="scss">
+    @import '../../styles/_variables.scss';
+    @import '../../styles/nano/_tooltip.scss';
+    .tank-wrapper { position:relative;
+        .tooltip { position:absolute; left:$gutter-base; bottom:$gutter-base; right:$gutter-base; }
+    }
     .tank-container { margin:0; min-height:326px; overflow:hidden; }
 </style>
