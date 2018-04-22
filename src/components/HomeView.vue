@@ -46,7 +46,8 @@
                                 ></double-mood-box>
                                 <mood-water-tank 
                                     :today-mood="$store.getters.currentUserMood"  
-                                    :week-mood="$store.getters.currentUserWeekMoods.weekAverage" 
+                                    :week-mood="averageTodayMoods"
+                                    :tool-tip="'<strong>How are you doing in this ambient mood!</strong><br>The smiley is your day\'s mood, water is the average mood of the day for everyone.'"
                                 ></mood-water-tank>
                             </div>
                         </home-card>
