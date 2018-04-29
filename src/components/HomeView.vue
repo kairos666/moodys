@@ -48,6 +48,7 @@
                                     :today-mood="$store.getters.currentUserMood"  
                                     :week-mood="averageTodayMoods"
                                     :tool-tip="'<strong>How are you doing in this ambient mood!</strong><br>The smiley is your day\'s mood, water is the average mood of the day for everyone.'"
+                                    visible-scope="(min-width:1600px)"
                                 ></mood-water-tank>
                             </div>
                         </home-card>
