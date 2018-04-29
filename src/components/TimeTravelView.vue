@@ -56,6 +56,7 @@
     import MonthlyChart from '@/components/time-travel/monthly-chart';
     import { TimeTravelEvt } from '@/config/badges';
     import { EventBus } from '@/utils/events-bus';
+    import Users from '@/config/users';
 
     // return array with only moods corresponding to range
     let filteredMoodsPerRange = function(moods, range) {
@@ -83,6 +84,56 @@
         });
 
         return result;
+    };
+
+    // ALL USERS - return array with only one average mood entry per full day (remove multi day entry duplicate per users)
+    let averageAllUsersMoodEntries = function(moods) {
+        // list of users having been active during the targeted period of time with their associated moods
+        let moodsGroupedByUsers = moods.reduce((accumulator, currentMood) => {
+            if (!accumulator[currentMood.uid]) accumulator[currentMood.uid] = [];
+            accumulator[currentMood.uid].push(currentMood);
+
+            return accumulator;
+        }, {});
+
+        // remove duplicates for each users and merge in a new array
+        let allUsersDedupedMoods = [];
+        let usersUIDList = Object.keys(moodsGroupedByUsers);
+        usersUIDList.forEach(uid => {
+            const dedupedUserMoods = removeDayDuplicates(moodsGroupedByUsers[uid]);
+            allUsersDedupedMoods = allUsersDedupedMoods.concat(dedupedUserMoods);
+        });
+
+        // list of full day entries on the period
+        let moodsGroupedByDayTimestamp = allUsersDedupedMoods.reduce((accumulator, currentMood) => {
+            if (!accumulator[currentMood.dayTimestamp]) accumulator[currentMood.dayTimestamp] = [];
+            accumulator[currentMood.dayTimestamp].push(currentMood);
+
+            return accumulator;
+        }, {});
+
+        // average those moods
+        let averageForEachDay = [];
+        let dayTimestampsList = Object.keys(moodsGroupedByDayTimestamp);
+        dayTimestampsList.forEach(dayTimestamp => {
+            let targetDayMoodEntries = moodsGroupedByDayTimestamp[dayTimestamp];
+            let moodAggregation = targetDayMoodEntries.reduce((acc, cv) => {
+                if (cv.value !== 'sick' && cv.value !== 'holiday' && cv.value !== undefined) {
+                    acc.sum += parseInt(cv.value);
+                    acc.expressedMood++;
+                }
+                return acc;
+            }, { sum: 0, expressedMood: 0 });
+
+            // push special average entry
+            averageForEachDay.push({
+                uid: 'all',
+                dayTimestamp: parseInt(dayTimestamp),
+                value: Math.round(moodAggregation.sum / moodAggregation.expressedMood).toString()
+            });
+        });
+
+        return averageForEachDay;
     };
 
     // return array with inserted null values when needed
@@ -171,12 +222,21 @@
             },
             wideDataSetBuilder(range, uid) {
                 // provide corresponding week mood data
-                let user = this.$store.state.users[uid];
-                let moodsSubset = filteredMoodsPerRange(this.$store.state.moods, range)
-                    .filter(item => (item.uid === uid));
+                let user;
+                let moodsSubset = [];
+                if (uid !== 'all') {
+                    // singular individual
+                    user = this.$store.state.users[uid];
+                    moodsSubset = filteredMoodsPerRange(this.$store.state.moods, range)
+                        .filter(item => (item.uid === uid));
 
-                // remove same day duplicates
-                moodsSubset = removeDayDuplicates(moodsSubset);
+                    // remove same day duplicates
+                    moodsSubset = removeDayDuplicates(moodsSubset);
+                } else {
+                    // average of all users per day
+                    user = Users.all;
+                    moodsSubset = averageAllUsersMoodEntries(filteredMoodsPerRange(this.$store.state.moods, range));
+                }
 
                 // insert no entry days if needed
                 moodsSubset = insertNoMoodEntries(moodsSubset, range);
