@@ -125,15 +125,16 @@
             averageWeeklyMoodDataset() {
                 return [{
                     label: `daily average mood`,
-                    backgroundColor: 'rgba(255, 87, 34, .3)',
-                    borderColor: 'rgba(255, 87, 34, .3)',
+                    backgroundColor: 'rgba(102, 102, 102, .075)',
+                    borderColor: 'rgba(102, 102, 102, .075)',
                     data: this.averageWeekMoods.weekMoods,
                     fill: 'start'
                 }, {
                     label: `${this.currentUserData.firstname} ${this.currentUserData.lastname}`,
+                    backgroundColor: 'rgba(255, 87, 34, .3)',
                     borderColor: 'rgba(255, 87, 34, .75)',
                     data: this.currentUserWeekMood.weekMoods,
-                    fill: false
+                    fill: 'start'
                 }];
             },
             ...mapGetters({

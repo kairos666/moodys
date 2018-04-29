@@ -13,6 +13,7 @@
     import ScopeSelector from '@/components/nano/scope-selector';
     import TimeSelector from '@/components/nano/time-selector';
     import UserSelector from '@/components/nano/user-selector';
+    import Users from '@/config/users';
 
     export default {
         data() {
@@ -24,10 +25,11 @@
         },
         computed: {
             timeTarget() { return timeHelpers.getDateRange(this.scope, this.currentDateCursor) },
-            currentUser() { return this.usersArray.find(item => (item.id === this.currentUserID)) },
+            currentUser() { return this.extendedUsersArray.find(item => (item.id === this.currentUserID)) },
             ...mapGetters({
                 usersArray: 'usersArray'
-            })
+            }),
+            extendedUsersArray() { return [...this.usersArray, Users.all] }
         },
         methods: {
             onScopeChange(newValue) {
@@ -52,23 +54,23 @@
                 this.currentDateCursor = result;
             },
             onUserChange(direction) {
-                let userIndex = this.usersArray.findIndex(item => (item.id === this.currentUserID));
+                let userIndex = this.extendedUsersArray.findIndex(item => (item.id === this.currentUserID));
                 let newUserIndex;
 
                 switch (direction) {
                 case 'previous':
                     // previous index in usersArray
                     newUserIndex = userIndex - 1;
-                    if (newUserIndex < 0) newUserIndex = this.usersArray.length - 1;
+                    if (newUserIndex < 0) newUserIndex = this.extendedUsersArray.length - 1;
                     break;
                 case 'next':
                     // next index in usersArray
                     newUserIndex = userIndex + 1;
-                    if (newUserIndex >= this.usersArray.length) newUserIndex = 0;
+                    if (newUserIndex >= this.extendedUsersArray.length) newUserIndex = 0;
                     break;
                 }
 
-                this.currentUserID = this.usersArray[newUserIndex].id;
+                this.currentUserID = this.extendedUsersArray[newUserIndex].id;
             },
             emitTimeRange() {
                 this.$emit('time-range-change', {
