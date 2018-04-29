@@ -225,6 +225,9 @@
                 let user;
                 let moodsSubset = [];
                 if (uid !== 'all') {
+                    // average for all users
+                    let averageMoodSubset = averageAllUsersMoodEntries(filteredMoodsPerRange(this.$store.state.moods, range));
+
                     // singular individual
                     user = this.$store.state.users[uid];
                     moodsSubset = filteredMoodsPerRange(this.$store.state.moods, range)
@@ -232,23 +235,42 @@
 
                     // remove same day duplicates
                     moodsSubset = removeDayDuplicates(moodsSubset);
+
+                    // insert no entry days if needed
+                    averageMoodSubset = insertNoMoodEntries(averageMoodSubset, range);
+                    moodsSubset = insertNoMoodEntries(moodsSubset, range);
+
+                    // format data for week/month chart
+                    return [{
+                        label: `${user.firstname} ${user.lastname}`,
+                        borderColor: 'rgba(255, 87, 34, .75)',
+                        data: moodsSubset.map(item => item.value),
+                        backgroundColor: 'rgba(255, 87, 34, .3)',
+                        fill: 'start'
+                    }, {
+                        label: `all users average`,
+                        borderColor: 'rgba(102, 102, 102, .075)',
+                        data: averageMoodSubset.map(item => item.value),
+                        backgroundColor: 'rgba(102, 102, 102, .075)',
+                        fill: 'start'
+                    }];
                 } else {
                     // average of all users per day
                     user = Users.all;
                     moodsSubset = averageAllUsersMoodEntries(filteredMoodsPerRange(this.$store.state.moods, range));
+
+                    // insert no entry days if needed
+                    moodsSubset = insertNoMoodEntries(moodsSubset, range);
+
+                    // format data for week/month chart
+                    return [{
+                        label: `${user.firstname} ${user.lastname}`,
+                        borderColor: 'rgba(255, 87, 34, .75)',
+                        data: moodsSubset.map(item => item.value),
+                        backgroundColor: 'rgba(255, 87, 34, .3)',
+                        fill: 'start'
+                    }];
                 }
-
-                // insert no entry days if needed
-                moodsSubset = insertNoMoodEntries(moodsSubset, range);
-
-                // format data for week/month chart
-                return [ {
-                    label: `${user.firstname} ${user.lastname}`,
-                    borderColor: 'rgba(255, 87, 34, .75)',
-                    data: moodsSubset.map(item => item.value),
-                    backgroundColor: 'rgba(255, 87, 34, .3)',
-                    fill: 'start'
-                }];
             }
         },
         components: {
