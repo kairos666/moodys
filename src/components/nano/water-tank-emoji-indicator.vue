@@ -1,5 +1,5 @@
 <template>
-    <div class="tank-wrapper">
+    <div class="tank-wrapper" :class="{ 'is-hidden': isHidden }">
         <figure ref="stageContainer" class="tank-container"></figure>
         <div class="tooltip tooltip-water-tank">
             <i tabindex="0" class="material-icons tooltip__icon">info_outline</i>
@@ -16,6 +16,7 @@
         props: ['todayMood', 'weekMood', 'toolTip'],
         data() {
             return {
+                isHidden: false,
                 model: {
                     waterLevel: 0,
                     moodLevel: 0.5
@@ -127,12 +128,14 @@
                 // destroy stage
                 this.destroyKonva();
 
-                // update stage dimensions
-                this.stageWidth = this.$refs.stageContainer.offsetWidth;
-                this.stageHeight = this.$refs.stageContainer.offsetHeight;
+                if (!this.$attrs['visible-scope'] || this.visibleScopeMatcher(this.$attrs['visible-scope'])) {
+                    // update stage dimensions
+                    this.stageWidth = this.$refs.stageContainer.offsetWidth;
+                    this.stageHeight = this.$refs.stageContainer.offsetHeight;
 
-                // build stage
-                this.buildStage();
+                    // build stage
+                    this.buildStage();
+                }
             },
             destroyKonva() {
                 // leave early if unecessary
@@ -149,6 +152,13 @@
                 // destroy stage
                 this.stageInstance.destroy();
                 this.stageInstance = undefined;
+            },
+            visibleScopeMatcher(scope) {
+                // produce side effect
+                this.isHidden = !window.matchMedia(scope).matches;
+
+                // return is a match result
+                return !this.isHidden;
             }
         },
         mounted() {
@@ -172,6 +182,7 @@
     @import '../../styles/_variables.scss';
     @import '../../styles/nano/_tooltip.scss';
     .tank-wrapper { position:relative;
+        &.is-hidden { display:none; }
         .tooltip { position:absolute; left:$gutter-base; bottom:$gutter-base; right:$gutter-base; }
     }
     .tank-container { margin:0; min-height:326px; overflow:hidden; }
