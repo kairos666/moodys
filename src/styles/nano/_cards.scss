@@ -34,7 +34,7 @@
 /*** home mood box profile ***/
 .home-card__mood-box-profile {
     @include media("<=large-desktop") {
-        .tank-container { display:none; }
+        .tank-wrapper { display:none; }
     }
 }
 
