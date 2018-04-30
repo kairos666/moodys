@@ -1,7 +1,7 @@
 <template>
-    <div>I'm a dialog box - mood changes
+    <menu class="dialog-box dialog-box__mood-change">
         <button type="button" class="mdl-button mdl-button--raised mdl-button--colored" @click="onClose">close dialog</button>
-    </div>
+    </menu>
 </template>
 
 <script>
@@ -15,7 +15,7 @@
 </script>
 
 <style scoped lang="scss">
-    @import '../../styles/_utils.scss';
-    @import '../../styles/_include-media.scss';
     @import '../../styles/_variables.scss';
+    @import '../../styles/_include-media.scss';
+    @import '../../styles/nano/_dialog-box.scss';
 </style>
