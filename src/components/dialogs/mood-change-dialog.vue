@@ -1,7 +1,5 @@
 <template>
-    <menu ref="stageContainer" class="dialog-box dialog-box__mood-change">
-        <button type="button" class="mdl-button mdl-button--raised mdl-button--colored" @click="onClose">close dialog</button>
-    </menu>
+    <menu ref="stageContainer" class="dialog-box dialog-box__mood-change"></menu>
 </template>
 
 <script>
@@ -23,6 +21,9 @@
         methods: {
             onClose() {
                 this.$emit('close-dialog');
+            },
+            onMoodSelection(moodValue) {
+                console.log('mood selected', moodValue);
             },
             resizeStage() {
                 // destroy stage
@@ -59,14 +60,16 @@
                 this.stageInstance.add(this.layerBg, this.layerFg);
 
                 // attach main mood selection display
-                this.mainSelection = new MoodMenuHelpers.MainSelection({ stageWidth: this.stageWidth, stageHeight: this.stageHeight });
+                this.mainSelection = new MoodMenuHelpers.MainSelection({ currentMood: this.$store.getters.currentUserMood, stageWidth: this.stageWidth, stageHeight: this.stageHeight });
                 this.layerFg.add(this.mainSelection.instance);
                 this.mainSelection.launch();
 
-                // attach all individual selectors
-                this.selectors = new MoodMenuHelpers.Selectors({ stageWidth: this.stageWidth, stageHeight: this.stageHeight });
+                // attach all individual selectors - and listen to events
+                this.selectors = new MoodMenuHelpers.Selectors({ stageWidth: this.stageWidth, stageHeight: this.stageHeight }, this.onMoodSelection);
                 this.layerBg.add(this.selectors.instance);
                 this.selectors.launch();
+
+                this.stageInstance.draw();
             }
         },
         mounted() {

@@ -1,6 +1,6 @@
 <template>
     <transition name="dialog-transition">
-        <div class="dialog-obfuscator" v-if="isDialogOpen" @click="hideDialog">
+        <div class="dialog-obfuscator" v-if="isDialogOpen" @click.self="hideDialog">
             <component :is="dialogType" @close-dialog="hideDialog"></component>
         </div>
     </transition>
