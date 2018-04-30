@@ -1,6 +1,12 @@
 import Konva from 'konva';
 import EmojiHelpers from '@/utils/emoji-helpers';
 
+const genericProperties = {
+    moodTweenDuration: 0.3,
+    selectorsTweenDuration: 0.45,
+    delay: 0.3
+};
+
 let pImageLoaderFunc = function(imgPath, konvaImage) {
     // load as promise
     const asyncImg = new Promise(resolve => {
@@ -65,6 +71,9 @@ class MainSelection {
             const emojiURL = `${this._options.moodEmojisBaseURL}${item.image}`;
             pImageLoadersArray.push(pImageLoaderFunc(emojiURL, kImage));
 
+            // setup mood value (to use when clicked)
+            kImage.moodValue = item.index;
+
             return kImage;
         });
         this._allImagesLoadedPromise = Promise.all(pImageLoadersArray);
@@ -72,8 +81,37 @@ class MainSelection {
         this._mainSelection.add(circleBg, ...this._moodEmojisCollection);
     }
 
+    _swapEmojis(newIndex, formerIndex) {
+        const newerNode = this._moodEmojisCollection.find(emoji => (emoji.moodValue === newIndex));
+        const formerNode = this._moodEmojisCollection.find(emoji => (emoji.moodValue === formerIndex));
+        const showNewEmojiTween = new Konva.Tween({
+            node: newerNode,
+            duration: genericProperties.moodTweenDuration * (1 - newerNode.opacity()),
+            easing: Konva.Easings.Linear,
+            opacity: 1,
+            onFinish: function() { this.destroy() }
+        }).play();
+        const hideFormerEmojiTween = new Konva.Tween({
+            node: formerNode,
+            duration: genericProperties.moodTweenDuration * formerNode.opacity(),
+            easing: Konva.Easings.Linear,
+            opacity: 0,
+            onFinish: function() { this.destroy() }
+        }).play();
+        this._tweenersCollection.push(showNewEmojiTween, hideFormerEmojiTween);
+    }
+
     // public methods
     get instance() { return this._mainSelection }
+    get currentMood() { return this._options.currentMood }
+    set currentMood(newMood) {
+        const formerIndex = this._options.currentMood;
+        const newerIndex = newMood;
+        this._options.currentMood = newMood;
+
+        // animate swap between images
+        this._swapEmojis(newerIndex, formerIndex);
+    }
     destroy() {}
     launch() {
         // call this function after instance has been attached to stage/layer
@@ -235,6 +273,50 @@ class Selectors {
         return results;
     }
 
+    _showSelectors() {
+        this._selectors.setAttrs({ rotation: 60, scaleX: 0.25, scaleY: 0.25 });
+        setTimeout(() => {
+            const showSelectorTweenA = new Konva.Tween({
+                node: this._selectors,
+                duration: genericProperties.selectorsTweenDuration,
+                easing: Konva.Easings.BackEaseOut,
+                scaleX: 1,
+                scaleY: 1,
+                onFinish: function() { this.destroy() }
+            }).play();
+            const showSelectorTweenB = new Konva.Tween({
+                node: this._selectors,
+                duration: genericProperties.selectorsTweenDuration,
+                easing: Konva.Easings.EaseOut,
+                rotation: 0,
+                onFinish: function() { this.destroy() }
+            }).play();
+            this._tweenersCollection.push(showSelectorTweenA, showSelectorTweenB);
+        }, genericProperties.delay * 1000);
+    }
+
+    _hideSelectors() {
+        this._selectors.setAttrs({ rotation: 0, scaleX: 1, scaleY: 1 });
+        setTimeout(() => {
+            const hideSelectorTweenA = new Konva.Tween({
+                node: this._selectors,
+                duration: genericProperties.selectorsTweenDuration,
+                easing: Konva.Easings.BackEaseIn,
+                scaleX: 0.25,
+                scaleY: 0.25,
+                onFinish: function() { this.destroy() }
+            }).play();
+            const hideSelectorTweenB = new Konva.Tween({
+                node: this._selectors,
+                duration: genericProperties.selectorsTweenDuration,
+                easing: Konva.Easings.EaseOut,
+                rotation: 60,
+                onFinish: function() { this.destroy() }
+            }).play();
+            this._tweenersCollection.push(hideSelectorTweenA, hideSelectorTweenB);
+        }, genericProperties.delay * 1000);
+    }
+
     // public methods
     get instance() { return this._selectors }
     destroy() {
@@ -261,9 +343,12 @@ class Selectors {
         // redraw when all images are loaded (and layer is available)
         this._allImagesLoadedPromise.then(() => { this._layer.draw() });
     }
+    show() { this._showSelectors() }
+    hide() { this._hideSelectors() }
 }
 
 export default {
+    genericProperties,
     MainSelection,
     Selectors
 };

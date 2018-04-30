@@ -23,7 +23,12 @@
                 this.$emit('close-dialog');
             },
             onMoodSelection(moodValue) {
-                console.log('mood selected', moodValue);
+                // menu update orchestration - update mood | hide selectors | close dialog box (prevented if clicked the same mood)
+                if (this.mainSelection.currentMood !== moodValue) {
+                    this.mainSelection.currentMood = moodValue;
+                    if (this.selectors) this.selectors.hide();
+                    setTimeout(this.onClose, 1000 * (MoodMenuHelpers.genericProperties.delay + MoodMenuHelpers.genericProperties.selectorsTweenDuration));
+                }
             },
             resizeStage() {
                 // destroy stage
@@ -78,6 +83,9 @@
 
             // setup resize behavior
             window.addEventListener('resize', this.resizeStage);
+
+            // show menu animation
+            if (this.selectors) this.selectors.show();
         },
         beforeDestroy() {
             // destroy stage
