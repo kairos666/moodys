@@ -12,3 +12,11 @@ export class NotificationEvt {
         this.content = snackBarMessages[subType](options);
     }
 };
+
+export class DialogEvt {
+    constructor(subType, options) {
+        this.type = 'dialog';
+        this.subType = subType;
+        this.options = options;
+    }
+}

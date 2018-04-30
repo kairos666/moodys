@@ -1,0 +1,13 @@
+.dialog-box { position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); box-sizing:border-box; padding:20px; margin-top:0; margin-bottom:0; background-color:$grey; border-radius:2px;
+    @include media('<tablet') { 
+        width:calc(100vw - 60px); height:calc(100vh - 60px);
+    }
+    @include media('>=tablet', '<desktop') {
+        width:75vw; height:75vh;
+    }
+    @include media('>=desktop') {
+        width:50vw; height:50vh;
+    }
+
+    &.dialog-box__mood-change { background-color:transparent; padding:0; }
+}

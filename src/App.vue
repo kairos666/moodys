@@ -25,6 +25,7 @@
                 </transition>
             </div>
         </main>
+        <dialog-container></dialog-container>
         <snack-bar></snack-bar>
     </div>
 </template>
@@ -32,6 +33,7 @@
 <script>
     import ProfileNav from '@/components/nano/profile-nav';
     import SnackBar from '@/components/nano/snackbar';
+    import DialogContainer from '@/components/nano/dialog-container';
     require('material-design-lite');
 
     export default {
@@ -48,8 +50,9 @@
             }
         },
         components: {
-            'profile-nav': ProfileNav,
-            'snack-bar': SnackBar
+            ProfileNav,
+            SnackBar,
+            DialogContainer
         }
     };
 </script>
