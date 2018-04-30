@@ -32,6 +32,7 @@
                             <span slot="actions">
                                 <router-link class="mdl-button" :to="{ name: 'profile' }">edit profile</router-link>
                                 <router-link class="mdl-button mdl-button--raised mdl-button--colored" :to="{ name: 'mood-input' }">update mood</router-link>
+                                <button type="button" class="mdl-button mdl-button--raised mdl-button--colored" @click="onMoodChangeTrigger">test dialog</button>
                             </span>
                         </home-card>
                     </li>
@@ -116,6 +117,7 @@
     import WeeklyChart from '@/components/dashboard/weekly-chart';
     import MoodWaterTank from '@/components/nano/water-tank-emoji-indicator';
     import timeHelpers from '@/utils/time-helpers';
+    import { EventBus, DialogEvt } from '@/utils/events-bus';
 
     export default {
         computed: {
@@ -145,7 +147,12 @@
             })
         },
         methods: {
-            isWeekEnd() { return timeHelpers.isWeekEnd() }
+            isWeekEnd() { return timeHelpers.isWeekEnd() },
+            onMoodChangeTrigger() {
+                // dialog - trigger mood menu dialog
+                let dialogEvt = new DialogEvt('mood-change-dialog');
+                EventBus.$emit(dialogEvt.type, dialogEvt);
+            }
         },
         components: {
             'home-card': HomeCard,
