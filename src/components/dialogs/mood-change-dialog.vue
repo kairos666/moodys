@@ -5,6 +5,7 @@
 <script>
     import Konva from 'konva';
     import MoodMenuHelpers from '@/utils/mood-menu-helpers';
+    import { mapGetters } from 'vuex';
 
     export default {
         data() {
@@ -18,13 +19,21 @@
                 selectors: undefined
             };
         },
+        computed: {
+            ...mapGetters({
+                currentMood: 'currentUserMood'
+            })
+        },
         methods: {
             onClose() {
                 this.$emit('close-dialog');
             },
             onMoodSelection(moodValue) {
-                // menu update orchestration - update mood | hide selectors | close dialog box (prevented if clicked the same mood)
+                // update model only if mood has been changed to a different value
                 if (this.mainSelection.currentMood !== moodValue) {
+                    this.$store.dispatch('updateCurrentUserMood', moodValue);
+
+                    // menu update orchestration - update mood | hide selectors | close dialog box (prevented if clicked the same mood)
                     this.mainSelection.currentMood = moodValue;
                     if (this.selectors) this.selectors.hide();
                     setTimeout(this.onClose, 1000 * (MoodMenuHelpers.genericProperties.delay + MoodMenuHelpers.genericProperties.selectorsTweenDuration));
@@ -65,7 +74,7 @@
                 this.stageInstance.add(this.layerBg, this.layerFg);
 
                 // attach main mood selection display
-                this.mainSelection = new MoodMenuHelpers.MainSelection({ currentMood: this.$store.getters.currentUserMood, stageWidth: this.stageWidth, stageHeight: this.stageHeight });
+                this.mainSelection = new MoodMenuHelpers.MainSelection({ currentMood: this.currentMood, stageWidth: this.stageWidth, stageHeight: this.stageHeight });
                 this.layerFg.add(this.mainSelection.instance);
                 this.mainSelection.launch();
 

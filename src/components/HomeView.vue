@@ -31,8 +31,7 @@
                             </span>
                             <span slot="actions">
                                 <router-link class="mdl-button" :to="{ name: 'profile' }">edit profile</router-link>
-                                <router-link class="mdl-button mdl-button--raised mdl-button--colored" :to="{ name: 'mood-input' }">update mood</router-link>
-                                <button type="button" class="mdl-button mdl-button--raised mdl-button--colored" @click="onMoodChangeTrigger">test dialog</button>
+                                <button type="button" class="mdl-button mdl-button--raised mdl-button--colored" @click="onMoodChangeTrigger">update mood</button>
                             </span>
                         </home-card>
                     </li>
