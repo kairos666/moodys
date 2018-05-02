@@ -7,6 +7,22 @@ const genericProperties = {
     delay: 0.3
 };
 
+// if stage too small calculate scale down of mood menu
+const scaleCalculator = function(konvaNodesSizesArray, stageWidth, stageHeight) {
+    const konvaNodeTargetScaleCalculator = function(konvaNodeSize, stageWidth, stageHeight) {
+        const horizontalScale = stageWidth / konvaNodeSize.width;
+        const verticalScale = stageHeight / konvaNodeSize.height;
+        const minScale = Math.min(horizontalScale, verticalScale);
+
+        return (minScale >= 1) ? 1 : minScale;
+    };
+
+    // send back the minimum scale for all considered nodes
+    return Math.min(...konvaNodesSizesArray.map(konvaNode => {
+        return konvaNodeTargetScaleCalculator(konvaNode, stageWidth, stageHeight);
+    }));
+};
+
 let pImageLoaderFunc = function(imgPath, konvaImage) {
     // load as promise
     const asyncImg = new Promise(resolve => {
@@ -103,6 +119,8 @@ class MainSelection {
 
     // public methods
     get instance() { return this._mainSelection }
+    get size() { return this._mainSelection.getClientRect() }
+    set scale(newScale) { this._mainSelection.scale({ x: newScale, y: newScale }) }
     get currentMood() { return this._options.currentMood }
     set currentMood(newMood) {
         const formerIndex = this._options.currentMood;
@@ -319,6 +337,11 @@ class Selectors {
 
     // public methods
     get instance() { return this._selectors }
+    get size() {
+        // based on outerRadius (getClientRect provides to big of a bounding box)
+        return { width: 2 * this._options.arcBaseOptions.outerRadius, height: 2 * this._options.arcBaseOptions.outerRadius };
+    }
+    set scale(newScale) { this._selectors.scale({ x: newScale, y: newScale }) }
     destroy() {
         // destroy event listeners
         this._selectors.off('click');
@@ -350,5 +373,6 @@ class Selectors {
 export default {
     genericProperties,
     MainSelection,
-    Selectors
+    Selectors,
+    scaleCalculator
 };

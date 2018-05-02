@@ -83,6 +83,15 @@
                 this.layerBg.add(this.selectors.instance);
                 this.selectors.launch();
 
+                // find best suitable scale and apply
+                const targetScale = MoodMenuHelpers.scaleCalculator(
+                    [this.mainSelection.size, this.selectors.size],
+                    this.stageWidth,
+                    this.stageHeight
+                );
+                this.mainSelection.scale = targetScale;
+                this.selectors.scale = targetScale;
+
                 this.stageInstance.draw();
             }
         },
