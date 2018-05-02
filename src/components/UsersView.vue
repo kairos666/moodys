@@ -2,7 +2,7 @@
     <div>
         <h1><i class="material-icons">group</i>Today's mood for all users</h1>
         <ul class="mdl-list">
-            <li class="mdl-list__item mdl-list__item--two-line" @click.prevent="displayDetails(user.id)" :class="{ 'is-current-user':user.isCurrentUser }" v-for="user in users">
+            <li tabindex="0" class="mdl-list__item mdl-list__item--two-line" @click.prevent="displayDetails(user.id)" :class="{ 'is-current-user':user.isCurrentUser }" v-for="user in users">
                 <span class="mdl-list__item-primary-content">
                     <img class="material-icons mdl-list__item-avatar" :src="user.avatar" :alt="('avatar de ' + user.firstname + ' ' + user.lastname)" >
                     <span>{{user.firstname}} {{user.lastname}}</span>
