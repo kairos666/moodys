@@ -147,6 +147,10 @@ class Selectors {
             stageHeight: undefined,
             offsetRotationAngle: 125,
             arcsDegOffset: 5,
+            scaleData: {
+                defaultScale: 1,
+                minimizedScale: 0.2
+            },
             arcBaseOptions: {
                 outerRadius: 200,
                 innerRadius: 130
@@ -174,7 +178,9 @@ class Selectors {
         // create group
         this._selectors = new Konva.Group({
             x: this._options.stageWidth / 2,
-            y: this._options.stageHeight / 2
+            y: this._options.stageHeight / 2,
+            scaleX: this._options.scaleData.defaultScale,
+            scaleY: this._options.scaleData.defaultScale
         });
 
         // generate all mood arcs
@@ -182,7 +188,7 @@ class Selectors {
         this._selectors.add(...this._arcsCollection);
 
         // setup event listener
-        this._selectors.on('click', evt => {
+        this._selectors.on('click tap', evt => {
             if (this._moodUpdateCb) this._moodUpdateCb(evt.target.moodValue);
         });
     }
@@ -292,14 +298,14 @@ class Selectors {
     }
 
     _showSelectors() {
-        this._selectors.setAttrs({ rotation: 60, scaleX: 0.25, scaleY: 0.25 });
+        this._selectors.setAttrs({ rotation: 60, scaleX: this._options.scaleData.minimizedScale, scaleY: this._options.scaleData.minimizedScale });
         setTimeout(() => {
             const showSelectorTweenA = new Konva.Tween({
                 node: this._selectors,
                 duration: genericProperties.selectorsTweenDuration,
                 easing: Konva.Easings.BackEaseOut,
-                scaleX: 1,
-                scaleY: 1,
+                scaleX: this._options.scaleData.defaultScale,
+                scaleY: this._options.scaleData.defaultScale,
                 onFinish: function() { this.destroy() }
             }).play();
             const showSelectorTweenB = new Konva.Tween({
@@ -314,14 +320,14 @@ class Selectors {
     }
 
     _hideSelectors() {
-        this._selectors.setAttrs({ rotation: 0, scaleX: 1, scaleY: 1 });
+        this._selectors.setAttrs({ rotation: 0, scaleX: this._options.scaleData.defaultScale, scaleY: this._options.scaleData.defaultScale });
         setTimeout(() => {
             const hideSelectorTweenA = new Konva.Tween({
                 node: this._selectors,
                 duration: genericProperties.selectorsTweenDuration,
                 easing: Konva.Easings.BackEaseIn,
-                scaleX: 0.25,
-                scaleY: 0.25,
+                scaleX: this._options.scaleData.minimizedScale,
+                scaleY: this._options.scaleData.minimizedScale,
                 onFinish: function() { this.destroy() }
             }).play();
             const hideSelectorTweenB = new Konva.Tween({
@@ -341,10 +347,13 @@ class Selectors {
         // based on outerRadius (getClientRect provides to big of a bounding box)
         return { width: 2 * this._options.arcBaseOptions.outerRadius, height: 2 * this._options.arcBaseOptions.outerRadius };
     }
-    set scale(newScale) { this._selectors.scale({ x: newScale, y: newScale }) }
+    set scale(newScale) {
+        this._options.scaleData.defaultScale = newScale;
+        this._selectors.scale({ x: newScale, y: newScale });
+    }
     destroy() {
         // destroy event listeners
-        this._selectors.off('click');
+        this._selectors.off('click tap');
         this._selectors.find('.mood-arc-group').forEach(arcGroup => {
             arcGroup.off('mouseover');
             arcGroup.off('mouseout');
