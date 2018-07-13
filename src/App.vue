@@ -16,6 +16,8 @@
                 <div class="separator"></div>
                 <router-link class="mdl-navigation__link" to="/badges" @click.native="hideMenu"><i class="material-icons">verified_user</i>My Badges</router-link>
                 <router-link class="mdl-navigation__link" to="/about" @click.native="hideMenu"><i class="material-icons">help_outline</i>About</router-link>
+                <div class="separator"></div>
+                <router-link class="mdl-navigation__link" to="/experiments" @click.native="hideMenu"><i class="material-icons">all_inclusive</i>web experiments</router-link>
             </nav>
         </div>
         <main class="mdl-layout__content">
