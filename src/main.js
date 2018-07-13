@@ -11,6 +11,12 @@ import VeeValidateConfig from './config/form-validation';
 Vue.config.productionTip = false;
 Vue.use(VeeValidate, VeeValidateConfig);
 
+// ignore web components defined components (all waf-xxxx components)
+Vue.config.ignoredElements = [
+    /^waf-/,
+    'waf-tab'
+];
+
 /* eslint-disable no-new */
 new Vue({
     el: '#app',
