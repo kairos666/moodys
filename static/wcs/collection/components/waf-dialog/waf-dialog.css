@@ -1,0 +1,62 @@
+/* dimensions */
+/* RWD breakpoints */
+/* BACKDROP */
+/* DIALOG */
+/* screen readers ony visible */
+waf-dialog .waf-dialog-backdrop {
+  position: fixed;
+  z-index: 666;
+  background-color: rgba(0, 0, 0, 0.5);
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow-y: auto; }
+  waf-dialog .waf-dialog-backdrop.no-backdrop {
+    background-color: transparent;
+    pointer-events: none; }
+
+waf-dialog [role="document"] {
+  outline: none;
+  display: flex;
+  flex-direction: column; }
+  waf-dialog [role="document"] > *:not(.sr-only) {
+    flex: 0 1 auto; }
+  waf-dialog [role="document"] [slot="content"] {
+    overflow-y: auto; }
+
+waf-dialog [role="dialog"] {
+  position: absolute;
+  z-index: 667;
+  background-color: #fff;
+  padding: 24px;
+  box-shadow: 0 9px 46px 8px rgba(0, 0, 0, 0.14), 0 11px 15px -7px rgba(0, 0, 0, 0.12), 0 24px 38px 3px rgba(0, 0, 0, 0.2);
+  left: 50%;
+  transform: translateX(-50%);
+  top: 25vh;
+  margin-bottom: 25vh;
+  pointer-events: all; }
+  waf-dialog [role="dialog"].limited-height {
+    position: fixed;
+    top: 50%;
+    transform: translate(-50%, -50%); }
+    waf-dialog [role="dialog"].limited-height [role="document"] {
+      max-height: 80vh; }
+
+@media (min-width: 1024px) {
+  waf-dialog [role="dialog"] {
+    width: 50%; } }
+
+@media (max-width: 1023px) {
+  waf-dialog [role="dialog"] {
+    width: 80%; } }
+
+waf-dialog .sr-only {
+  position: absolute;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  width: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0; }

@@ -1,0 +1,27 @@
+/* dimensions */
+/* RWD breakpoints */
+/* BACKDROP */
+/* DIALOG */
+waf-arkanoid {
+  display: inline-block;
+  position: relative; }
+  waf-arkanoid waf-face-detect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1; }
+  waf-arkanoid .arkanoid {
+    position: relative;
+    z-index: 2; }
+  waf-arkanoid .waf-arkanoid-menu {
+    position: absolute;
+    z-index: 3;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 3px;
+    background: #fff;
+    padding: 24px;
+    text-align: center; }
+    waf-arkanoid .waf-arkanoid-menu button {
+      margin-top: 24px; }

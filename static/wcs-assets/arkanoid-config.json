@@ -1,0 +1,60 @@
+{
+    "bricks": {
+        "brickPerRowCount": 10,
+        "rowCount": 5,
+        "sideSpace": 15,
+        "brickHeight": 10,
+        "brickGutter": 2,
+        "brickColor": ["#0093e0", "#FF9900"]
+    },
+    "paddle": {
+        "paddleWidth": 100,
+        "paddleHeight": 10,
+        "paddleColor": "#0093e0",
+        "bottomMargin": 20,
+        "maxTweenDelay": 1000,
+        "spinImpact": 0.15
+    },
+    "ball": {
+        "initialSpeed": 0.1,
+        "acceleration": 0.0000015,
+        "ballRadius": 10,
+        "ballColor": "#0093e0"
+    },
+    "game": {
+        "lastFrame": null,
+        "level": 3,
+        "score": 0,
+        "lives": 3,
+        "collisionDetectionLoopCount": 0,
+        "collisionDetectionLoopMaxCount": 20
+    },
+    "faceDetect": {
+        "detectSideMargins": 200,
+        "jitterThreshold": 0.04
+    },
+    "externals": {
+        "brick_snd": "/static/wcs-assets/sounds/brick.mp3",
+        "paddle_snd": "/static/wcs-assets/sounds/paddle.mp3",
+        "gameover_snd": "/static/wcs-assets/sounds/gameover.mp3",
+        "collision_ww": "/static/wcs-assets/arkanoid-collision-detection-worker.js"
+    },
+    "levels": [
+        [
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        ],
+        [
+            [1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1],
+            [1, 1, 2, 2, 2, 1, 1, 2, 2, 2, 1, 1],
+            [1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1]
+        ],
+        [
+            [2, 0, 2, 0, 2, 0, 2, 2, 2, 2, 0, 2, 2, 2, 2],
+            [2, 0, 2, 0, 2, 0, 2, 0, 0, 2, 0, 2, 0, 0, 0],
+            [2, 0, 2, 0, 2, 0, 2, 2, 2, 2, 0, 2, 2, 2, 0],
+            [0, 2, 0, 2, 0, 0, 2, 0, 0, 2, 0, 2, 0, 0, 0]
+        ]
+    ]
+}

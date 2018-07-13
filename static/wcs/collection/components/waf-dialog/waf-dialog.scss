@@ -1,0 +1,63 @@
+@import '../../styles/vendor/_include-media.scss';
+@import '../../styles/_variables.scss';
+@import '../../styles/_utils.scss';
+waf-dialog {
+    .waf-dialog-backdrop {
+        position: fixed;
+        z-index: $backdropZIndex;
+        background-color: $backdropColor;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        overflow-y: auto;
+        &.no-backdrop {
+            background-color: transparent;
+            pointer-events: none;
+        }
+    }
+    [role="document"] {
+        outline: none;
+        display: flex;
+        flex-direction: column;
+        >*:not(.sr-only) {
+            flex: 0 1 auto;
+        }
+        [slot="content"] {
+            overflow-y: auto;
+        }
+    }
+    [role="dialog"] {
+        position: absolute;
+        z-index: $dialogZindex;
+        background-color: $dialogBgColor;
+        padding: $lg-pad;
+        box-shadow: unquote($dialogShadow);
+        left: 50%;
+        transform: translateX(-50%);
+        top: $unlimitedHeightVerticalMargins;
+        margin-bottom: $unlimitedHeightVerticalMargins;
+        pointer-events: all;
+        &.limited-height {
+            position: fixed;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            [role="document"] {
+                max-height: 80vh;
+            }
+        }
+    }
+    @include media(">=desktop") {
+        [role="dialog"] {
+            width: 50%;
+        }
+    }
+    @include media("<desktop") {
+        [role="dialog"] {
+            width: 80%;
+        }
+    }
+    .sr-only {
+        @include sr-only;
+    }
+}
