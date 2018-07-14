@@ -1,4 +1,5 @@
 import firebaseHelpers from '@/utils/firebase-helpers';
+import LSHelpers from '@/utils/local-storage-helpers';
 import moment from 'moment';
 
 class Post {
@@ -12,22 +13,27 @@ class Post {
     }
 }
 
-let postsModule = database => {
-    return {
-        namespaced: true,
-        state: {
-            posts: []
-        },
-        actions: {
-            addPost({ state }, payload) {
-                // action with no commit --> firebase update
-                const newPost = new Post(payload.body, state.auth.currentFirebaseUser.uid, payload.mood);
-                firebaseHelpers.addPost(newPost);
-            }
+// local storage retrieval
+let localyStoredPosts = LSHelpers.getAllPosts();
+
+let postsModule = {
+    namespaced: true,
+    state: {
+        posts: localyStoredPosts
+    },
+    mutations: {
+        updatePosts(state, payload) {
+            state.posts = payload;
+            LSHelpers.setAllPosts(payload);
         }
-    };
+    },
+    actions: {
+        addPost({ state }, payload) {
+            // action with no commit --> firebase update
+            const newPost = new Post(payload.body, state.auth.currentFirebaseUser.uid, payload.mood);
+            firebaseHelpers.addPost(newPost);
+        }
+    }
 };
 
-export default {
-    postsStore: postsModule
-};
+export default postsModule;

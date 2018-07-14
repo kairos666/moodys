@@ -35,7 +35,7 @@ const store = new Vuex.Store({
         offline: offlineModule.offlineStore(db),
         notifications: notificationModule.notificationStore(db),
         achievementsUtils: AchievementsModule.achievementsStore(db),
-        posts: PostsModule.postsStore(db)
+        posts: PostsModule
     },
     state: {
         users: (localyStored.users) ? localyStored.users : {},
@@ -107,6 +107,12 @@ const store = new Vuex.Store({
 // set auth status change handler
 auth.onAuthStateChanged(resp => {
     store.dispatch('updateAuthUser', resp);
+});
+
+// set up posts update listener
+firebaseHelpers.onAllPostsChange(snapshot => {
+    let postsDbUpdate = snapshot.val();
+    if (postsDbUpdate !== null) store.commit('posts/updatePosts', postsDbUpdate);
 });
 
 // set db connection change handler
