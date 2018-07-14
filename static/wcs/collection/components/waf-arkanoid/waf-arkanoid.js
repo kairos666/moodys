@@ -1,10 +1,8 @@
-var __awaiter = (this && this.__awaiter) || function(thisArg, _arguments, P, generator) {
-    return new(P || (P = Promise))(function(resolve, reject) {
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-
-        function step(result) { result.done ? resolve(result.value) : new P(function(resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -43,11 +41,11 @@ export class WafArkanoid {
     }
     paddlePositionHandler(newValue) {
         // enforce boundaries
-        let newPositionRatio = (newValue < 0) ?
-            0 :
-            (newValue > 1) ?
-            1 :
-            newValue;
+        let newPositionRatio = (newValue < 0)
+            ? 0
+            : (newValue > 1)
+                ? 1
+                : newValue;
         // time for tween
         const from = this.model.paddle.x;
         const to = this.paddlePositionConverter(newPositionRatio);
@@ -56,7 +54,7 @@ export class WafArkanoid {
         this.model.paddle.tween = { from: from, to: to, elapsedTime: 0, totalTime: transitionTime };
     }
     componentDidLoad() {
-        return __awaiter(this, void 0, void 0, function*() {
+        return __awaiter(this, void 0, void 0, function* () {
             // load game config json
             const configResp = yield fetch(this.configURL);
             const configJSON = configResp.json();
@@ -103,7 +101,8 @@ export class WafArkanoid {
         // keyboard controls setup or destroy
         if (isActive) {
             this.setupControls('keyboard');
-        } else {
+        }
+        else {
             this.setupControls('keyboard', true);
         }
     }
@@ -111,7 +110,8 @@ export class WafArkanoid {
         // mouse controls setup or destroy
         if (isActive) {
             this.setupControls('mouse');
-        } else {
+        }
+        else {
             this.setupControls('mouse', true);
         }
     }
@@ -119,7 +119,8 @@ export class WafArkanoid {
         // mouse controls setup or destroy
         if (isActive) {
             this.setupControls('face-detect');
-        } else {
+        }
+        else {
             this.setupControls('face-detect', true);
         }
     }
@@ -371,49 +372,47 @@ export class WafArkanoid {
         }
     }
     static get is() { return "waf-arkanoid"; }
-    static get properties() {
-        return {
-            "activateFaceControls": {
-                "type": Boolean,
-                "attr": "activate-face-controls",
-                "watchCallbacks": ["updateFaceCtrlState"]
-            },
-            "activateKeyboardControls": {
-                "type": Boolean,
-                "attr": "activate-keyboard-controls",
-                "watchCallbacks": ["updateKeyboardCtrlState"]
-            },
-            "activateMouseControls": {
-                "type": Boolean,
-                "attr": "activate-mouse-controls",
-                "watchCallbacks": ["updateMouseCtrlState"]
-            },
-            "akElt": {
-                "elementRef": true
-            },
-            "height": {
-                "type": Number,
-                "attr": "height"
-            },
-            "isGameOver": {
-                "state": true
-            },
-            "isPaused": {
-                "state": true
-            },
-            "paddlePosition": {
-                "type": Number,
-                "attr": "paddle-position",
-                "reflectToAttr": true,
-                "mutable": true,
-                "watchCallbacks": ["paddlePositionHandler"]
-            },
-            "width": {
-                "type": Number,
-                "attr": "width"
-            }
-        };
-    }
+    static get properties() { return {
+        "activateFaceControls": {
+            "type": Boolean,
+            "attr": "activate-face-controls",
+            "watchCallbacks": ["updateFaceCtrlState"]
+        },
+        "activateKeyboardControls": {
+            "type": Boolean,
+            "attr": "activate-keyboard-controls",
+            "watchCallbacks": ["updateKeyboardCtrlState"]
+        },
+        "activateMouseControls": {
+            "type": Boolean,
+            "attr": "activate-mouse-controls",
+            "watchCallbacks": ["updateMouseCtrlState"]
+        },
+        "akElt": {
+            "elementRef": true
+        },
+        "height": {
+            "type": Number,
+            "attr": "height"
+        },
+        "isGameOver": {
+            "state": true
+        },
+        "isPaused": {
+            "state": true
+        },
+        "paddlePosition": {
+            "type": Number,
+            "attr": "paddle-position",
+            "reflectToAttr": true,
+            "mutable": true,
+            "watchCallbacks": ["paddlePositionHandler"]
+        },
+        "width": {
+            "type": Number,
+            "attr": "width"
+        }
+    }; }
     static get style() { return "/**style-placeholder:waf-arkanoid:**/"; }
 }
 class PlayerGame {
@@ -452,55 +451,52 @@ class PlayerGame {
         };
     }
     static get is() { return "waf-arkanoid"; }
-    static get properties() {
-        return {
-            "activateFaceControls": {
-                "type": Boolean,
-                "attr": "activate-face-controls",
-                "watchCallbacks": ["updateFaceCtrlState"]
-            },
-            "activateKeyboardControls": {
-                "type": Boolean,
-                "attr": "activate-keyboard-controls",
-                "watchCallbacks": ["updateKeyboardCtrlState"]
-            },
-            "activateMouseControls": {
-                "type": Boolean,
-                "attr": "activate-mouse-controls",
-                "watchCallbacks": ["updateMouseCtrlState"]
-            },
-            "akElt": {
-                "elementRef": true
-            },
-            "height": {
-                "type": Number,
-                "attr": "height"
-            },
-            "isGameOver": {
-                "state": true
-            },
-            "isPaused": {
-                "state": true
-            },
-            "paddlePosition": {
-                "type": Number,
-                "attr": "paddle-position",
-                "reflectToAttr": true,
-                "mutable": true,
-                "watchCallbacks": ["paddlePositionHandler"]
-            },
-            "width": {
-                "type": Number,
-                "attr": "width"
-            }
-        };
-    }
+    static get properties() { return {
+        "activateFaceControls": {
+            "type": Boolean,
+            "attr": "activate-face-controls",
+            "watchCallbacks": ["updateFaceCtrlState"]
+        },
+        "activateKeyboardControls": {
+            "type": Boolean,
+            "attr": "activate-keyboard-controls",
+            "watchCallbacks": ["updateKeyboardCtrlState"]
+        },
+        "activateMouseControls": {
+            "type": Boolean,
+            "attr": "activate-mouse-controls",
+            "watchCallbacks": ["updateMouseCtrlState"]
+        },
+        "akElt": {
+            "elementRef": true
+        },
+        "height": {
+            "type": Number,
+            "attr": "height"
+        },
+        "isGameOver": {
+            "state": true
+        },
+        "isPaused": {
+            "state": true
+        },
+        "paddlePosition": {
+            "type": Number,
+            "attr": "paddle-position",
+            "reflectToAttr": true,
+            "mutable": true,
+            "watchCallbacks": ["paddlePositionHandler"]
+        },
+        "width": {
+            "type": Number,
+            "attr": "width"
+        }
+    }; }
     static get style() { return "/**style-placeholder:waf-arkanoid:**/"; }
 }
-
 function commandsExecutor(commands) {
     // traverse from a root object to desired function
-    let funcFetcher = function(path, root) {
+    let funcFetcher = function (path, root) {
         const depthArray = path.split('.').reverse();
         let result = {
             func: root,

@@ -26,133 +26,143 @@ import { moduleInit } from '../../static/wcs-assets/wasmpico';
  */
 export class WafFaceDetect {
     constructor() {
-            /** boolean attribute to make detections visible on video stream */
-            this.drawDetection = false;
-            /** number attribute - face detection element width (px) */
-            this.width = 640;
-            /** number attribute - face detection element height (px) */
-            this.height = 480;
-            /** config variable to tune face detect algorithm results */
-            this.detectionThreshold = 3;
-            /** path to async loaded dependencies */
-            this.assetsPath = `${location.origin}/static/wcs-assets/`;
-            /** file name for async loaded dependencies ([name].wasm & [name].js) */
-            this.wasmFaceDetectorFile = 'wasmpico';
-        }
-        /**
-         * component render function
-         */
+        /** boolean attribute to make detections visible on video stream */
+        this.drawDetection = false;
+        /** number attribute - face detection element width (px) */
+        this.width = 640;
+        /** number attribute - face detection element height (px) */
+        this.height = 480;
+        /** config variable to tune face detect algorithm results */
+        this.detectionThreshold = 3;
+        /** path to async loaded dependencies */
+        this.assetsPath = `${location.origin}/static/wcs-assets/`;
+        /** file name for async loaded dependencies ([name].wasm & [name].js) */
+        this.wasmFaceDetectorFile = 'wasmpico';
+    }
+    /**
+     * component render function
+     */
     render() {
-            return [
-                h("video", { autoplay: true, playsinline: true, width: "1", height: "1" }),
-                h("canvas", { class: "face-detect", width: this.width, height: this.height })
-            ];
-        }
-        /**
-         * on component init reference canvas & video object
-         */
+        return [
+            h("video", { autoplay: true, playsinline: true, width: "1", height: "1" }),
+            h("canvas", { class: "face-detect", width: this.width, height: this.height })
+        ];
+    }
+    /**
+     * on component init reference canvas & video object
+     */
     componentDidLoad() {
-            // reference canvas element
-            this.fdCanvas = this.fdElt.querySelector('canvas.face-detect');
-            this.fdVideo = this.fdElt.querySelector('video');
-            // reverse canvas left right (turn around by scaling stream itself is not reversed)
-            const ctx = this.fdCanvas.getContext('2d');
-            ctx.translate(this.width, 0);
-            ctx.scale(-1, 1);
-            // initiate everything (video & wasm in parralel then canvas)
-            this.init();
-        }
-        /**
-         * component functionality async initialisation
-         */
+        // reference canvas element
+        this.fdCanvas = this.fdElt.querySelector('canvas.face-detect');
+        this.fdVideo = this.fdElt.querySelector('video');
+        // reverse canvas left right (turn around by scaling stream itself is not reversed)
+        const ctx = this.fdCanvas.getContext('2d');
+        ctx.translate(this.width, 0);
+        ctx.scale(-1, 1);
+        // initiate everything (video & wasm in parralel then canvas)
+        this.init();
+    }
+    /**
+     * on component destroy clean up camera stream
+     */
+    componentDidUnload() {
+        // kill media stream track
+        const videoTrack = this.fdVideo.srcObject.getVideoTracks();
+        videoTrack.forEach(track => track.stop());
+    }
+    /**
+     * component functionality async initialisation
+     */
     init() {
-            // initiate everything (video & wasm in parralel then canvas)
-            const pBase = Promise.all([this.initCameraVideo(), this.initWebAssembly()]);
-            pBase.then(() => {
-                this.initCanvas();
-            }).catch(err => {
-                console.warn(err);
-            });
-        }
-        /**
-         * component init phase - get access to video stream (WebRTC) and bind it to video Element
-         */
+        // initiate everything (video & wasm in parralel then canvas)
+        const pBase = Promise.all([this.initCameraVideo(), this.initWebAssembly()]);
+        pBase.then(() => {
+            this.initCanvas();
+        }).catch(err => {
+            console.warn(err);
+        });
+    }
+    /**
+     * component init phase - get access to video stream (WebRTC) and bind it to video Element
+     */
     initCameraVideo() {
-            return new Promise((resolve, reject) => {
-                if (!!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) {
-                    navigator.mediaDevices.getUserMedia({ video: true, audio: false }).then(stream => {
-                        this.fdVideo.srcObject = stream;
-                        resolve();
-                    });
-                } else {
-                    reject('getUserMedia() is not supported by this browser');
-                }
-            });
-        }
-        /**
-         * component init phase - load and instanciate wasm module
-         */
+        return new Promise((resolve, reject) => {
+            if (!!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) {
+                navigator.mediaDevices.getUserMedia({ video: true, audio: false }).then(stream => {
+                    this.fdVideo.srcObject = stream;
+                    resolve();
+                });
+            }
+            else {
+                reject('getUserMedia() is not supported by this browser');
+            }
+        });
+    }
+    /**
+     * component init phase - load and instanciate wasm module
+     */
     initWebAssembly() {
-            return new Promise((resolve, reject) => {
-                if (WebAssembly) {
-                    WebAssembly.compileStreaming(fetch(`${this.assetsPath}${this.wasmFaceDetectorFile}.wasm`))
-                        .then(() => {
-                            // the script 'wasmpico.js' will instantiate this object once the 'wasmpico.wasm' loads & compile
-                            this.wasmFaceDetectorModule = moduleInit();
-                            resolve();
-                        });
-                } else {
-                    reject('This browser can\'t execute Web Assembly modules');
-                }
-            });
-        }
-        /**
-         * component final init phase - bind everything to canvas to handle both video stream and face detection calculus inputs matrix
-         */
+        return new Promise((resolve, reject) => {
+            if (WebAssembly) {
+                WebAssembly.compileStreaming(fetch(`${this.assetsPath}${this.wasmFaceDetectorFile}.wasm`))
+                    .then(() => {
+                    // the script 'wasmpico.js' will instantiate this object once the 'wasmpico.wasm' loads & compile
+                    this.wasmFaceDetectorModule = moduleInit();
+                    resolve();
+                });
+            }
+            else {
+                reject('This browser can\'t execute Web Assembly modules');
+            }
+        });
+    }
+    /**
+     * component final init phase - bind everything to canvas to handle both video stream and face detection calculus inputs matrix
+     */
     initCanvas() {
-            // memory allocations
-            const allocations = this.faceDetectorAllocateMemory(this.width, this.height);
-            // looping draw to canvas function
-            const drawToCanvaLoop = () => {
-                const ctx = this.fdCanvas.getContext('2d');
-                const video = this.fdVideo;
-                const width = this.width;
-                const height = this.height;
-                // draw on canvas
-                ctx.drawImage(video, 0, 0);
-                // retrieve data and pass it for face detection
-                const rgbaData = ctx.getImageData(0, 0, width, height);
-                const dets = this.faceDetectionCalculate(rgbaData, width, height, allocations);
-                this.wafFaceDetectorEE.emit(dets);
-                // setup for next repaint
-                window.requestAnimationFrame(drawToCanvaLoop);
-            };
-            // update at each browser refresh (and pause when tab is not in focus)
+        // memory allocations
+        const allocations = this.faceDetectorAllocateMemory(this.width, this.height);
+        // looping draw to canvas function
+        const drawToCanvaLoop = () => {
+            const ctx = this.fdCanvas.getContext('2d');
+            const video = this.fdVideo;
+            const width = this.width;
+            const height = this.height;
+            // draw on canvas
+            ctx.drawImage(video, 0, 0);
+            // retrieve data and pass it for face detection
+            const rgbaData = ctx.getImageData(0, 0, width, height);
+            const dets = this.faceDetectionCalculate(rgbaData, width, height, allocations);
+            this.wafFaceDetectorEE.emit(dets);
+            // setup for next repaint
             window.requestAnimationFrame(drawToCanvaLoop);
-            // canvas setup is finished resolve promise (not really necessary but keep initSubSteps with the same interface)
-            return Promise.resolve();
-        }
-        /**
-         * WebAssembly module - memory management
-         */
+        };
+        // update at each browser refresh (and pause when tab is not in focus)
+        window.requestAnimationFrame(drawToCanvaLoop);
+        // canvas setup is finished resolve promise (not really necessary but keep initSubSteps with the same interface)
+        return Promise.resolve();
+    }
+    /**
+     * WebAssembly module - memory management
+     */
     faceDetectorAllocateMemory(width, height, maxndetections = 1024) {
-            // allocate memory inside wasm module
-            let ppixels = this.wasmFaceDetectorModule._malloc(width * height);
-            let pixels = new Uint8Array(this.wasmFaceDetectorModule.HEAPU8.buffer, ppixels, width * height);
-            // allocate memory for detection
-            let prcsq = this.wasmFaceDetectorModule._malloc(4 * 4 * maxndetections);
-            let rscq = new Float32Array(this.wasmFaceDetectorModule.HEAPU8.buffer, prcsq, maxndetections);
-            return {
-                ppixels: ppixels,
-                pixels: pixels,
-                prcsq: prcsq,
-                rscq: rscq,
-                maxndetections: maxndetections
-            };
-        }
-        /**
-         * WebAssembly module - input data -> calculate detection results -> handle results
-         */
+        // allocate memory inside wasm module
+        let ppixels = this.wasmFaceDetectorModule._malloc(width * height);
+        let pixels = new Uint8Array(this.wasmFaceDetectorModule.HEAPU8.buffer, ppixels, width * height);
+        // allocate memory for detection
+        let prcsq = this.wasmFaceDetectorModule._malloc(4 * 4 * maxndetections);
+        let rscq = new Float32Array(this.wasmFaceDetectorModule.HEAPU8.buffer, prcsq, maxndetections);
+        return {
+            ppixels: ppixels,
+            pixels: pixels,
+            prcsq: prcsq,
+            rscq: rscq,
+            maxndetections: maxndetections
+        };
+    }
+    /**
+     * WebAssembly module - input data -> calculate detection results -> handle results
+     */
     faceDetectionCalculate(image, width, height, allocations) {
         const rgba = image.data;
         const ppixels = allocations.ppixels;
@@ -198,33 +208,29 @@ export class WafFaceDetect {
         return dets;
     }
     static get is() { return "waf-face-detect"; }
-    static get properties() {
-        return {
-            "drawDetection": {
-                "type": Boolean,
-                "attr": "draw-detection"
-            },
-            "fdElt": {
-                "elementRef": true
-            },
-            "height": {
-                "type": Number,
-                "attr": "height"
-            },
-            "width": {
-                "type": Number,
-                "attr": "width"
-            }
-        };
-    }
-    static get events() {
-        return [{
+    static get properties() { return {
+        "drawDetection": {
+            "type": Boolean,
+            "attr": "draw-detection"
+        },
+        "fdElt": {
+            "elementRef": true
+        },
+        "height": {
+            "type": Number,
+            "attr": "height"
+        },
+        "width": {
+            "type": Number,
+            "attr": "width"
+        }
+    }; }
+    static get events() { return [{
             "name": "waf.face-detector.detected",
             "method": "wafFaceDetectorEE",
             "bubbles": true,
             "cancelable": true,
             "composed": true
-        }];
-    }
+        }]; }
     static get style() { return "/**style-placeholder:waf-face-detect:**/"; }
 }
