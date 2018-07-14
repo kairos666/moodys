@@ -56,6 +56,10 @@ export declare class WafFaceDetect {
      */
     componentDidLoad(): void;
     /**
+     * on component destroy clean up camera stream
+     */
+    componentDidUnload(): void;
+    /**
      * component functionality async initialisation
      */
     private init();
