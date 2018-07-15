@@ -2,7 +2,7 @@ import firebaseHelpers from '@/utils/firebase-helpers';
 import LSHelpers from '@/utils/local-storage-helpers';
 import moment from 'moment';
 
-class Post {
+export class Post {
     constructor(body, userID, linkeMoodIndex) {
         this.body = body;
         this.meta = {
@@ -19,12 +19,14 @@ let localyStoredPosts = LSHelpers.getAllPosts();
 let postsModule = {
     namespaced: true,
     state: {
-        posts: localyStoredPosts
+        entries: localyStoredPosts
     },
     mutations: {
         updatePosts(state, payload) {
-            state.posts = payload;
-            LSHelpers.setAllPosts(payload);
+            // convert fbObject to array
+            const payloadArray = Object.keys(payload).map(key => payload[key]).reverse();
+            state.entries = payloadArray;
+            LSHelpers.setAllPosts(payloadArray);
         }
     },
     actions: {
