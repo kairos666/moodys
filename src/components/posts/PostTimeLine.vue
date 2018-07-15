@@ -23,10 +23,10 @@
     @import '../../styles/_utils.scss';
     @import '../../styles/_variables.scss';
     .post-list { padding-left:0; list-style:none;
-        > li + li { margin-top:$gutter-base; }
+        > li + li { margin-top:$gutter-base*3; }
     }
 
     /* animation */
     .post-list-enter-active, .post-list-leave-active { transition: all $list-tr-duration; }
-    .post-list-enter, .post-list-leave-to { opacity: 0; transform: translateX(100%); }
+    .post-list-enter, .post-list-leave-to { opacity: 0; transform: translateY(-100px); }
 </style>

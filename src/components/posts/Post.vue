@@ -1,9 +1,13 @@
 <template>
     <article class="post">
-        {{postData.body}}
-        <emoji v-if="(this.postData.meta.linkedMoodIndex !== 'none')" :mood="emoji.index"></emoji>
-        <img class="avatar" :src="user.avatar" :alt="('avatar de ' + user.firstname + ' ' + user.lastname)" >
-        {{time}}
+        <p>{{postData.body}}</p>
+        <aside class="post__meta">
+            <figure>
+                <img class="avatar" :src="user.avatar" :alt="('avatar de ' + user.firstname + ' ' + user.lastname)" >
+                <emoji v-if="(this.postData.meta.linkedMoodIndex !== 'none')" :mood="emoji.index" size="24"></emoji>
+            </figure>
+            <time :datetime="dateTime">{{time}}</time>
+        </aside>
     </article>
 </template>
 
@@ -21,7 +25,8 @@
             return {
                 recalculateTimeInterval: undefined,
                 recalculateTimeDelay: 60 * 1000,
-                time: this.calculateElapsedTime(this.postData.meta.timestamp)
+                time: this.calculateElapsedTime(this.postData.meta.timestamp),
+                dateTime: this.formatedTime(this.postData.meta.timestamp)
             };
         },
         computed: {
@@ -49,6 +54,9 @@
         methods: {
             calculateElapsedTime(timestamp) {
                 return moment(timestamp).fromNow();
+            },
+            formatedTime(timestamp) {
+                return moment(timestamp).format('YYYY-MM-DDTHH:mm:ss');
             }
         },
         components: {
