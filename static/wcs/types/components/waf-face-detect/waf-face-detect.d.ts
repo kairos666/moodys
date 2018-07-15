@@ -62,25 +62,25 @@ export declare class WafFaceDetect {
     /**
      * component functionality async initialisation
      */
-    private init();
+    private init;
     /**
      * component init phase - get access to video stream (WebRTC) and bind it to video Element
      */
-    private initCameraVideo();
+    private initCameraVideo;
     /**
      * component init phase - load and instanciate wasm module
      */
-    private initWebAssembly();
+    private initWebAssembly;
     /**
      * component final init phase - bind everything to canvas to handle both video stream and face detection calculus inputs matrix
      */
-    private initCanvas();
+    private initCanvas;
     /**
      * WebAssembly module - memory management
      */
-    private faceDetectorAllocateMemory(width, height, maxndetections?);
+    private faceDetectorAllocateMemory;
     /**
      * WebAssembly module - input data -> calculate detection results -> handle results
      */
-    private faceDetectionCalculate(image, width, height, allocations);
+    private faceDetectionCalculate;
 }

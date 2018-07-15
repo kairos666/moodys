@@ -64,11 +64,11 @@ export declare class WafImg {
     /**
      * Calculate dynamic inline styles to be applied on the component tag (both width and height must be provided as attributes otherwise no styles are applied)
      */
-    private infoDynamicStyles();
+    private infoDynamicStyles;
     /**
      * This handler performs a fetch request then pass directly the response to the <img> tag that will be generated at rerender.
      * This handler is called at component instanciation and each time the src attribute is updated
      * @param srcURL the provided "src" attribute for the custom tag
      */
-    private srcSwapHandler(srcURL);
+    private srcSwapHandler;
 }

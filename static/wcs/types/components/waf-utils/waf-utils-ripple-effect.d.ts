@@ -28,6 +28,6 @@ export declare class WafRippleFX {
      */
     render(): JSX.Element;
     componentDidLoad(): void;
-    private addMissingRippleAttribute();
-    private generateRipple(elt);
+    private addMissingRippleAttribute;
+    private generateRipple;
 }
