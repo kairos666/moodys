@@ -8,7 +8,7 @@ class Post {
         this.meta = {
             user: userID,
             timestamp: moment().unix() * 1000,
-            linkedMoodIndex: linkeMoodIndex
+            linkedMoodIndex: (linkeMoodIndex) ? linkeMoodIndex.toString() : 'none'
         };
     }
 }
@@ -28,10 +28,10 @@ let postsModule = {
         }
     },
     actions: {
-        addPost({ state }, payload) {
+        addPost({ rootState }, payload) {
             // action with no commit --> firebase update
-            const newPost = new Post(payload.body, state.auth.currentFirebaseUser.uid, payload.mood);
-            firebaseHelpers.addPost(newPost);
+            const newPost = new Post(payload.body, rootState.auth.currentFirebaseUser.uid, payload.mood);
+            firebaseHelpers.addPostEntry(newPost);
         }
     }
 };
