@@ -60,4 +60,5 @@
 <style scoped lang="scss">
     @import '../../styles/_utils.scss';
     @import '../../styles/_variables.scss';
+    @import '../../styles/nano/_posts.scss';
 </style>
