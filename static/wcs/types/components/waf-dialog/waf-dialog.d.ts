@@ -68,33 +68,33 @@ export declare class WafDialog {
      * React to all events originating from inside the dialog (capture phase) and triggers a closing of the modal when 'data-dialog-close' attribute is set on the target element
      * @param evt originate from any clicked element inside the dialog
      */
-    private innerCloseHandler(evt);
+    private innerCloseHandler;
     /**
      * React to clicked backdrop
      */
-    private backdropClickHandler(evt);
+    private backdropClickHandler;
     /**
      * React to escape key being pressed
      * @param evt
      */
-    private escapeKeyHandler(evt);
+    private escapeKeyHandler;
     /**
      * Util function for unique ID generation
      * @param type represent the targeted element inside the dialog DOM
      */
-    private idGenerator(type);
+    private idGenerator;
     /**
      * Util function for dynamic styles generation based on component state - target backdrop
      */
-    private backdropStyles();
+    private backdropStyles;
     /**
      * Util function for dynamic classes generation based on component state - target backdrop
      */
-    private backdropClass();
+    private backdropClass;
     /**
      * Util function for dynamic classes generation based on component state - target dialog box
      */
-    private dialogClass();
+    private dialogClass;
     /**
      * Public method to open the dialog
      */

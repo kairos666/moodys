@@ -16,8 +16,8 @@ export declare class WafInput {
     errorsWatchHandler(newValue: Object | string): void;
     render(): JSX.Element;
     componentDidLoad(): void;
-    private init();
-    private onValueUpdate(evt);
-    private cmpntStyleClasses();
-    private inputTagChecker();
+    private init;
+    private onValueUpdate;
+    private cmpntStyleClasses;
+    private inputTagChecker;
 }
