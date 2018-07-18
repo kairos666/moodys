@@ -1,5 +1,5 @@
 <template>
-    <article class="post">
+    <article class="post" :class="{ 'post-single': single }">
         <p>{{postData.body}}</p>
         <aside class="post__meta">
             <figure>
@@ -19,7 +19,8 @@
 
     export default {
         props: {
-            postData: Post
+            postData: Post,
+            single: Boolean
         },
         data() {
             return {
