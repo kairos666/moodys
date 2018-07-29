@@ -2,7 +2,7 @@
     <form class="mood-selector-container">
         <menu ref="stageContainer" class="dialog-box dialog-box__mood-change"></menu>
         <fieldset>
-            <textarea rows="4" maxlength="144" placeholder="I'm feeling this way because..."></textarea>
+            <textarea v-model="message" rows="4" maxlength="144" placeholder="I'm feeling this way because..."></textarea>
         </fieldset>
     </form>
 </template>
@@ -21,7 +21,8 @@
                 layerBg: undefined,
                 layerFg: undefined,
                 mainSelection: undefined,
-                selectors: undefined
+                selectors: undefined,
+                message: ''
             };
         },
         computed: {
@@ -33,10 +34,19 @@
             onClose() {
                 this.$emit('close-dialog');
             },
+            processTwoot(moodValue) {
+                // exit without sending twoot when no message has been typed
+                if (this.message === '') return;
+                const twoot = { body: this.message, mood: moodValue };
+                this.$store.dispatch('posts/addPost', twoot);
+            },
             onMoodSelection(moodValue) {
                 // update model only if mood has been changed to a different value
                 if (this.mainSelection.currentMood !== moodValue) {
                     this.$store.dispatch('updateCurrentUserMood', moodValue);
+
+                    // send twoot along with new mood value
+                    this.processTwoot(moodValue);
 
                     // menu update orchestration - update mood | hide selectors | close dialog box (prevented if clicked the same mood)
                     this.mainSelection.currentMood = moodValue;
