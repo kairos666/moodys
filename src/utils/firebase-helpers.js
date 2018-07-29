@@ -201,6 +201,37 @@ let removeNotificationsSubscriptionEntry = function(userID, fingerPrint) {
     return firebaseDB.ref(`notifsSubscriptionEntries/${userID}/${fingerPrint}`).remove();
 };
 
+/* POSTS */
+/**
+ * get once all posts
+ * @return {Promise}
+ */
+let getAllPosts = function() {
+    return firebaseDB.ref('posts').orderByKey().limitToLast(30).once('value');
+};
+/**
+ * get notified on all posts updates
+ * @param {function(FirebaseSnapshot)} cb
+ * @param {Boolean} isToBeShutDown
+ */
+let onAllPostsChange = function(cb, isToBeShutDown) {
+    if (!isToBeShutDown) {
+        firebaseDB.ref('posts').orderByKey().limitToLast(30).on('value', cb);
+    } else {
+        firebaseDB.ref('posts').orderByKey().limitToLast(30).off('value', cb);
+    }
+};
+/**
+ * add post entry
+ * @param {Post}
+ */
+let addPostEntry = function(postObject) {
+    if (postObject) {
+        // send to firebase - all moods
+        firebaseDB.ref(`posts/${postObject.meta.timestamp}`).set(postObject);
+    }
+};
+
 export default {
     initialize: initialize,
     getAllMoods: getAllMoods,
@@ -216,5 +247,8 @@ export default {
     updateUserEmailDBEntry: updateUserEmailDBEntry,
     formatUsersToArray: formatUsersToArray,
     setNotificationsSubscriptionEntry: setNotificationsSubscriptionEntry,
-    removeNotificationsSubscriptionEntry: removeNotificationsSubscriptionEntry
+    removeNotificationsSubscriptionEntry: removeNotificationsSubscriptionEntry,
+    getAllPosts: getAllPosts,
+    onAllPostsChange: onAllPostsChange,
+    addPostEntry: addPostEntry
 };

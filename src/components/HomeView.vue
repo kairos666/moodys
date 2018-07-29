@@ -60,11 +60,14 @@
                     <h2><i class="material-icons">insert_chart</i>All users</h2>
                 </header>
                 <ul class="mdl-card-holder">
-                    <li class="singular-respondent-container">
-                        <home-card class="home-card__single-respondent-box">
-                            <div slot="description">
-                                <completion-rate :completion-data="$store.getters.todayCompletionObject"></completion-rate>
-                            </div>
+                    <li>
+                        <home-card v-if="($store.state.posts.entries.length > 0)" class="home-card__latest-twoot">
+                            <span slot="description">
+                                <post single :post-data="$store.state.posts.entries[0]"></post>
+                            </span>
+                            <span slot="actions">
+                                <button type="button" class="mdl-button" @click="onMoodChangeTrigger">see more twoots</button>
+                            </span>
                         </home-card>
                     </li>
                     <li>
@@ -115,6 +118,7 @@
     import CompletionRate from '@/components/dashboard/completion-rate';
     import WeeklyChart from '@/components/dashboard/weekly-chart';
     import MoodWaterTank from '@/components/nano/water-tank-emoji-indicator';
+    import Post from '@/components/posts/Post';
     import timeHelpers from '@/utils/time-helpers';
     import { EventBus, DialogEvt } from '@/utils/events-bus';
 
@@ -160,7 +164,8 @@
             'double-mood-box': DoubleMoodBox,
             'completion-rate': CompletionRate,
             'weekly-chart': WeeklyChart,
-            'mood-water-tank': MoodWaterTank
+            'mood-water-tank': MoodWaterTank,
+            'post': Post
         }
     };
 </script>
@@ -196,10 +201,6 @@
         }
     }
 
-    // specific cases - show single respondent box from tablet and above
-    @include media("<=tablet") {
-        .singular-respondent-container { display:none; }
-    }
     // specific cases - show weekly chart as last element
     @include media(">tablet", "<=large-desktop") {
         .weekly-chart-container { order:666; }

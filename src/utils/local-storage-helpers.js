@@ -60,7 +60,8 @@ const storageKeys = {
     moods: 'moods',
     dayMoods: 'day-moods',
     weekMoods: 'week-moods',
-    achievements: 'user-achievements'
+    achievements: 'user-achievements',
+    posts: 'posts'
 };
 const isLocalStorageAvailable = isLocalStorageAvailableFinder();
 
@@ -102,6 +103,11 @@ let getAchievements = () => getLS(storageKeys.achievements);
 let setAchievements = (dataObj) => setLS(storageKeys.achievements, dataObj);
 let removeAchievements = () => removeLS(storageKeys.achievements);
 
+/* POSTS */
+let getAllPosts = () => getLS(storageKeys.posts);
+let setAllPosts = (dataObj) => setLS(storageKeys.posts, dataObj);
+let removeAllPosts = () => removeLS(storageKeys.posts);
+
 /* GENERAL */
 let getAll = () => {
     let result = {
@@ -109,19 +115,21 @@ let getAll = () => {
         moods: getAllMoods(),
         dayMoods: getDayMoods(),
         weekMoods: getWeekMoods(),
-        achievements: getAchievements()
+        achievements: getAchievements(),
+        posts: getAllPosts()
     };
 
     return result;
 };
-let setAll = (usersData, moodsData, dayMoodsData, weekMoodsData, achievementsData) => {
+let setAll = (usersData, moodsData, dayMoodsData, weekMoodsData, achievementsData, postsData) => {
     let resultUsers = setAllUsers(usersData);
     let resultMoods = setAllMoods(moodsData);
     let resultDayMoods = setDayMoods(dayMoodsData);
     let resultWeekMoods = setWeekMoods(weekMoodsData);
     let resultAchievements = setAchievements(achievementsData);
+    let resultPosts = setAllPosts(postsData);
 
-    return (resultUsers && resultMoods && resultDayMoods && resultWeekMoods && resultAchievements);
+    return (resultUsers && resultMoods && resultDayMoods && resultWeekMoods && resultAchievements && resultPosts);
 };
 let removeLocalyStoredData = () => {
     let resultUsers = removeAllUsers();
@@ -129,8 +137,9 @@ let removeLocalyStoredData = () => {
     let resultDayMoods = removeDayMoods();
     let resultWeekMoods = removeWeekMoods();
     let resultAchievements = removeAchievements();
+    let resultPosts = removeAllPosts();
 
-    return (resultUsers && resultMoods && resultDayMoods && resultWeekMoods && resultAchievements);
+    return (resultUsers && resultMoods && resultDayMoods && resultWeekMoods && resultAchievements && resultPosts);
 };
 
 export default {
@@ -145,6 +154,8 @@ export default {
     getAchievements: getAchievements,
     setAchievements: setAchievements,
     removeAchievements: removeAchievements,
+    getAllPosts: getAllPosts,
+    setAllPosts: setAllPosts,
     getAll: getAll,
     setAll: setAll,
     removeLocalyStoredData: removeLocalyStoredData

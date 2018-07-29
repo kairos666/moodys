@@ -10,6 +10,7 @@ import statsModule from '@/store-modules/statistics-module';
 import offlineModule from '@/store-modules/offline-module';
 import notificationModule from '@/store-modules/notification-module';
 import AchievementsModule from '@/store-modules/achievements-module';
+import PostsModule from '@/store-modules/posts-module';
 import firebase from 'firebase';
 import { MoodRegisteredEvt } from '@/config/badges';
 import { EventBus, NotificationEvt } from '@/utils/events-bus';
@@ -33,7 +34,8 @@ const store = new Vuex.Store({
         stats: statsModule,
         offline: offlineModule.offlineStore(db),
         notifications: notificationModule.notificationStore(db),
-        achievementsUtils: AchievementsModule.achievementsStore(db)
+        achievementsUtils: AchievementsModule.achievementsStore(db),
+        posts: PostsModule
     },
     state: {
         users: (localyStored.users) ? localyStored.users : {},
@@ -105,6 +107,12 @@ const store = new Vuex.Store({
 // set auth status change handler
 auth.onAuthStateChanged(resp => {
     store.dispatch('updateAuthUser', resp);
+});
+
+// set up posts update listener
+firebaseHelpers.onAllPostsChange(snapshot => {
+    let postsDbUpdate = snapshot.val();
+    if (postsDbUpdate !== null) store.commit('posts/updatePosts', postsDbUpdate);
 });
 
 // set db connection change handler
