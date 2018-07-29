@@ -63,10 +63,11 @@
                     <li>
                         <home-card v-if="($store.state.posts.entries.length > 0)" class="home-card__latest-twoot">
                             <span slot="description">
-                                <post single :post-data="$store.state.posts.entries[0]"></post>
+                                <post-cycler :index="postIndex" :posts="posts" />
                             </span>
                             <span slot="actions">
-                                <button type="button" class="mdl-button" @click="onMoodChangeTrigger">see more twoots</button>
+                                <button class="previous-btn" type="button" @click="onPreviousPost()"><i class="material-icons">navigate_before</i><span class="sr-only">previous</span></button>
+                                <button class="next-btn" type="button" @click="onNextPost()"><i class="material-icons">navigate_next</i><span class="sr-only">next</span></button>
                             </span>
                         </home-card>
                     </li>
@@ -110,7 +111,7 @@
 </template>
 
 <script>
-    import { mapGetters } from 'vuex';
+    import { mapGetters, mapState } from 'vuex';
     import HomeCard from '@/components/nano/home-card';
     import Emoji from '@/components/nano/Emoji';
     import ProfileBox from '@/components/nano/profile-box';
@@ -118,12 +119,22 @@
     import CompletionRate from '@/components/dashboard/completion-rate';
     import WeeklyChart from '@/components/dashboard/weekly-chart';
     import MoodWaterTank from '@/components/nano/water-tank-emoji-indicator';
-    import Post from '@/components/posts/Post';
+    import PostCycler from '@/components/posts/PostCycler';
     import timeHelpers from '@/utils/time-helpers';
     import { EventBus, DialogEvt } from '@/utils/events-bus';
 
     export default {
+        data() {
+            return {
+                postIndex: 0,
+                postInterval: undefined,
+                postCycleDelay: 5000
+            };
+        },
         computed: {
+            ...mapState({
+                posts: state => state.posts.entries
+            }),
             currentUserData() {
                 return this.usersArray.find(user => user.isCurrentUser);
             },
@@ -155,6 +166,12 @@
                 // dialog - trigger mood menu dialog
                 let dialogEvt = new DialogEvt('mood-change-dialog');
                 EventBus.$emit(dialogEvt.type, dialogEvt);
+            },
+            onNextPost() {
+                this.postIndex = Math.min(this.postIndex + 1, this.posts.length);
+            },
+            onPreviousPost() {
+                this.postIndex = Math.max(this.postIndex - 1, 0);
             }
         },
         components: {
@@ -165,7 +182,18 @@
             'completion-rate': CompletionRate,
             'weekly-chart': WeeklyChart,
             'mood-water-tank': MoodWaterTank,
-            'post': Post
+            PostCycler
+        },
+        mounted() {
+            // cycle through posts
+            this.postInterval = setInterval(() => {
+                // looping if reaching end of posts
+                this.postIndex = (this.postIndex + 1 < this.posts.length) ? this.postIndex + 1 : 0;
+            }, this.postCycleDelay);
+        },
+        destroyed() {
+            // clean interval for posts
+            clearInterval(this.postInterval);
         }
     };
 </script>
