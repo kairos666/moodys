@@ -169,9 +169,18 @@
             },
             onNextPost() {
                 this.postIndex = Math.min(this.postIndex + 1, this.posts.length);
+                clearInterval(this.postInterval);
             },
             onPreviousPost() {
                 this.postIndex = Math.max(this.postIndex - 1, 0);
+                clearInterval(this.postInterval);
+            },
+            postCycleIntervalBuilder() {
+                // looping if reaching end of posts
+                return setInterval(() => {
+                    // looping if reaching end of posts
+                    this.postIndex = (this.postIndex + 1 < this.posts.length) ? this.postIndex + 1 : 0;
+                }, this.postCycleDelay);
             }
         },
         components: {
@@ -186,10 +195,7 @@
         },
         mounted() {
             // cycle through posts
-            this.postInterval = setInterval(() => {
-                // looping if reaching end of posts
-                this.postIndex = (this.postIndex + 1 < this.posts.length) ? this.postIndex + 1 : 0;
-            }, this.postCycleDelay);
+            this.postInterval = this.postCycleIntervalBuilder();
         },
         destroyed() {
             // clean interval for posts
