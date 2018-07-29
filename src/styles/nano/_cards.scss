@@ -46,4 +46,13 @@
 /**
 *   LATEST TWOOT
 **/
-//.home-card__latest-twoot {}
+.home-card__latest-twoot {
+    /* posts buttons */
+    .previous-btn { float:left; vertical-align:bottom; }
+    .next-btn { float:right; vertical-align:bottom; }
+    .previous-btn, .next-btn { border:none; height:4*$gutter-base; background-color:lighten($primary, 5%); color:#fff; padding:$gutter-base; font-size:px2rem(17); line-height:px2rem(11); cursor:pointer; outline:none; transition:color $btn-tr-duration, background-color $btn-tr-duration;
+        .material-icons { position:relative; top:-3px; }
+        &:focus, &:hover, &:active { background-color:$primary; }
+        &[disabled] { background-color:darken($grey, 5%); }
+    }
+}
