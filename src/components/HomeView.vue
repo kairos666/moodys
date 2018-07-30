@@ -168,7 +168,7 @@
                 EventBus.$emit(dialogEvt.type, dialogEvt);
             },
             onNextPost() {
-                this.postIndex = Math.min(this.postIndex + 1, this.posts.length);
+                this.postIndex = Math.min(this.postIndex + 1, this.posts.length - 1);
                 clearInterval(this.postInterval);
             },
             onPreviousPost() {
