@@ -1,0 +1,29 @@
+@import '../../styles/_variables.scss';
+waf-arkanoid {
+    display: inline-block;
+    position: relative;
+    waf-face-detect {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+    }
+    .arkanoid {
+        position: relative;
+        z-index: 2;
+    }
+    .waf-arkanoid-menu {
+        position: absolute;
+        z-index: 3;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 3px;
+        background: $dialogBgColor;
+        padding: $lg-pad;
+        text-align: center;
+        button {
+            margin-top: $lg-pad;
+        }
+    }
+}

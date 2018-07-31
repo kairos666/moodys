@@ -16,6 +16,7 @@ const InitialLoading = () => import('@/components/InitialLoading');
 const TimeTravelView = () => import('@/components/TimeTravelView');
 const AboutView = () => import('@/components/AboutView');
 const BadgesView = () => import('@/components/BadgesView');
+const ExperimentsView = () => import('@/components/Experiments');
 
 Vue.use(Router);
 
@@ -91,6 +92,11 @@ const VueRouter = new Router({
             path: '/badges',
             name: 'badges',
             component: BadgesView
+        },
+        {
+            path: '/experiments',
+            name: 'experiments',
+            component: ExperimentsView
         },
         {
             path: '*',

@@ -1,0 +1,357 @@
+{
+  "components": [
+    {
+      "tag": "waf-arkanoid",
+      "dependencies": [],
+      "componentClass": "WafArkanoid",
+      "componentPath": "components/waf-arkanoid/waf-arkanoid.js",
+      "styles": {
+        "$": {
+          "stylePaths": [
+            "components/waf-arkanoid/waf-arkanoid.scss"
+          ]
+        }
+      },
+      "props": [
+        {
+          "name": "activateFaceControls",
+          "type": "Boolean",
+          "attr": "activate-face-controls",
+          "watch": [
+            "updateFaceCtrlState"
+          ]
+        },
+        {
+          "name": "activateKeyboardControls",
+          "type": "Boolean",
+          "attr": "activate-keyboard-controls",
+          "watch": [
+            "updateKeyboardCtrlState"
+          ]
+        },
+        {
+          "name": "activateMouseControls",
+          "type": "Boolean",
+          "attr": "activate-mouse-controls",
+          "watch": [
+            "updateMouseCtrlState"
+          ]
+        },
+        {
+          "name": "height",
+          "type": "Number",
+          "attr": "height"
+        },
+        {
+          "name": "paddlePosition",
+          "type": "Number",
+          "mutable": true,
+          "attr": "paddle-position",
+          "watch": [
+            "paddlePositionHandler"
+          ]
+        },
+        {
+          "name": "width",
+          "type": "Number",
+          "attr": "width"
+        }
+      ],
+      "states": [
+        {
+          "name": "isGameOver"
+        },
+        {
+          "name": "isPaused"
+        }
+      ],
+      "hostElement": {
+        "name": "akElt"
+      }
+    },
+    {
+      "tag": "waf-dialog",
+      "dependencies": [],
+      "componentClass": "WafDialog",
+      "componentPath": "components/waf-dialog/waf-dialog.js",
+      "styles": {
+        "$": {
+          "stylePaths": [
+            "components/waf-dialog/waf-dialog.scss"
+          ]
+        }
+      },
+      "props": [
+        {
+          "name": "limitedHeight",
+          "type": "Boolean",
+          "attr": "limited-height"
+        },
+        {
+          "name": "noBackdrop",
+          "type": "Boolean",
+          "attr": "no-backdrop"
+        },
+        {
+          "name": "preventBackdropClosing",
+          "type": "Boolean",
+          "attr": "prevent-backdrop-closing"
+        }
+      ],
+      "states": [
+        {
+          "name": "isOpen"
+        }
+      ],
+      "methods": [
+        {
+          "name": "hideModal"
+        },
+        {
+          "name": "showModal"
+        },
+        {
+          "name": "toggleModal"
+        }
+      ],
+      "hostElement": {
+        "name": "wafDialogElt"
+      },
+      "events": [
+        {
+          "event": "waf.dialog.close",
+          "method": "wafDialogCloseEE"
+        },
+        {
+          "event": "waf.dialog.open",
+          "method": "wafDialogOpenEE"
+        }
+      ]
+    },
+    {
+      "tag": "waf-face-detect",
+      "dependencies": [],
+      "componentClass": "WafFaceDetect",
+      "componentPath": "components/waf-face-detect/waf-face-detect.js",
+      "styles": {
+        "$": {
+          "stylePaths": [
+            "components/waf-face-detect/waf-face-detect.scss"
+          ]
+        }
+      },
+      "props": [
+        {
+          "name": "drawDetection",
+          "type": "Boolean",
+          "attr": "draw-detection"
+        },
+        {
+          "name": "height",
+          "type": "Number",
+          "attr": "height"
+        },
+        {
+          "name": "width",
+          "type": "Number",
+          "attr": "width"
+        }
+      ],
+      "hostElement": {
+        "name": "fdElt"
+      },
+      "events": [
+        {
+          "event": "waf.face-detector.detected",
+          "method": "wafFaceDetectorEE"
+        }
+      ]
+    },
+    {
+      "tag": "waf-img",
+      "dependencies": [],
+      "componentClass": "WafImg",
+      "componentPath": "components/waf-img/waf-img.js",
+      "styles": {
+        "$": {
+          "stylePaths": [
+            "components/waf-img/waf-img.scss"
+          ]
+        }
+      },
+      "props": [
+        {
+          "name": "alt",
+          "type": "String",
+          "attr": "alt"
+        },
+        {
+          "name": "decoding",
+          "type": "String",
+          "attr": "decoding"
+        },
+        {
+          "name": "height",
+          "type": "String",
+          "attr": "height"
+        },
+        {
+          "name": "sizes",
+          "type": "String",
+          "attr": "sizes"
+        },
+        {
+          "name": "src",
+          "type": "String",
+          "attr": "src",
+          "watch": [
+            "srcSwapHandler"
+          ]
+        },
+        {
+          "name": "srcset",
+          "type": "String",
+          "attr": "srcset"
+        },
+        {
+          "name": "visibleAsyncLoading",
+          "type": "Boolean",
+          "attr": "visible-async-loading"
+        },
+        {
+          "name": "width",
+          "type": "String",
+          "attr": "width"
+        }
+      ],
+      "states": [
+        {
+          "name": "innerSrc"
+        },
+        {
+          "name": "isBroken"
+        }
+      ],
+      "hostElement": {
+        "name": "wafImg"
+      }
+    },
+    {
+      "tag": "waf-input",
+      "dependencies": [],
+      "componentClass": "WafInput",
+      "componentPath": "components/waf-input/waf-input.js",
+      "styles": {
+        "$": {
+          "stylePaths": [
+            "components/waf-input/waf-input.scss"
+          ]
+        }
+      },
+      "props": [
+        {
+          "name": "alignRight",
+          "type": "Boolean",
+          "attr": "align-right"
+        },
+        {
+          "name": "errors",
+          "type": "String",
+          "attr": "errors",
+          "watch": [
+            "errorsWatchHandler"
+          ]
+        },
+        {
+          "name": "float",
+          "type": "Boolean",
+          "attr": "float"
+        },
+        {
+          "name": "fullWidth",
+          "type": "Boolean",
+          "attr": "full-width"
+        },
+        {
+          "name": "label",
+          "type": "String",
+          "attr": "label"
+        }
+      ],
+      "states": [
+        {
+          "name": "errorText"
+        },
+        {
+          "name": "innerErrors"
+        },
+        {
+          "name": "inputAttrs"
+        },
+        {
+          "name": "isDirty"
+        },
+        {
+          "name": "isFocused"
+        },
+        {
+          "name": "isInvalid"
+        }
+      ],
+      "hostElement": {
+        "name": "textfieldElt"
+      }
+    },
+    {
+      "tag": "waf-tabs",
+      "dependencies": [],
+      "componentClass": "WafTabs",
+      "componentPath": "components/waf-tabs/waf-tabs.js",
+      "styles": {
+        "$": {
+          "stylePaths": [
+            "components/waf-tabs/waf-tabs.scss"
+          ]
+        }
+      },
+      "states": [
+        {
+          "name": "model"
+        }
+      ],
+      "hostElement": {
+        "name": "wafTabsElt"
+      }
+    },
+    {
+      "tag": "waf-utils-ripple-effect",
+      "dependencies": [],
+      "componentClass": "WafRippleFX",
+      "componentPath": "components/waf-utils/waf-utils-ripple-effect.js",
+      "styles": {
+        "$": {
+          "stylePaths": [
+            "components/waf-utils/waf-utils-ripple-effect.scss"
+          ]
+        }
+      },
+      "props": [
+        {
+          "name": "selector",
+          "type": "String",
+          "attr": "selector"
+        }
+      ],
+      "hostElement": {
+        "name": "wafFX"
+      }
+    }
+  ],
+  "collections": [],
+  "compiler": {
+    "name": "@stencil/core",
+    "version": "0.10.6",
+    "typescriptVersion": "2.9.2"
+  },
+  "bundles": []
+}

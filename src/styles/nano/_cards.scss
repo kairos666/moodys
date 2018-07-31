@@ -26,13 +26,7 @@
 
     // completion box visible only for small screens
     .completion-figure { margin-top:2*$gutter-base; }
-    @include media(">tablet") { 
-        .dashboard-section & .completion-figure { display:none; }
-    }
 }
-
-/*** home single completion box ***/
-.home-card__single-respondent-box .mdl-card__supporting-text { font-size:1.5em; display:flex; flex-direction:column; justify-content:center; }
 
 /**
 *   TIME TRAVEL CARDS
@@ -47,4 +41,18 @@
     .mdl-card__title, 
     .mdl-card__supporting-text,
     .mdl-card__actions .mdl-button:not(.mdl-button--colored) { color:white; }
+}
+
+/**
+*   LATEST TWOOT
+**/
+.home-card__latest-twoot {
+    /* posts buttons */
+    .previous-btn { float:left; vertical-align:bottom; }
+    .next-btn { float:right; vertical-align:bottom; }
+    .previous-btn, .next-btn { border:none; height:4*$gutter-base; background-color:lighten($primary, 5%); color:#fff; padding:$gutter-base; font-size:px2rem(17); line-height:px2rem(11); cursor:pointer; outline:none; transition:color $btn-tr-duration, background-color $btn-tr-duration;
+        .material-icons { position:relative; top:-3px; }
+        &:focus, &:hover, &:active { background-color:$primary; }
+        &[disabled] { background-color:darken($grey, 5%); }
+    }
 }

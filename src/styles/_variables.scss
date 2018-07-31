@@ -13,7 +13,7 @@ $project-overlay-color: black;
 /* DIMENSIONS */
 $gutter-base: 9px;
 $avatar-size: 60px;
-$home-cards-min-height: 175px;
+$home-cards-min-height: 150px;
 $header-small-height: 56px;
 $header-big-height: 64px;
 
@@ -25,3 +25,11 @@ $page-tr-duration: .3s;
 $btn-tr-duration: .3s;
 $list-tr-duration: .3s;
 $page-tr-vert-offset: 20px;
+
+/* posts */
+$post-time-text-color: $medium-color;
+$post-text-color: rgba(0, 0, 0, .75);
+$post-bg-color: lighten($primary, 10%);
+$post-pill-size: 40px;
+$post-border-size: 4px;
+$post-meta-width: 160px;

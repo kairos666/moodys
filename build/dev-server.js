@@ -12,6 +12,9 @@ var webpack = require('webpack')
 var proxyMiddleware = require('http-proxy-middleware')
 var webpackConfig = require('./webpack.dev.conf')
 
+// extend express MIME types to emcompass WebAssembly
+express.static.mime.define({ 'application/wasm': ['wasm'] });
+
 // default port where dev server listens for incoming traffic
 var port = process.env.PORT || config.dev.port
 // automatically open browser, if not set will be false

@@ -1,0 +1,171 @@
+waf-input {
+    /**
+    *  core component styles 
+    **/
+    input:valid+.waf-textfield__error,
+    input:disabled+.waf-textfield__error {
+        display: none;
+    }
+    /**
+    *  component skin
+    **/
+    /* ==========  fallback variables  ========== */
+    $performance_font: 'Helvetica',
+    'Arial',
+    sans-serif !default;
+    $color-black: "0,0,0" !default;
+    $color-primary: "63,81,181" !default;
+    $color-error-color: "211,47,47" !default;
+    $animation-curve-fast-out-slow-in: cubic-bezier(0.4, 0, 0.2, 1) !default;
+    $animation-curve-default: $animation-curve-fast-out-slow-in !default;
+    $input-text-font-size: 16px !default;
+    $input-text-width: 100% !default;
+    $input-text-padding: 4px !default;
+    $input-text-vertical-spacing: 20px !default;
+    $input-text-floating-label-fontsize: 12px !default;
+    /* ==========  fallback computed variables  ========== */
+    $input-text-label-color: unquote("rgba(#{$color-black}, 0.26)") !default;
+    $input-text-bottom-border-color: unquote("rgba(#{$color-black}, 0.12)") !default;
+    $input-text-highlight-color: unquote("rgb(#{$color-primary})") !default;
+    $input-text-disabled-color: $input-text-bottom-border-color !default;
+    $input-text-disabled-text-color: $input-text-label-color !default;
+    $input-text-error-color: unquote("rgb(#{$color-error-color})") !default;
+    @mixin material-animation-default($duration:0.2s) {
+        transition-duration: $duration;
+        transition-timing-function: $animation-curve-default;
+    }
+    .waf-textfield {
+        position: relative;
+        font-size: $input-text-font-size;
+        display: inline-block;
+        box-sizing: border-box;
+        width: 300px;
+        max-width: 100%;
+        margin: 0;
+        padding: $input-text-vertical-spacing 0;
+    }
+    // Optional class to align right.
+    .waf-textfield--align-right {
+        label,
+        input,
+        .waf-textfield__error {
+            text-align: right;
+        }
+    }
+    // Optional class to display at full width.
+    .waf-textfield--full-width {
+        width: 100%;
+    }
+    // Styling for the input element.
+    input {
+        border: none;
+        border-bottom: 1px solid $input-text-bottom-border-color;
+        display: block;
+        font-size: $input-text-font-size;
+        font-family: $performance_font;
+        margin: 0;
+        padding: $input-text-padding 0;
+        width: $input-text-width;
+        background: none;
+        text-align: left;
+        color: inherit;
+        &[type="number"] {
+            -moz-appearance: textfield;
+        }
+        &[type="number"]::-webkit-inner-spin-button,
+        &[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    }
+    .waf-textfield.is-focused input {
+        outline: none;
+    }
+    .waf-textfield.is-invalid input {
+        border-color: $input-text-error-color;
+        box-shadow: none;
+    }
+    fieldset[disabled] .waf-textfield input,
+    .waf-textfield.is-disabled input {
+        background-color: transparent;
+        border-bottom: 1px dotted $input-text-disabled-color;
+        color: $input-text-disabled-text-color;
+    }
+    // Styling for the label / floating label.
+    .waf-textfield__label {
+        bottom: 0;
+        color: $input-text-label-color;
+        font-size: $input-text-font-size;
+        font-family: $performance_font;
+        left: 0;
+        right: 0;
+        pointer-events: none;
+        position: absolute;
+        display: block;
+        top: ($input-text-padding + $input-text-vertical-spacing);
+        width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-align: left;
+        // The after label is the colored underline for the TextField.
+        &:after {
+            background-color: $input-text-highlight-color;
+            bottom: $input-text-vertical-spacing;
+            content: '';
+            height: 2px;
+            left: 45%;
+            position: absolute;
+            @include material-animation-default();
+            visibility: hidden;
+            width: 10px;
+        }
+    }
+    .waf-textfield.is-dirty .waf-textfield__label,
+    .waf-textfield.has-placeholder .waf-textfield__label {
+        visibility: hidden;
+    }
+    // Floating Label
+    .waf-textfield--floating-label .waf-textfield__label {
+        @include material-animation-default();
+    }
+    .waf-textfield--floating-label.has-placeholder .waf-textfield__label {
+        transition: none;
+    }
+    fieldset[disabled] .waf-textfield .waf-textfield__label,
+    .waf-textfield.is-disabled.is-disabled .waf-textfield__label {
+        color: $input-text-disabled-text-color;
+    }
+    .waf-textfield--floating-label.is-focused .waf-textfield__label,
+    .waf-textfield--floating-label.is-dirty .waf-textfield__label,
+    .waf-textfield--floating-label.has-placeholder .waf-textfield__label {
+        color: $input-text-highlight-color;
+        font-size: $input-text-floating-label-fontsize;
+        top: $input-text-vertical-spacing - ($input-text-floating-label-fontsize + $input-text-padding);
+        visibility: visible;
+    }
+    .waf-textfield--floating-label.is-invalid .waf-textfield__label {
+        color: $input-text-error-color;
+        font-size: $input-text-floating-label-fontsize;
+    }
+    .waf-textfield.is-focused .waf-textfield__label:after {
+        left: 0;
+        visibility: visible;
+        width: 100%;
+    }
+    .waf-textfield.is-invalid .waf-textfield__label:after {
+        background-color: $input-text-error-color;
+    }
+    // TextField Error.
+    .waf-textfield__error {
+        color: $input-text-error-color;
+        position: absolute;
+        font-size: $input-text-floating-label-fontsize;
+        font-family: $performance_font;
+        margin-top: 3px;
+        visibility: hidden;
+        display: block;
+    }
+    .waf-textfield.is-invalid .waf-textfield__error {
+        visibility: visible;
+    }
+}

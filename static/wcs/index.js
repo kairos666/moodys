@@ -1,0 +1,1 @@
+// waf: CommonJS Main

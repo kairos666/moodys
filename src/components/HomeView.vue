@@ -60,11 +60,15 @@
                     <h2><i class="material-icons">insert_chart</i>All users</h2>
                 </header>
                 <ul class="mdl-card-holder">
-                    <li class="singular-respondent-container">
-                        <home-card class="home-card__single-respondent-box">
-                            <div slot="description">
-                                <completion-rate :completion-data="$store.getters.todayCompletionObject"></completion-rate>
-                            </div>
+                    <li>
+                        <home-card v-if="($store.state.posts.entries.length > 0)" class="home-card__latest-twoot">
+                            <span slot="description">
+                                <post-cycler :index="postIndex" :posts="posts" />
+                            </span>
+                            <span slot="actions">
+                                <button class="previous-btn" type="button" @click="onPreviousPost()"><i class="material-icons">navigate_before</i><span class="sr-only">previous</span></button>
+                                <button class="next-btn" type="button" @click="onNextPost()"><i class="material-icons">navigate_next</i><span class="sr-only">next</span></button>
+                            </span>
                         </home-card>
                     </li>
                     <li>
@@ -107,7 +111,7 @@
 </template>
 
 <script>
-    import { mapGetters } from 'vuex';
+    import { mapGetters, mapState } from 'vuex';
     import HomeCard from '@/components/nano/home-card';
     import Emoji from '@/components/nano/Emoji';
     import ProfileBox from '@/components/nano/profile-box';
@@ -115,11 +119,22 @@
     import CompletionRate from '@/components/dashboard/completion-rate';
     import WeeklyChart from '@/components/dashboard/weekly-chart';
     import MoodWaterTank from '@/components/nano/water-tank-emoji-indicator';
+    import PostCycler from '@/components/posts/PostCycler';
     import timeHelpers from '@/utils/time-helpers';
     import { EventBus, DialogEvt } from '@/utils/events-bus';
 
     export default {
+        data() {
+            return {
+                postIndex: 0,
+                postInterval: undefined,
+                postCycleDelay: 5000
+            };
+        },
         computed: {
+            ...mapState({
+                posts: state => state.posts.entries
+            }),
             currentUserData() {
                 return this.usersArray.find(user => user.isCurrentUser);
             },
@@ -151,6 +166,21 @@
                 // dialog - trigger mood menu dialog
                 let dialogEvt = new DialogEvt('mood-change-dialog');
                 EventBus.$emit(dialogEvt.type, dialogEvt);
+            },
+            onNextPost() {
+                this.postIndex = Math.min(this.postIndex + 1, this.posts.length - 1);
+                clearInterval(this.postInterval);
+            },
+            onPreviousPost() {
+                this.postIndex = Math.max(this.postIndex - 1, 0);
+                clearInterval(this.postInterval);
+            },
+            postCycleIntervalBuilder() {
+                // looping if reaching end of posts
+                return setInterval(() => {
+                    // looping if reaching end of posts
+                    this.postIndex = (this.postIndex + 1 < this.posts.length) ? this.postIndex + 1 : 0;
+                }, this.postCycleDelay);
             }
         },
         components: {
@@ -160,7 +190,16 @@
             'double-mood-box': DoubleMoodBox,
             'completion-rate': CompletionRate,
             'weekly-chart': WeeklyChart,
-            'mood-water-tank': MoodWaterTank
+            'mood-water-tank': MoodWaterTank,
+            PostCycler
+        },
+        mounted() {
+            // cycle through posts
+            this.postInterval = this.postCycleIntervalBuilder();
+        },
+        destroyed() {
+            // clean interval for posts
+            clearInterval(this.postInterval);
         }
     };
 </script>
@@ -196,10 +235,6 @@
         }
     }
 
-    // specific cases - show single respondent box from tablet and above
-    @include media("<=tablet") {
-        .singular-respondent-container { display:none; }
-    }
     // specific cases - show weekly chart as last element
     @include media(">tablet", "<=large-desktop") {
         .weekly-chart-container { order:666; }

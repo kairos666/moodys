@@ -1,0 +1,80 @@
+waf-tabs {
+    // core styles
+    waf-tab {
+        &[aria-hidden='true'] {
+            display: none;
+        }
+    }
+    // theme styles
+    $color-black: "0,0,0" !default;
+    $color-primary: "63,81,181" !default;
+    $color-grey: "224,224,224" !default;
+    $layout-tab-font-size: 14px !default;
+    $tab-border-color: unquote("rgb(#{$color-grey})") !default;
+    $tab-text-color: unquote("rgba(#{$color-black}, 0.54)") !default;
+    $tab-active-text-color: unquote("rgba(#{$color-black}, 0.87)") !default;
+    $tab-highlight-color: unquote("rgb(#{$color-primary})") !default;
+    display: block;
+    width: 100%;
+    .waf-tabs__nav {
+        display: flex;
+        flex-direction: row;
+        justify-content: center; // ⇾
+        align-content: space-between; // ||
+        align-items: flex-start; // ↓
+        height: 48px;
+        padding: 0 0 0 0;
+        margin: 0;
+        border-bottom: 1px solid $tab-border-color;
+        ol {
+            padding-left: 0;
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+        li {
+            margin: 0;
+            border: none;
+            padding: 0 24px 0 24px;
+            float: left;
+            position: relative;
+            display: block;
+            text-decoration: none;
+            height: 48px;
+            line-height: 48px;
+            text-align: center;
+            font-weight: 500;
+            font-size: $layout-tab-font-size;
+            color: $tab-text-color;
+            overflow: hidden;
+            outline: none;
+            &:hover,
+            &:focus,
+            &[aria-selected='true'] {
+                color: $tab-active-text-color;
+                cursor: pointer;
+            }
+            &[aria-selected='true']:after {
+                height: 2px;
+                width: 100%;
+                display: block;
+                content: " ";
+                bottom: 0px;
+                left: 0px;
+                position: absolute;
+                background: $tab-highlight-color;
+                animation: border-expand 0.3s cubic-bezier(0.4, 0.0, 0.4, 1) 0.01s alternate forwards;
+                transition: all 1s cubic-bezier(0.4, 0.0, 1, 1);
+            }
+        }
+    }
+    @keyframes border-expand {
+        0% {
+            opacity: 0;
+            width: 0;
+        }
+        100% {
+            opacity: 1;
+            width: 100%;
+        }
+    }
+}

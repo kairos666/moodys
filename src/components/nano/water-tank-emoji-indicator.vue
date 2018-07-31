@@ -185,5 +185,5 @@
         &.is-hidden { display:none; }
         .tooltip { position:absolute; left:$gutter-base; bottom:$gutter-base; right:$gutter-base; }
     }
-    .tank-container { margin:0; min-height:326px; overflow:hidden; }
+    .tank-container { margin:0; min-height:351px; overflow:hidden; }
 </style>

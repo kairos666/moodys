@@ -1,11 +1,11 @@
 <template>
     <div class="profile-box">
         <figure v-if="mood" class="mood-figure">
-            <emoji :mood="mood"></emoji>
+            <emoji size="50" :mood="mood"></emoji>
             <figcaption>{{emojiLabel}}</figcaption>
         </figure>
         <figure class="profile-figure">
-            <img class="avatar" :src="user.avatar" :alt="('avatar de ' + user.firstname + ' ' + user.lastname)" >
+            <img width="50" class="avatar" :src="user.avatar" :alt="('avatar de ' + user.firstname + ' ' + user.lastname)" >
             <figcaption>
                 <span class="name">{{user.firstname}} {{user.lastname}}</span>
                 <span class="motto">{{user.motto}}</span>
